@@ -187,7 +187,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 1.1.3
+Current version: 1.1.4
 
 ## Changelog
 
