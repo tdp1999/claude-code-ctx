@@ -31,32 +31,32 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 
 ### Setup & Initialization (6 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| `vision` | `/ctx:vision [idea]` | Define/update project vision and scope |
-| `architecture` | `/ctx:architecture` | Define/update architectural patterns |
-| `techstack` | `/ctx:techstack` | Select/update technologies |
-| `init` | `/ctx:context-init` | Initialize .context/ folder structure |
-| `onboard` | `/ctx:onboard` | Analyze existing project |
-| `start` | `/ctx:start` | Complete new project setup (orchestrator) |
+| Skill          | Usage                | Description                               |
+| -------------- | -------------------- | ----------------------------------------- |
+| `vision`       | `/ctx:vision [idea]` | Define/update project vision and scope    |
+| `architecture` | `/ctx:architecture`  | Define/update architectural patterns      |
+| `techstack`    | `/ctx:techstack`     | Select/update technologies                |
+| `init`         | `/ctx:context-init`  | Initialize .context/ folder structure     |
+| `onboard`      | `/ctx:onboard`       | Analyze existing project                  |
+| `start`        | `/ctx:start`         | Complete new project setup (orchestrator) |
 
 ### Planning (4 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| `epic` | `/ctx:epic "Feature"` | Create feature epic |
-| `investigate` | `/ctx:investigate "Issue"` | Investigate bug/refactor |
-| `breakdown` | `/ctx:breakdown epic-name` | Decompose epic/investigation into tasks |
-| `log-decision` | `/ctx:log-decision "Topic"` | Record architecture decision |
+| Skill          | Usage                       | Description                             |
+| -------------- | --------------------------- | --------------------------------------- |
+| `epic`         | `/ctx:epic "Feature"`       | Create feature epic                     |
+| `investigate`  | `/ctx:investigate "Issue"`  | Investigate bug/refactor                |
+| `breakdown`    | `/ctx:breakdown epic-name`  | Decompose epic/investigation into tasks |
+| `log-decision` | `/ctx:log-decision "Topic"` | Record architecture decision            |
 
 ### Task Management (4 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| `create-task` | `/ctx:create-task "Description"` | Create standalone task |
-| `task` | `/ctx:task [number]` | Load and work on task |
-| `progress` | `/ctx:progress` | View project status |
-| `sync` | `/ctx:sync` | Reconcile progress with files |
+| Skill         | Usage                            | Description                   |
+| ------------- | -------------------------------- | ----------------------------- |
+| `create-task` | `/ctx:create-task "Description"` | Create standalone task        |
+| `task`        | `/ctx:task [number]`             | Load and work on task         |
+| `progress`    | `/ctx:progress`                  | View project status           |
+| `sync`        | `/ctx:sync`                      | Reconcile progress with files |
 
 ## Common Workflows
 
@@ -139,6 +139,7 @@ The plugin works with a `.context/` folder in your project:
 ## Philosophy
 
 **Conscious Task Selection**: No auto-selection. You always choose which task to work on:
+
 1. Run `/ctx:progress` to see pending tasks
 2. Review and choose based on priority/context
 3. Run `/ctx:task [number]` to start
@@ -187,7 +188,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 1.1.4
+Current version: 1.1.5
 
 ## Changelog
 
