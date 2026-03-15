@@ -112,7 +112,7 @@ User → /ctx:start
   │     └─→ Creates .context/patterns-architecture.md
   ├─→ /ctx:techstack [user answers questions]
   │     └─→ Creates .context/.project-init.md
-  └─→ /ctx:init
+  └─→ /ctx:context-init
         └─→ Creates .context/ folder structure
 ```
 
@@ -126,7 +126,7 @@ User → /ctx:onboard
   │     └─→ Creates .context/patterns-architecture.md
   ├─→ /ctx:techstack --extract [analyzes dependencies]
   │     └─→ Creates .context/.project-init.md
-  └─→ /ctx:init
+  └─→ /ctx:context-init
         └─→ Creates .context/ folder structure
 ```
 

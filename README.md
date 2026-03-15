@@ -35,7 +35,7 @@ Complete workflow management for task-driven development with `.context/` folder
 ```
 
 **Available Commands:**
-- `/init` - Initialize new project structure
+- `/context-init` - Initialize new project structure
 - `/vision` - Define project vision
 - `/techstack` - Document technical stack
 - `/architecture` - Design system architecture

@@ -75,7 +75,7 @@ See `../../shared/conventions/file-contracts.md` for required file sections.
 Skill-specific errors:
 - **Epic missing `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
 - **Investigation missing `## Proposed Approach`**: Cannot create fix tasks — inform user, suggest updating investigation
-- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:init` first
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:context-init` first
 - **Epic status is `broken-down`**: Warn user this epic was already decomposed. Ask if they want to add more tasks (continue numbering) or re-breakdown (will not delete existing tasks)
 
 ## Step 2: Check Context Bank
@@ -83,7 +83,7 @@ Skill-specific errors:
 Check if `.context/tasks/` exists:
 - If yes, read existing task files to understand numbering and avoid duplicates
 - Also check `.context/tasks-done/` for archived completed tasks (to avoid number conflicts)
-- If no, suggest running `/ctx:init` first
+- If no, suggest running `/ctx:context-init` first
 
 Read `.context/patterns-architecture.md` and `.context/decisions.md` for project context.
 

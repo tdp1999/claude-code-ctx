@@ -41,7 +41,7 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:init` first
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:context-init` first
 - **`progress.md` doesn't exist**: Create it from template after task creation
 - **Task numbering conflict**: Always check both `tasks/` and `tasks-done/` for highest number
 

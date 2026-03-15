@@ -1,5 +1,5 @@
 ---
-name: init
+name: context-init
 description: Initialize or check project context bank (.context folder with tasks, patterns, decisions, progress tracking)
 allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion
 ---

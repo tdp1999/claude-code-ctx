@@ -414,7 +414,7 @@ User: Yes - Vercel for Next.js app, Railway for Postgres. Simple, fast deploys.
 ### Step 4: Initialize Context Structure
 
 ```bash
-$ /ctx:init
+$ /ctx:context-init
 ```
 
 **Output:**
@@ -1110,7 +1110,7 @@ Ready to build the core feature now that auth is complete. The foundation is sol
 | `/ctx:vision` | 1 | Define project vision |
 | `/ctx:architecture` | 1 | Define technical architecture |
 | `/ctx:techstack` | 1 | Document tech stack choices |
-| `/ctx:init` | 1 | Initialize .context/ structure |
+| `/ctx:context-init` | 1 | Initialize .context/ structure |
 | `/ctx:epic` | 2 | Plan authentication feature |
 | `/ctx:breakdown` | 3 | Break epic into tasks |
 | `/ctx:progress` | 3, 4, 5, 6, 7 | Check what's next |

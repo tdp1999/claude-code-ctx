@@ -25,7 +25,7 @@ Use the `/ctx:start` skill which automatically runs the full setup sequence.
 1. Runs `/ctx:vision` - Captures project vision and scope
 2. Runs `/ctx:architecture` - Defines architectural patterns
 3. Runs `/ctx:techstack` - Selects technologies and tools
-4. Runs `/ctx:init` - Creates `.context/` folder structure
+4. Runs `/ctx:context-init` - Creates `.context/` folder structure
 
 **Pros**: Fastest, guided, comprehensive
 **Cons**: Less control over individual steps
@@ -94,7 +94,7 @@ Execute each skill individually for full control.
 ### Step 4: Initialize Context Structure (1 min)
 
 ```bash
-/ctx:init
+/ctx:context-init
 ```
 
 **What it creates**:
@@ -196,7 +196,7 @@ Archives completed tasks and updates progress.
 /ctx:techstack
 # Choose: Nx monorepo, Angular 21, NestJS, PostgreSQL, pnpm
 
-/ctx:init
+/ctx:context-init
 # Creates .context/ structure
 
 # 2. Plan first feature
@@ -300,7 +300,7 @@ After completing this workflow:
 | Vision | `/ctx:vision "idea"` | 5-10 min | `.context/vision.md` |
 | Architecture | `/ctx:architecture` | 5-10 min | `.context/patterns-architecture.md` |
 | Techstack | `/ctx:techstack` | 5-10 min | `.context/.project-init.md` |
-| Init | `/ctx:init` | 1 min | `.context/` folder |
+| Init | `/ctx:context-init` | 1 min | `.context/` folder |
 | Epic | `/ctx:epic "feature"` | 10 min | `.context/plans/epic-*.md` |
 | Breakdown | `/ctx:breakdown epic-*` | 5 min | `.context/tasks/*.md` |
 | Progress | `/ctx:progress` | 1 min | View pending tasks |

@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2026-03-15
+## [1.1.2] - 2026-03-15
+
+### Changed
+
+- Renamed `init` skill to `context-init` (`/ctx:context-init`) to avoid conflict with Claude Code's built-in `/init` command
+- Updated all references across skills, shared docs, examples, and diagrams
 
 ### Added
 
@@ -128,5 +133,5 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.1.1 | 2026-03-15 | Add error handling conventions and fix shared path references |
+| 1.1.2 | 2026-03-15 | Rename init→context-init, add error handling conventions, fix shared paths |
 | 1.0.0 | 2026-02-11 | Initial plugin release with 14 migrated skills |

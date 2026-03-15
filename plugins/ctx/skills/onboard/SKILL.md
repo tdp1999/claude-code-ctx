@@ -150,7 +150,7 @@ Run `/ctx:techstack` in **extract mode**:
 
 Check if `.context/` exists:
 
-- If not: Run `/ctx:init` to create folder structure
+- If not: Run `/ctx:context-init` to create folder structure
 - If exists: Skip, just ensure all files are in place
 
 ---

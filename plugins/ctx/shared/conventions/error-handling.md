@@ -66,7 +66,7 @@ This looks like a stale status. Run /ctx:sync to reconcile, or I can fix it now.
 When `.context/` directory doesn't exist:
 
 1. **Inform** the user the context bank is not initialized
-2. **Suggest** `/ctx:init` (for existing structure) or `/ctx:start` (for new projects)
+2. **Suggest** `/ctx:context-init` (for existing structure) or `/ctx:start` (for new projects)
 3. **DO NOT** create the folder structure from non-init skills
 
 ---

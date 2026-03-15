@@ -15,7 +15,7 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 /ctx:vision "My project idea"
 /ctx:architecture
 /ctx:techstack
-/ctx:init
+/ctx:context-init
 
 # Plan a feature
 /ctx:epic "User authentication"
@@ -36,7 +36,7 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 | `vision` | `/ctx:vision [idea]` | Define/update project vision and scope |
 | `architecture` | `/ctx:architecture` | Define/update architectural patterns |
 | `techstack` | `/ctx:techstack` | Select/update technologies |
-| `init` | `/ctx:init` | Initialize .context/ folder structure |
+| `init` | `/ctx:context-init` | Initialize .context/ folder structure |
 | `onboard` | `/ctx:onboard` | Analyze existing project |
 | `start` | `/ctx:start` | Complete new project setup (orchestrator) |
 
@@ -70,7 +70,7 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 /ctx:vision "E-commerce platform"
 /ctx:architecture
 /ctx:techstack
-/ctx:init
+/ctx:context-init
 ```
 
 ### Feature Development
@@ -113,7 +113,7 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 /ctx:onboard
 
 # Initialize context structure
-/ctx:init
+/ctx:context-init
 
 # Start working
 /ctx:epic "First feature"
@@ -187,7 +187,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 1.0.0
+Current version: 1.1.2
 
 ## Changelog
 

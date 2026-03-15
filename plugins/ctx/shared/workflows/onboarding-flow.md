@@ -59,10 +59,10 @@ Claude presents extracted information in three sections:
 
 ### 3. Initialize Context Structure
 
-Once information is confirmed, use `/ctx:init`:
+Once information is confirmed, use `/ctx:context-init`:
 
 ```
-/ctx:init
+/ctx:context-init
 ```
 
 This creates the `.context/` directory structure:
@@ -161,7 +161,7 @@ Claude: Thanks! I'll update those details.
 ### Step 3: Initialize Structure
 
 ```
-User: /ctx:init
+User: /ctx:context-init
 Claude: Creating .context/ structure with confirmed information...
 
 ✅ Created .context/vision.md

@@ -21,7 +21,7 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **`.context/` doesn't exist (create mode)**: Proceed — vision.md can be created before init. Suggest running `/ctx:init` after.
+- **`.context/` doesn't exist (create mode)**: Proceed — vision.md can be created before init. Suggest running `/ctx:context-init` after.
 - **vision.md exists but missing required sections (update mode)**: Show which sections are missing, offer to add them during the update.
 
 ## Input

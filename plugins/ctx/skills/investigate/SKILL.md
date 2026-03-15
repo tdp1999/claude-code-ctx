@@ -29,7 +29,7 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **`.context/investigations/` doesn't exist**: Suggest running `/ctx:init` first
+- **`.context/investigations/` doesn't exist**: Suggest running `/ctx:context-init` first
 - **Investigation file already exists with same name**: Ask user — update existing or create with different name?
 - **Project-specific agents unavailable**: Skip gracefully (see subagents.md), continue investigation without automated testing/validation
 

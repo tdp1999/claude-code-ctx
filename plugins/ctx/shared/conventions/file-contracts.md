@@ -136,7 +136,7 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/progress.md` |
-| **Written by** | `/ctx:init`, `/ctx:breakdown`, `/ctx:create-task`, `/ctx:sync` |
+| **Written by** | `/ctx:context-init`, `/ctx:breakdown`, `/ctx:create-task`, `/ctx:sync` |
 | **Read by** | `/ctx:progress`, `/ctx:sync`, `/ctx:create-task` |
 
 **Required sections:**
@@ -152,7 +152,7 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/decisions.md` |
-| **Written by** | `/ctx:log-decision`, `/ctx:init` |
+| **Written by** | `/ctx:log-decision`, `/ctx:context-init` |
 | **Read by** | `/ctx:breakdown`, `/ctx:architecture` |
 
 **Required format per entry:**

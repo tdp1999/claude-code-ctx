@@ -114,7 +114,7 @@ If no:
 
 Check if `.context/` folder exists:
 
-- If not: Run `/ctx:init` skill automatically (no prompt)
+- If not: Run `/ctx:context-init` skill automatically (no prompt)
 - If exists: Skip this step
 
 **Output:** `.context/` folder structure (if created)
@@ -219,7 +219,7 @@ Creates .context/tasks/001-*.md through 005-*.md
 
 [Step 6: Init Context]
 Detects .context/ doesn't exist
-Runs /ctx:init automatically
+Runs /ctx:context-init automatically
 Creates .context/ folder structure
 
 [Step 7: Summary]

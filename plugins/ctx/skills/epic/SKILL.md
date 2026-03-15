@@ -29,7 +29,7 @@ See `../../shared/conventions/file-contracts.md` for required output sections.
 Skill-specific errors:
 - **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:vision` first, but allow proceeding if user confirms.
 - **Missing `patterns-architecture.md`**: Warn that Technical Considerations section will be generic. Suggest running `/ctx:architecture` first.
-- **`.context/plans/` doesn't exist**: Suggest running `/ctx:init` first
+- **`.context/plans/` doesn't exist**: Suggest running `/ctx:context-init` first
 - **Epic file already exists with same name**: Ask user — update existing or create with different name?
 
 ## Input
