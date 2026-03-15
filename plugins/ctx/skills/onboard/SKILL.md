@@ -11,13 +11,22 @@ Analyze an existing codebase and extract its vision, architecture, and techstack
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill heavily uses:
 
-- **Explore** - For analyzing codebase structure, finding patterns, scanning configs
+- **Explore** (built-in) - For analyzing codebase structure, finding patterns, scanning configs
 
 **IMPORTANT:** Use the Task tool with `subagent_type="Explore"` for all codebase analysis instead of manual Glob/Grep/Read calls.
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+
+Skill-specific errors:
+- **`.context/` already exists with files**: Ask user — overwrite existing context, or merge/update?
+- **README.md missing**: Vision extraction will have less data — inform user, rely on package.json and code analysis
+- **No package.json**: Techstack extraction limited — inform user, ask for manual input on key technology choices
 
 ---
 

@@ -14,6 +14,17 @@ Load and work on a specific task from `.context/tasks/` (active tasks only).
 - `.context/tasks/` - Active tasks (pending, in-progress, blocked)
 - `.context/tasks-done/` - Archived done tasks (read-only reference)
 
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+
+Skill-specific errors:
+- **Task not found in `tasks/`**: Report not found, do NOT search `tasks-done/`. Suggest `/ctx:progress` to see available tasks.
+- **Task missing `## Acceptance Criteria`**: Warn user the task has no ACs — cannot track completion properly. Suggest adding ACs before starting.
+- **Task missing `## Status`**: Treat as `pending`, but warn user about malformed file.
+- **Task status is `blocked`**: Show blocker reason, ask if user wants to proceed anyway.
+- **Task status is `done`**: Inform user this task is already complete. Suggest `/ctx:sync` to archive it.
+
 ## Input
 
 `$ARGUMENTS` - Task number or name (e.g., "002" or "bento-grid")

@@ -11,10 +11,10 @@ Break down an epic, investigation, feature, plan, PRD, or idea into actionable t
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
-- **Explore** - For finding related code when creating tasks
+- **Explore** (built-in) - For finding related code when creating tasks
 
 **When to use Explore:**
 - When tasks need specific file paths
@@ -66,6 +66,17 @@ This skill uses:
 - Understand the scope
 - Ask clarifying questions if ambiguous
 - Note: This is ad-hoc breakdown without epic context
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required file sections.
+
+Skill-specific errors:
+- **Epic missing `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
+- **Investigation missing `## Proposed Approach`**: Cannot create fix tasks — inform user, suggest updating investigation
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:init` first
+- **Epic status is `broken-down`**: Warn user this epic was already decomposed. Ask if they want to add more tasks (continue numbering) or re-breakdown (will not delete existing tasks)
 
 ## Step 2: Check Context Bank
 

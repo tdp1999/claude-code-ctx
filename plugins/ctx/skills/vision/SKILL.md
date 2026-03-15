@@ -10,10 +10,19 @@ Capture or update the project's vision, scope, and goals.
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
-- **Explore** - For extract mode (scanning README, docs, package.json)
+- **Explore** (built-in) - For extract mode (scanning README, docs, package.json)
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required output sections.
+
+Skill-specific errors:
+- **`.context/` doesn't exist (create mode)**: Proceed — vision.md can be created before init. Suggest running `/ctx:init` after.
+- **vision.md exists but missing required sections (update mode)**: Show which sections are missing, offer to add them during the update.
 
 ## Input
 

@@ -11,17 +11,27 @@ Analyze bugs, refactors, performance issues, or tech debt. Unlike `/ctx:epic` wh
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
 
-- **Explore** - For analyzing relevant code, finding root causes, tracing execution paths
-- **test-runner** - For reproducing failing tests or verifying issues
-- **build-validator** - For checking if issue causes build/type errors
+- **Explore** (built-in) - For analyzing relevant code, finding root causes, tracing execution paths
+- **test-runner** (project-specific) - For reproducing failing tests or verifying issues
+- **build-validator** (project-specific) - For checking if issue causes build/type errors
 
-**IMPORTANT:** Use subagents for analysis instead of manual searching.
+**IMPORTANT:** Use subagents for analysis instead of manual searching. For project-specific agents (test-runner, build-validator), check `.claude/agents/` first — skip if not configured.
 
 ---
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required output sections.
+
+Skill-specific errors:
+- **`.context/investigations/` doesn't exist**: Suggest running `/ctx:init` first
+- **Investigation file already exists with same name**: Ask user — update existing or create with different name?
+- **Project-specific agents unavailable**: Skip gracefully (see subagents.md), continue investigation without automated testing/validation
 
 ## Input
 

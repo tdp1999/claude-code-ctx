@@ -13,11 +13,11 @@ Generate a standalone task file from brief user input. Unlike `/ctx:breakdown` w
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
-- **Explore** - For analyzing codebase context when creating tasks that touch existing code
-- **general-purpose** - For researching technical approaches or best practices when needed
+- **Explore** (built-in) - For analyzing codebase context when creating tasks that touch existing code
+- **general-purpose** (built-in) - For researching technical approaches or best practices when needed
 
 **When to use Explore:**
 - When task involves modifying existing code
@@ -34,6 +34,16 @@ This skill uses:
 - Feature request: `/ctx:create-task "Add rate limiting to auth endpoint"`
 - Bug report: `/ctx:create-task "Login form validation not working"`
 - Empty: Ask user what task they want to create
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required output sections.
+
+Skill-specific errors:
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:init` first
+- **`progress.md` doesn't exist**: Create it from template after task creation
+- **Task numbering conflict**: Always check both `tasks/` and `tasks-done/` for highest number
 
 ---
 

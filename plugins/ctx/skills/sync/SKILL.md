@@ -19,6 +19,17 @@ Update progress.md to match actual task file statuses, archive done tasks, and u
 └── progress.md         # Progress tracker
 ```
 
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+
+Skill-specific errors:
+- **`.context/tasks/` doesn't exist**: Report no context bank found, suggest `/ctx:init`
+- **Task file missing `## Status`**: Report malformed file, treat as `pending`, include in sync report
+- **Task file missing `## Acceptance Criteria`**: Cannot count AC progress — report as "ACs unknown"
+- **progress.md doesn't exist**: Create it from template (this is a recovery action)
+- **Epic/investigation referenced by task but file missing**: Report orphaned reference in sync report
+
 ## Steps
 
 1. **Scan all task files:**

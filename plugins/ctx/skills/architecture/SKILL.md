@@ -11,10 +11,19 @@ Define or update the project's architectural patterns, boundaries, and layers.
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
-- **Explore** - For extract mode (analyzing folder structure, detecting patterns)
+- **Explore** (built-in) - For extract mode (analyzing folder structure, detecting patterns)
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required output sections.
+
+Skill-specific errors:
+- **Missing `vision.md` (create mode)**: Warn that architecture choices won't be informed by project context. Suggest `/ctx:vision` first, but allow proceeding.
+- **`--add-module` or `--add-domain` but no `patterns-architecture.md`**: Cannot add to non-existent file. Suggest running `/ctx:architecture` (create mode) first.
 
 ## Input
 

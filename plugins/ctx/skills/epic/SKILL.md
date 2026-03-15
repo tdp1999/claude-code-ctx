@@ -11,15 +11,26 @@ Generate or update epic-style feature files with high-level requirements. Acts a
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
-- **Explore** - For understanding existing code context and related features
+- **Explore** (built-in) - For understanding existing code context and related features
 
 **When to use Explore:**
 - When epic relates to existing features (e.g., "Extend authentication with 2FA")
 - When need to understand how something currently works
 - When foresee technical considerations require code analysis
+
+## Error Handling
+
+See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/file-contracts.md` for required output sections.
+
+Skill-specific errors:
+- **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:vision` first, but allow proceeding if user confirms.
+- **Missing `patterns-architecture.md`**: Warn that Technical Considerations section will be generic. Suggest running `/ctx:architecture` first.
+- **`.context/plans/` doesn't exist**: Suggest running `/ctx:init` first
+- **Epic file already exists with same name**: Ask user — update existing or create with different name?
 
 ## Input
 

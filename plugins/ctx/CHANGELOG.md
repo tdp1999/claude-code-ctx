@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-15
+
+### Added
+
+- **Error handling sections** to 8 skills: architecture, breakdown, create-task, epic, investigate, onboard, sync, vision
+- **Shared conventions**: `error-handling.md`, `file-contracts.md` for consistent error behavior across skills
+- **Shared subagents reference**: `subagents.md` documenting available built-in subagents
+
+### Fixed
+
+- Fixed shared path references (`_shared` → `shared`) across all skills
+- Clarified subagent labels as "(built-in)" for accuracy
+
+---
+
 ## [1.0.0] - 2026-02-11
 
 ### Added
@@ -113,4 +128,5 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.1.1 | 2026-03-15 | Add error handling conventions and fix shared path references |
 | 1.0.0 | 2026-02-11 | Initial plugin release with 14 migrated skills |

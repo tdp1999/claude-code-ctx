@@ -10,12 +10,12 @@ Select concrete tools and technologies for your project. Provides smart defaults
 
 ## Subagent Usage
 
-See `../../_shared/subagents.md` for available subagents.
+See `../../shared/subagents.md` for available subagents.
 
 This skill uses:
 
-- **Explore** - For extract mode (scanning config files, dependencies)
-- **package-installer** - When user wants to add new packages
+- **Explore** (built-in) - For extract mode (scanning config files, dependencies)
+- **package-installer** (built-in) - When user wants to add new packages
 
 ## Reference Files
 
@@ -298,7 +298,7 @@ Is this correct? Anything missing or incorrect?
     - Add note: "Extracted from existing project on [date]"
 
 4. **Suggest package installation if needed:**
-    - If user mentions missing tools, offer to use `package-installer` subagent
+    - If user mentions missing tools, offer to use `package-installer` agent (built-in)
 
 ---
 
