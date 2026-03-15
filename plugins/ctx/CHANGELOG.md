@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-03-15
+
+### Fixed
+
+- Fixed marketplace.json source field: renamed nested `source` to `type`, added `path` pointing to `plugins/ctx`
+
+---
+
 ## [1.1.2] - 2026-03-15
 
 ### Changed
@@ -133,5 +141,6 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.1.3 | 2026-03-15 | Fix marketplace source config (add path, fix type field) |
 | 1.1.2 | 2026-03-15 | Rename init→context-init, add error handling conventions, fix shared paths |
 | 1.0.0 | 2026-02-11 | Initial plugin release with 14 migrated skills |
