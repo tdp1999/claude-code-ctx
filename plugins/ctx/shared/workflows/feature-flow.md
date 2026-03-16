@@ -221,7 +221,7 @@ Then mark status as "completed" in the task file.
 
 The sync skill will:
 1. Scan `.context/tasks/` for completed tasks
-2. Move completed tasks to `.context/tasks-done/`
+2. Move completed tasks to `.context/tasks-done/<epic-name>/`
 3. Update `.context/progress.md`
 4. Check if epic is complete (all tasks done)
 5. Update epic status if complete
@@ -303,7 +303,7 @@ The sync skill will:
 # Complete in ~1 hour
 
 /ctx:sync
-# Task 007 archived to tasks-done/
+# Task 007 archived to tasks-done/<epic-name>/
 
 /ctx:task 012
 # Work: Configure Stripe test mode, create test products

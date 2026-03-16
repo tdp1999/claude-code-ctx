@@ -13,9 +13,10 @@ Update progress.md to match actual task file statuses, archive done tasks, and u
 ```
 .context/
 ├── tasks/              # Active tasks (pending, in-progress, blocked)
-├── tasks-done/         # Archived done tasks
+├── tasks-done/         # Archived done tasks (organized by epic subfolder)
 ├── plans/              # Epics
 ├── investigations/     # Investigation files
+├── epic-done/          # Archived done epics & investigations
 └── progress.md         # Progress tracker
 ```
 
@@ -35,7 +36,7 @@ Skill-specific errors:
 1. **Scan all task files:**
    ```
    .context/tasks/*.md
-   .context/tasks-done/*.md  (for reference/reporting)
+   .context/tasks-done/**/*.md  (for reference/reporting, includes epic subfolders)
    ```
 
 2. **Extract from each:**
@@ -52,8 +53,10 @@ Skill-specific errors:
    - Report every status correction made
 
 4. **Archive done tasks:**
-   - Create `.context/tasks-done/` if it doesn't exist
-   - Move any task with `## Status: done` from `tasks/` to `tasks-done/`
+   - Determine the source epic/investigation name for each done task
+   - Create `.context/tasks-done/<epic-name>/` subfolder if it doesn't exist (e.g., `tasks-done/epic-auth-frontend/`)
+   - If task has no associated epic, use `tasks-done/other/`
+   - Move any task with `## Status: done` from `tasks/` to the appropriate subfolder
    - Preserve original filename
 
 5. **Compare with progress.md:**
@@ -72,7 +75,7 @@ Skill-specific errors:
    - Check `.context/investigations/` for investigations with status "broken-down"
    - For each broken-down epic/investigation:
      - Find all tasks that belong to it (check both tasks/ and tasks-done/)
-     - If ALL tasks are done → update status to "done"
+     - If ALL tasks are done → update status to "done" and move the file to `.context/epic-done/` (create folder if needed, preserve original filename)
      - Keep as "broken-down" if any tasks are pending/in-progress
 
 8. **Report:**
@@ -85,8 +88,8 @@ Status Corrections:
 - 008-write-tests.md: in-progress → done (all ACs checked)
 
 Archived Tasks:
-- 005-implement-auth.md → tasks-done/
-- 006-add-tests.md → tasks-done/
+- 005-implement-auth.md → tasks-done/epic-authentication/
+- 006-add-tests.md → tasks-done/epic-authentication/
 
 Task Changes:
 - [task] moved to [section]
@@ -94,7 +97,7 @@ Task Changes:
 - [task] removed (no file)
 
 Epic/Investigation Updates:
-- [epic-name] status changed to "done" (all 5 tasks done)
+- [epic-name] status changed to "done" (all 5 tasks done) — archived to epic-done/
 
 Current state:
 - Done: X (in tasks-done/)
@@ -109,17 +112,18 @@ Current state:
 - `draft` → Being written
 - `ready` → Ready to break down
 - `broken-down` → Has tasks, work in progress
-- `done` → All tasks finished
+- `done` → All tasks finished (archived to `epic-done/`)
 
 **Tasks:**
 - `pending` → Not started (in tasks/)
 - `in-progress` → Being worked on (in tasks/)
-- `done` → Done (moved to tasks-done/)
+- `done` → Done (moved to tasks-done/<epic-name>/)
 - `blocked` → Waiting on dependency (in tasks/)
 
 ## Notes
 
 - Done tasks are archived to keep `tasks/` folder focused on active work
-- Archived tasks retain their original numbering for traceability
-- Use `tasks-done/` to review past work or reference implementations
+- Completed epics and investigations are archived to `epic-done/` to keep `plans/` and `investigations/` focused on active work
+- Archived files retain their original naming for traceability
+- Use `tasks-done/` and `epic-done/` to review past work or reference implementations
 - The `/ctx:task` skill should only look in `tasks/` for active work

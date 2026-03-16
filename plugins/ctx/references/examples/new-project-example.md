@@ -425,7 +425,6 @@ $ /ctx:context-init
    - .context/investigations/
    - .context/tasks/
    - .context/tasks-done/
-   - .context/workflow.md
    - .context/progress.md
    - .context/decisions.md
 

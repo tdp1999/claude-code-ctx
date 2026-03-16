@@ -15,7 +15,7 @@ Different file types have different status lifecycles. Understanding these helps
 | `pending` | Not started | `tasks/` | Start work → `in-progress` |
 | `in-progress` | Currently working | `tasks/` | Complete → `completed` or hit blocker → `blocked` |
 | `blocked` | Cannot proceed | `tasks/` | Resolve blocker → `in-progress` or `pending` |
-| `completed` | Finished | `tasks-done/` | Archive (auto or manual) |
+| `completed` | Finished | `tasks-done/<epic-name>/` | Archive (auto or manual) |
 
 ### Status Flow
 
@@ -24,7 +24,7 @@ pending
    ↓
 in-progress ←→ blocked
    ↓
-completed → [archived to tasks-done/]
+completed → [archived to tasks-done/<epic-name>/]
 ```
 
 ### Status Details
@@ -167,7 +167,7 @@ last active, profile completion). 95% test coverage.
 ```
 
 **Archiving:**
-- File moves from `tasks/` to `tasks-done/`
+- File moves from `tasks/` to `tasks-done/<epic-name>/` (organized by source epic)
 - Can happen automatically (via /ctx:task) or manually
 - Preserves completed work history
 
@@ -177,11 +177,11 @@ last active, profile completion). 95% test coverage.
 
 | Status | Meaning | Location | Next Action |
 |--------|---------|----------|-------------|
-| `draft` | Initial planning | `epics/` | Complete details → `ready` |
-| `ready` | Planned, not started | `epics/` | Break down → `broken-down` |
-| `broken-down` | Tasks created | `epics/` | Work on tasks → `in-progress` |
-| `in-progress` | Tasks underway | `epics/` | Complete all tasks → `completed` |
-| `completed` | All done | `epics-done/` | Archive |
+| `draft` | Initial planning | `plans/` | Complete details → `ready` |
+| `ready` | Planned, not started | `plans/` | Break down → `broken-down` |
+| `broken-down` | Tasks created | `plans/` | Work on tasks → `in-progress` |
+| `in-progress` | Tasks underway | `plans/` | Complete all tasks → `completed` |
+| `completed` | All done | `epic-done/` | Archive |
 
 ### Status Flow
 
@@ -194,7 +194,7 @@ broken-down
    ↓
 in-progress
    ↓
-completed → [archived to epics-done/]
+completed → [archived to epic-done/]
 ```
 
 ### Status Details
@@ -282,7 +282,7 @@ total_tasks: 10
 | `broken-down` | Fix tasks created | `investigations/` | Work on fixes → `in-progress` |
 | `in-progress` | Fixes underway | `investigations/` | Complete fixes → `completed` |
 | `blocked` | Need more info | `investigations/` | Get info → `ready` |
-| `completed` | Issue resolved | `investigations-done/` | Archive |
+| `completed` | Issue resolved | `epic-done/` | Archive |
 
 ### Status Flow
 
@@ -297,7 +297,7 @@ broken-down
    ↓
 in-progress
    ↓
-completed → [archived to investigations-done/]
+completed → [archived to epic-done/]
 ```
 
 ### Status Details
@@ -421,14 +421,14 @@ completed → [archived to investigations-done/]
 
 **Manual:**
 ```bash
-# Move completed task
-mv .context/tasks/042-fix-login.md .context/tasks-done/
+# Move completed task (into epic subfolder)
+mv .context/tasks/042-fix-login.md .context/tasks-done/epic-auth/
 
 # Move completed epic
-mv .context/epics/001-auth-system.md .context/epics-done/
+mv .context/plans/001-auth-system.md .context/epic-done/
 
 # Move completed investigation
-mv .context/investigations/003-memory-leak.md .context/investigations-done/
+mv .context/investigations/003-memory-leak.md .context/epic-done/
 ```
 
 ### Archive Structure
@@ -436,11 +436,13 @@ mv .context/investigations/003-memory-leak.md .context/investigations-done/
 ```
 .context/
 ├── tasks/              # Active tasks
-├── tasks-done/         # Completed tasks (historical record)
-├── epics/              # Active epics
-├── epics-done/         # Completed epics
+├── tasks-done/         # Completed tasks, organized by epic subfolder
+│   ├── epic-auth/      # Tasks from auth epic
+│   ├── epic-payments/  # Tasks from payments epic
+│   └── other/          # Standalone tasks (no epic)
+├── plans/              # Active epics
 ├── investigations/     # Active investigations
-└── investigations-done/ # Resolved investigations
+└── epic-done/          # Completed epics & investigations
 ```
 
 **Benefits:**
@@ -501,7 +503,7 @@ grep -h "^**Status:" .context/tasks/*.md
 
 ```bash
 # Check epic file
-cat .context/epics/001-auth-system.md
+cat .context/plans/001-auth-system.md
 
 # Look for progress section
 ## Progress

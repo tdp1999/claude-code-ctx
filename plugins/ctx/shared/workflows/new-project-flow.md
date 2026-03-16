@@ -104,7 +104,7 @@ Execute each skill individually for full control.
 ├── investigations/     # Investigation files
 ├── tasks/              # Active task files
 ├── tasks-done/         # Archived completed tasks
-├── workflow.md         # Workflow guide
+├── epic-done/          # Archived completed epics & investigations
 ├── progress.md         # Progress tracker
 └── decisions.md        # Architecture Decision Records
 ```
@@ -215,7 +215,7 @@ Archives completed tasks and updates progress.
 # Complete acceptance criteria...
 
 /ctx:sync
-# Archives task 001 to tasks-done/
+# Archives task 001 to tasks-done/<epic-name>/
 
 # 4. Continue
 /ctx:progress

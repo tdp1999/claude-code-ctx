@@ -11,7 +11,8 @@ Display project progress from `.context/`.
 ## Folder Structure
 
 - `.context/tasks/` - Active tasks (pending, in-progress, blocked)
-- `.context/tasks-done/` - Archived completed tasks
+- `.context/tasks-done/` - Archived completed tasks (organized by epic subfolder)
+- `.context/epic-done/` - Archived completed epics and investigations
 
 ## Steps
 
@@ -19,7 +20,8 @@ Display project progress from `.context/`.
 
 2. **Scan task files:**
    - `.context/tasks/` for active tasks (pending, in-progress, blocked)
-   - `.context/tasks-done/` for completed task count
+   - `.context/tasks-done/**/*.md` for completed task count (includes epic subfolders)
+   - `.context/epic-done/` for completed epic/investigation count
    - List any blocked tasks with reasons
 
 3. **Display summary:**

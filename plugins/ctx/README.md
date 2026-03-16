@@ -128,8 +128,8 @@ The plugin works with a `.context/` folder in your project:
 ├── plans/              # Epic files (epic-*.md)
 ├── investigations/     # Investigation files (inv-*.md)
 ├── tasks/              # Active task files (001-name.md)
-├── tasks-done/         # Archived completed tasks
-├── workflow.md         # Workflow guide
+├── tasks-done/         # Archived completed tasks (by epic subfolder)
+├── epic-done/          # Archived completed epics & investigations
 ├── progress.md         # Status tracker
 ├── patterns-*.md       # Architecture + code patterns
 ├── decisions.md        # ADRs
@@ -188,7 +188,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 1.1.5
+Current version: 1.2.0
 
 ## Changelog
 

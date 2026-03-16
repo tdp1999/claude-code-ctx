@@ -67,7 +67,7 @@ Claude will:
 After all fix tasks are complete:
 - Run full test suite to ensure no regressions
 - Update investigation status to `completed`
-- Move investigation to `investigations-done/`
+- Move investigation to `epic-done/`
 - Update progress.md
 
 ## Example: Investigating "Checkout 500 Error"
@@ -161,7 +161,7 @@ pnpm build
 # Deploy and verify checkout works
 ```
 
-Investigation moved to `investigations-done/012-checkout-500-error.md` with status `completed`.
+Investigation moved to `epic-done/012-checkout-500-error.md` with status `completed`.
 
 ## Tips for Effective Bug Investigation
 
@@ -195,7 +195,7 @@ Investigation moved to `investigations-done/012-checkout-500-error.md` with stat
 
 ### Archive Properly
 
-- Only move to `investigations-done/` when ALL fix tasks complete
+- Only move to `epic-done/` when ALL fix tasks complete
 - Update final status with outcome
 - Add "Resolution" section summarizing what was done
 - Keep investigation for future reference

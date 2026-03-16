@@ -106,7 +106,7 @@
     └─────────────┘                    └────────┬─────────┘
                                                  │
                                         Archives completed
-                                        tasks to tasks-done/
+                                        tasks to tasks-done/<epic>/
 ```
 
 ## Skill Roles & Relationships

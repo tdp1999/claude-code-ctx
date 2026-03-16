@@ -69,6 +69,8 @@ When modifying a file's format, check the **Read by** column to understand which
 | **Written by** | `/ctx:epic` |
 | **Read by** | `/ctx:breakdown` |
 
+**Archive location:** `.context/epic-done/` (moved by `/ctx:sync` when all tasks are done)
+
 **Required sections:**
 - `# Epic: [Name]` — title
 - `## Summary` — one paragraph
@@ -90,6 +92,8 @@ When modifying a file's format, check the **Read by** column to understand which
 | **Location** | `.context/investigations/inv-<name>.md` |
 | **Written by** | `/ctx:investigate` |
 | **Read by** | `/ctx:breakdown` |
+
+**Archive location:** `.context/epic-done/` (moved by `/ctx:sync` when all tasks are done)
 
 **Required sections:**
 - `# Investigation: [Title]`

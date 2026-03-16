@@ -77,7 +77,8 @@ This creates the `.context/` directory structure:
 ├── progress.md               # Empty, ready for tasks
 ├── tasks/                    # Empty, ready for work
 ├── tasks-done/               # Archive directory
-├── epics/                    # Empty, for larger initiatives
+├── epic-done/                # Archived completed epics & investigations
+├── plans/                    # Empty, for larger initiatives
 └── investigations/           # Empty, for bug investigations
 ```
 
@@ -185,7 +186,7 @@ User: We need to upgrade Angular to v18 and migrate to standalone components
 
 Claude: Creating epic for Angular upgrade...
 
-✅ Created .context/epics/001-upgrade-angular-18-standalone.md
+✅ Created .context/plans/epic-upgrade-angular-18-standalone.md
 
 Epic includes:
 - Upgrade Angular 15 → 18
@@ -197,7 +198,7 @@ Epic includes:
 
 Estimated: 15 tasks, 2-3 weeks
 
-Ready to break this down into tasks? Use /ctx:breakdown epics/001
+Ready to break this down into tasks? Use /ctx:breakdown epic-upgrade-angular-18-standalone
 ```
 
 ## Tips for Accurate Extraction

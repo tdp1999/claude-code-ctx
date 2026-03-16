@@ -16,10 +16,10 @@ Check for the existence of these paths:
 - `.context/investigations/` folder (for investigation files)
 - `.context/tasks/` folder (for active task files)
 - `.context/tasks-done/` folder (for archived completed tasks)
+- `.context/epic-done/` folder (for archived completed epics and investigations)
 - `.context/progress.md`
 - `.context/patterns-architecture.md` (NOTE: created by `/ctx:architecture`, not this skill)
 - `.context/decisions.md`
-- `.context/workflow.md`
 
 Also check if `CLAUDE.md` exists at the project root.
 
@@ -46,99 +46,16 @@ Create the following structure:
 ```
 .context/
 ├── plans/                  # Epic files go here
-│   └── .gitkeep           # Placeholder to keep folder in git
 ├── investigations/         # Investigation files go here
-│   └── .gitkeep           # Placeholder to keep folder in git
 ├── tasks/                  # Active task files (pending, in-progress, blocked)
-│   └── .gitkeep           # Placeholder to keep folder in git
-├── tasks-done/             # Archived completed tasks (created by /sync)
-│   └── .gitkeep           # Placeholder to keep folder in git
-├── workflow.md            # How to use the context bank
+├── tasks-done/             # Archived completed tasks, organized by epic subfolder (created by /sync)
+├── epic-done/              # Archived completed epics & investigations (created by /sync)
 ├── progress.md            # Progress tracker
 └── decisions.md           # Architecture Decision Records
 ```
 
 **IMPORTANT:** Do NOT create `patterns-architecture.md` - this is created by `/ctx:architecture` skill.
 If `patterns-architecture.md` already exists (created by `/ctx:architecture`), leave it as-is.
-
-### workflow.md template:
-
-````markdown
-# Claude Code Workflow
-
-Task-driven development with `.context/` folder structure.
-
-## Structure
-
-```
-project/
-├── .context/
-│   ├── plans/           # Epic files (epic-*.md)
-│   ├── investigations/  # Investigation files (inv-*.md)
-│   ├── tasks/           # Active task files (001-name.md)
-│   ├── tasks-done/      # Archived completed tasks
-│   ├── workflow.md      # This file
-│   ├── progress.md      # Status tracker
-│   ├── patterns-architecture.md      # Architecture + code patterns (from /ctx:architecture)
-│   └── decisions.md     # ADRs
-└── CLAUDE.md            # Project overview
-```
-
-## Task File Format
-
-```markdown
-# Task: [Title]
-
-## Status: pending | in-progress | done | blocked
-
-## Goal
-
-## Acceptance Criteria
-
-- [ ] ...
-
-## Technical Notes
-
-## Files to Touch
-
-## Dependencies
-
-## Complexity: S | M | L | XL
-
-## Progress Log
-```
-
-## Skills
-
-| Skill                       | Purpose                                |
-| --------------------------- | -------------------------------------- |
-| `/ctx:start`                | Initialize new project (full flow)     |
-| `/ctx:onboard`              | Onboard existing project               |
-| `/ctx:vision`               | Define/update project vision           |
-| `/ctx:architecture`         | Define/update architecture patterns    |
-| `/ctx:techstack`            | Select/update tools                    |
-| `/ctx:epic [idea]`          | Create epic from feature idea          |
-| `/ctx:investigate [issue]`  | Investigate bug/refactor/tech debt     |
-| `/ctx:breakdown [epic/inv]` | Break epic or investigation into tasks |
-| `/ctx:task [num]`           | Load and work on task                  |
-| `/ctx:progress`             | Show status summary                    |
-| `/ctx:log-decision [topic]` | Record ADR                             |
-| `/ctx:sync`                 | Sync progress.md with files            |
-
-## Session Flow
-
-1. **Review:** `/ctx:progress` to see pending tasks
-2. **Start:** `/ctx:task [num]` to load a specific task
-3. **Work:** Complete acceptance criteria
-4. **Finish:** Mark task as completed, sync with `/ctx:sync`
-
-## Principles
-
-- Tasks are source of truth
-- One task per session (focus)
-- Update progress every session
-- Completable in 1-2 sessions
-````
 
 ### progress.md template:
 
@@ -196,11 +113,11 @@ If not, add a section pointing to the context files:
 ```markdown
 ## Project Context
 
-- `.context/workflow.md` - How to use the context bank
 - `.context/plans/` - Epic files (feature planning)
 - `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
+- `.context/epic-done/` - Archived completed epics and investigations
 - `.context/progress.md` - Current progress and blockers
 - `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
 - `.context/decisions.md` - Architecture decisions
@@ -221,11 +138,11 @@ If CLAUDE.md doesn't exist, create a minimal one:
 
 ## Project Context
 
-- `.context/workflow.md` - How to use the context bank
 - `.context/plans/` - Epic files (feature planning)
 - `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
+- `.context/epic-done/` - Archived completed epics and investigations
 - `.context/progress.md` - Current progress and blockers
 - `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
 - `.context/decisions.md` - Architecture decisions
@@ -237,6 +154,5 @@ After completion, summarize:
 
 - What was created
 - Next steps:
-    - Read `.context/workflow.md` for full guide
     - Use `/ctx:breakdown [feature]` to create tasks
     - Use `/ctx:task [num]` to start working
