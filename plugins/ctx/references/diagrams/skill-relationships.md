@@ -199,9 +199,29 @@ User → /ctx:vision [when .context/vision.md exists]
 - **Tracking**: progress, sync
 
 **Dependencies**:
-- task reads: .context/tasks/NNN-*.md
+- task reads: .context/tasks/NNN-*.md, and optionally external skill SKILL.md files (via Skill Discovery — see below)
 - progress reads: .context/progress.md, .context/tasks/*
 - sync reads/writes: .context/tasks/, .context/tasks-done/, .context/progress.md
+
+---
+
+### Skill Discovery Protocol
+
+CTX can discover and leverage specialized skills installed by the user (project or personal level).
+
+**How it works:**
+- `/ctx:breakdown` scans available skills ONCE per breakdown, matches them to tasks, and writes `**Specialized Skill:**` references into task files
+- `/ctx:task` reads the reference and loads only the relevant sections of the external skill — no re-scanning needed
+- If a task was created without breakdown (e.g., `/ctx:create-task`), `/ctx:task` does a lightweight fallback scan only when ACs clearly need specialized work
+
+**Scan locations:**
+- `.claude/skills/*/SKILL.md` (project-level)
+- `~/.claude/skills/*/SKILL.md` (user-level)
+
+**Cost optimization:**
+- Scan reads frontmatter only (~50 tokens/skill)
+- Skill references are persisted in task files — no repeat scanning
+- Task skill reads only specified sections, not full skill files
 
 ---
 

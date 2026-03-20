@@ -156,6 +156,7 @@ When modifying a file's format, check the **Read by** column to understand which
 **Optional but recommended:**
 - `## Context`, `## Technical Notes`, `## Files to Touch`
 - `## Dependencies`, `## Progress Log`
+- `**Specialized Skill:**` line in Technical Notes — added by `/ctx:breakdown` when a matching skill is discovered; read by `/ctx:task` to load skill guidelines without re-scanning
 
 **Filename contract:**
 - Pattern: `NNN-verb-subject.md` (e.g., `001-add-auth-middleware.md`)

@@ -72,6 +72,10 @@ This template is used for creating epic files in `.context/plans/`. Epics are hi
 - [ ] [Measurable outcome 2]
 - [ ] [Measurable outcome 3]
 
+## Specialized Skills
+<!-- Added by /ctx:breakdown when matching skills are found -->
+<!-- - **[skill-name]** — [description] → tasks [NNN, NNN] -->
+
 ## Estimated Complexity
 [S / M / L / XL]
 

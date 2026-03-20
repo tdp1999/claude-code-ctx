@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-03-20
+
+### Added
+
+- **Skill Discovery Protocol** — `/ctx:breakdown` scans user's installed skills (project and personal level) once per breakdown, matches them to tasks, and writes references into task files
+- **Specialized Skill loading in `/ctx:task`** — reads only relevant sections of matched skills, no re-scanning across tasks
+- **Fallback discovery in `/ctx:task`** — lightweight scan for tasks created via `/ctx:create-task` when ACs clearly need specialized work
+- **`Specialized Skills` section** in epic template — tracks which skills are used by which tasks
+- **`Specialized Skill` field** in task template — points to skill path and key sections to read
+
+---
+
 ## [1.3.0] - 2026-03-20
 
 ### Added
@@ -195,6 +207,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.3.1 | 2026-03-20 | Add Skill Discovery Protocol for breakdown and task skills |
 | 1.3.0 | 2026-03-20 | Add /ctx:domain skill, Domain Impact Protocol, rename epic-done → plans-done |
 | 1.2.0 | 2026-03-16 | Add epic-done archive, tasks-done subfolder org, remove stale workflow.md |
 | 1.1.5 | 2026-03-15 | Fix marketplace plugin source path |

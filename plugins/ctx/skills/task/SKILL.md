@@ -46,29 +46,52 @@ If empty, ask user which task to work on.
    - `.context/domain.md` (if exists) — read domain rules referenced by task acceptance criteria
    - Check task status and dependencies
 
-3. **Verify ready:**
+3. **Load specialized skill (if referenced):**
+
+   Check `## Technical Notes` for a `**Specialized Skill:**` line.
+
+   **If found:**
+   - Read ONLY the sections listed in `**Key sections to read:**` from the referenced SKILL.md
+   - Do NOT read the entire skill file — only the relevant sections, to keep context lean
+   - Follow the skill's guidelines for the ACs in this task alongside patterns-architecture.md
+   - Note in progress log: `- [date] Using [skill-name] for [what]`
+
+   **If not found:**
+   - Proceed normally with patterns-architecture.md guidance only
+
+   **Fallback discovery** (only if no skill reference in task, AND AC clearly needs specialized work):
+   - If an AC mentions writing spec/test files, migrations, or other specialized artifacts
+     but no skill was referenced (e.g., task was created by `/ctx:create-task`, not breakdown):
+   - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md`
+   - Read frontmatter only (name + description) — match against AC
+   - If match found, ask user: "Found skill [name] for this work. Use it? (yes/no)"
+   - If yes: read relevant sections, add `**Specialized Skill:**` to Technical Notes for future reference
+   - If no: proceed normally
+
+4. **Verify ready:**
    - Status should be `pending` or `in-progress`
    - Dependencies should be done
    - If blocked, report why
 
-4. **Begin work:**
+5. **Begin work:**
    - Update status to `in-progress` if pending
    - Add progress log entry: `- [date] Started`
    - Work through acceptance criteria in order
 
-5. **During work:**
+6. **During work:**
    - Follow patterns from patterns-architecture.md
+   - If a specialized skill is loaded, follow its guidelines for relevant ACs
    - Update progress log with significant milestones
    - If blocked, update status and note blocker
    - **AC tracking (MANDATORY):** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
 
-6. **On completion (MANDATORY):**
+7. **On completion (MANDATORY):**
    After all acceptance criteria are checked `[x]`:
    - Change `## Status: in-progress` to `## Status: done` in the task file
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
 
-7. **Domain check on completion:**
+8. **Domain check on completion:**
    If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
    - Ask: "This task referenced domain rules [list IDs]. Did the implementation match these rules exactly, or did business logic change?"
    - If user says logic changed → generate proposed domain updates using Domain Impact Protocol format → show to user → require confirmation → update `domain.md`

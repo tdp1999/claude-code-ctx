@@ -102,6 +102,48 @@ If `.context/domain.md` exists:
   - **Wait for user confirmation** → update domain.md → then proceed with breakdown
   - This ensures tasks get accurate domain-aware acceptance criteria
 
+## Step 2.7: Skill Discovery
+
+Scan for specialized skills that may be relevant to the tasks being created. This is a one-time scan per breakdown — results are written into task files so `/ctx:task` doesn't need to re-scan.
+
+### When to scan
+
+Only scan when the source document (epic/investigation) mentions work that may benefit from specialized skills:
+- E2E tests, spec files, Playwright, Cypress
+- Database migrations, schema changes, Prisma, TypeORM
+- Style review, CSS audit, UI review
+- Deployment, CI/CD pipeline
+- Performance audit, security scan
+- Any domain-specific tooling
+
+If the epic is purely about implementing business logic, CRUD, or standard code — skip this step entirely.
+
+### How to scan
+
+1. **Glob for available skills** — scan these locations for SKILL.md or skill.md files:
+   - `.claude/skills/*/` (project-level skills)
+   - `~/.claude/skills/*/` (user-level skills)
+   - Any installed plugin skill directories
+
+2. **Read only the frontmatter** (name + description) of each skill found — not the full file. This costs ~50 tokens per skill.
+
+3. **Match skills to requirements** — compare each skill's description against the epic's requirements:
+   - Does the skill's activation pattern match any AC? (e.g., `*.spec.ts`, `*.prisma`)
+   - Does the skill's description cover a type of work in this epic?
+
+4. **If matches found**, add to the epic file:
+
+```markdown
+## Specialized Skills
+- **[skill-name]** — [one-line what it does] → tasks [NNN, NNN, NNN]
+```
+
+5. **Write skill references into individual task files** (see Step 4 template below) — this is how `/ctx:task` knows which skill to follow without re-scanning.
+
+### If no skills found
+
+Skip silently. Tasks proceed with standard `patterns-architecture.md` guidance.
+
 ## Step 3: Decompose into Tasks
 
 Break down the input into tasks following these principles:
@@ -145,6 +187,10 @@ Why this matters, background info, relation to other work.
 ## Technical Notes
 Implementation hints, patterns to follow, edge cases.
 Reference `.context/patterns-architecture.md` if relevant.
+
+<!-- If a specialized skill was matched in Step 2.7, add: -->
+**Specialized Skill:** [skill-name] — read `[path/to/skill/SKILL.md]` for guidelines.
+**Key sections to read:** [§Section1, §Section2] (only the sections relevant to this task)
 
 ## Files to Touch
 - path/to/file1

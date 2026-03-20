@@ -23,6 +23,10 @@ Why this matters, background info, relation to other work.
 Implementation hints, patterns to follow, edge cases.
 Reference `.context/patterns-architecture.md` if relevant.
 
+<!-- Optional: Added by /ctx:breakdown when a specialized skill matches this task -->
+<!-- **Specialized Skill:** [skill-name] — read `[path/to/SKILL.md]` for guidelines. -->
+<!-- **Key sections to read:** [§Section1, §Section2] -->
+
 ## Files to Touch
 - path/to/file1
 - path/to/file2
