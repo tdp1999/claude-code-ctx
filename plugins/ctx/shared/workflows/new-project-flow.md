@@ -104,7 +104,7 @@ Execute each skill individually for full control.
 ├── investigations/     # Investigation files
 ├── tasks/              # Active task files
 ├── tasks-done/         # Archived completed tasks
-├── epic-done/          # Archived completed epics & investigations
+├── plans-done/          # Archived completed epics & investigations
 ├── progress.md         # Progress tracker
 └── decisions.md        # Architecture Decision Records
 ```
@@ -288,8 +288,9 @@ Archives completed tasks and updates progress.
 After completing this workflow:
 1. ✅ Start working on tasks with `/ctx:task [number]`
 2. ✅ Plan your next feature with `/ctx:epic`
-3. ✅ Document decisions with `/ctx:log-decision`
-4. ✅ Track progress with `/ctx:progress` and `/ctx:sync`
+3. ✅ Document business logic with `/ctx:domain` (if project has business rules/flows)
+4. ✅ Document decisions with `/ctx:log-decision`
+5. ✅ Track progress with `/ctx:progress` and `/ctx:sync`
 
 ---
 
@@ -301,6 +302,7 @@ After completing this workflow:
 | Architecture | `/ctx:architecture` | 5-10 min | `.context/patterns-architecture.md` |
 | Techstack | `/ctx:techstack` | 5-10 min | `.context/.project-init.md` |
 | Init | `/ctx:context-init` | 1 min | `.context/` folder |
+| Domain | `/ctx:domain` | 10-15 min | `.context/domain.md` |
 | Epic | `/ctx:epic "feature"` | 10 min | `.context/plans/epic-*.md` |
 | Breakdown | `/ctx:breakdown epic-*` | 5 min | `.context/tasks/*.md` |
 | Progress | `/ctx:progress` | 1 min | View pending tasks |

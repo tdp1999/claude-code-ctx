@@ -181,7 +181,7 @@ last active, profile completion). 95% test coverage.
 | `ready` | Planned, not started | `plans/` | Break down → `broken-down` |
 | `broken-down` | Tasks created | `plans/` | Work on tasks → `in-progress` |
 | `in-progress` | Tasks underway | `plans/` | Complete all tasks → `completed` |
-| `completed` | All done | `epic-done/` | Archive |
+| `completed` | All done | `plans-done/` | Archive |
 
 ### Status Flow
 
@@ -194,7 +194,7 @@ broken-down
    ↓
 in-progress
    ↓
-completed → [archived to epic-done/]
+completed → [archived to plans-done/]
 ```
 
 ### Status Details
@@ -282,7 +282,7 @@ total_tasks: 10
 | `broken-down` | Fix tasks created | `investigations/` | Work on fixes → `in-progress` |
 | `in-progress` | Fixes underway | `investigations/` | Complete fixes → `completed` |
 | `blocked` | Need more info | `investigations/` | Get info → `ready` |
-| `completed` | Issue resolved | `epic-done/` | Archive |
+| `completed` | Issue resolved | `plans-done/` | Archive |
 
 ### Status Flow
 
@@ -297,7 +297,7 @@ broken-down
    ↓
 in-progress
    ↓
-completed → [archived to epic-done/]
+completed → [archived to plans-done/]
 ```
 
 ### Status Details
@@ -425,10 +425,10 @@ completed → [archived to epic-done/]
 mv .context/tasks/042-fix-login.md .context/tasks-done/epic-auth/
 
 # Move completed epic
-mv .context/plans/001-auth-system.md .context/epic-done/
+mv .context/plans/001-auth-system.md .context/plans-done/
 
 # Move completed investigation
-mv .context/investigations/003-memory-leak.md .context/epic-done/
+mv .context/investigations/003-memory-leak.md .context/plans-done/
 ```
 
 ### Archive Structure
@@ -442,7 +442,7 @@ mv .context/investigations/003-memory-leak.md .context/epic-done/
 │   └── other/          # Standalone tasks (no epic)
 ├── plans/              # Active epics
 ├── investigations/     # Active investigations
-└── epic-done/          # Completed epics & investigations
+└── plans-done/          # Completed epics & investigations
 ```
 
 **Benefits:**

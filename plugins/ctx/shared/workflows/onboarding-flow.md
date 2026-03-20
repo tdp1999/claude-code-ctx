@@ -77,7 +77,7 @@ This creates the `.context/` directory structure:
 ├── progress.md               # Empty, ready for tasks
 ├── tasks/                    # Empty, ready for work
 ├── tasks-done/               # Archive directory
-├── epic-done/                # Archived completed epics & investigations
+├── plans-done/                # Archived completed epics & investigations
 ├── plans/                    # Empty, for larger initiatives
 └── investigations/           # Empty, for bug investigations
 ```
