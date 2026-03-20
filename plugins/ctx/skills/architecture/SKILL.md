@@ -241,6 +241,8 @@ Add to Domains section in patterns-architecture.md:
 - **Added:** [YYYY-MM-DD]
 ```
 
+After adding the domain, suggest: "This domain's structural info is now in `patterns-architecture.md`. To capture its business flows, rules, and edge cases, run `/ctx:domain`."
+
 ---
 
 ## Extract Mode

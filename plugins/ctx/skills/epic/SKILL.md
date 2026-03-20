@@ -55,6 +55,7 @@ Use when creating a new epic from an idea.
 1. **Understand the idea:**
    - Read `.context/vision.md` for project context
    - Read `.context/patterns-architecture.md` for architecture constraints
+   - Read `.context/domain.md` for existing business logic, flows, and rules (if exists)
    - If user provided idea in `$ARGUMENTS`, use it
    - If empty, ask: "What feature would you like to plan?"
 
@@ -172,9 +173,37 @@ draft | ready | in-progress | done
 [YYYY-MM-DD]
 ```
 
-6. **Summarize to user:**
+6. **Domain Impact Analysis:**
+
+   After generating the epic, check if this epic introduces or changes business logic:
+   - New entities not in `domain.md` Glossary?
+   - New flows or variations to existing flows?
+   - New business rules or changes to existing rules?
+   - New edge cases?
+
+   **If domain impact detected AND `domain.md` exists:**
+   - Generate proposed domain changes using the Domain Impact Protocol format (see `/ctx:domain` skill):
+     ```
+     📘 Glossary — adding: ...
+     📋 Flows — updating: ...
+     📏 Rules — adding: ...
+     ```
+   - Present to user: "This epic affects domain logic. Here are the proposed domain changes:"
+   - **Wait for user confirmation** — user may modify, approve, or reject
+   - Only after approval → update `domain.md` and add changelog entry
+
+   **If domain impact detected AND `domain.md` does NOT exist:**
+   - Ask user: "This epic involves business logic (flows, rules, entities). Would you like me to create a domain model (`domain.md`) with the concepts from this epic?"
+   - If yes → generate draft `domain.md` → show to user → confirm → write
+   - If no → proceed without domain file
+
+   **If no domain impact:**
+   - Skip this step silently (do not add "Domain Impact: None" to the epic)
+
+7. **Summarize to user:**
    - Key points of the epic
    - Main risks identified
+   - Domain changes made (if any)
    - Suggested next steps (break down into tasks, address dependencies, etc.)
 
 ---

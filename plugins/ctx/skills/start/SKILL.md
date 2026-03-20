@@ -66,7 +66,31 @@ After techstack is created, summarize the tool selections and confirm before pro
 
 ---
 
-### Step 4: First Epic
+### Step 4: Domain Model (Optional)
+
+Ask user:
+
+```
+Does this project have business logic — flows, rules, or domain concepts?
+(e.g., checkout flow, payment rules, user permissions)
+
+Options:
+1. Yes - let's document the domain model now
+2. Later - I'll run /ctx:domain when ready
+3. No - this project doesn't need domain documentation (e.g., portfolio, CLI tool)
+```
+
+If yes:
+- Run `/ctx:domain` skill
+- It will interview the user about entities, flows, rules, edge cases
+- **Output:** `.context/domain.md`
+
+If later or no:
+- Continue to next step
+
+---
+
+### Step 5: First Epic
 
 Ask user:
 
@@ -89,7 +113,7 @@ If user skips:
 
 ---
 
-### Step 5: Breakdown (Optional)
+### Step 6: Breakdown (Optional)
 
 After epic is created, ask:
 
@@ -110,7 +134,7 @@ If no:
 
 ---
 
-### Step 6: Initialize Context
+### Step 7: Initialize Context
 
 Check if `.context/` folder exists:
 
@@ -121,7 +145,7 @@ Check if `.context/` folder exists:
 
 ---
 
-### Step 7: Summary & Next Steps
+### Step 8: Summary & Next Steps
 
 Provide a complete summary:
 
@@ -132,6 +156,7 @@ Provide a complete summary:
 
 - `.context/vision.md` - Project vision and scope
 - `.context/patterns-architecture.md` - Architecture patterns and conventions
+- `.context/domain.md` - Business logic and domain model [if created]
 - `.project-init.md` - Technology stack
 - `.context/plans/epic-<name>.md` - [if epic was created]
 - `.context/tasks/001-*.md, 002-*.md, ...` - [if breakdown was done]
@@ -155,6 +180,7 @@ Provide a complete summary:
 
 ### Quick Reference
 
+- `/ctx:domain` - Document business logic
 - `/ctx:epic` - Create new feature epic
 - `/ctx:breakdown` - Break epic into tasks
 - `/ctx:task <num>` - Work on a task
@@ -205,24 +231,30 @@ Assistant runs /ctx:techstack
 Asks: Monorepo? Package manager? Framework? Database?
 Creates .project-init.md
 
-[Step 4: First Epic]
+[Step 4: Domain Model]
+Assistant asks: Does this project have business logic?
+User: "Yes"
+Runs /ctx:domain — asks about entities, flows, rules
+Creates .context/domain.md
+
+[Step 5: First Epic]
 Assistant asks: What's the first major feature?
 User: "User authentication"
 Runs /ctx:epic "User authentication"
 Creates .context/plans/epic-auth.md
 
-[Step 5: Breakdown]
+[Step 6: Breakdown]
 Assistant asks: Break down now?
 User: yes
 Runs /ctx:breakdown epic-auth
 Creates .context/tasks/001-*.md through 005-*.md
 
-[Step 6: Init Context]
+[Step 7: Init Context]
 Detects .context/ doesn't exist
 Runs /ctx:context-init automatically
 Creates .context/ folder structure
 
-[Step 7: Summary]
+[Step 8: Summary]
 Shows complete summary with all files and next steps
 ```
 

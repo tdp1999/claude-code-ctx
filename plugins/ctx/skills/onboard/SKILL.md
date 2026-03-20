@@ -155,7 +155,26 @@ Check if `.context/` exists:
 
 ---
 
-### Step 7: Ask About Epics
+### Step 7: Suggest Domain Documentation
+
+If the codebase shows business logic patterns (validation logic, state machines, business rule constants, entity relationships):
+
+```
+The codebase appears to contain business logic (validation rules, state machines, domain entities).
+Would you like to document the domain model with /ctx:domain?
+
+This captures business flows, rules, and invariants in plain text — helping AI agents
+understand what the system should do, not just how it's built.
+
+Options:
+1. Yes - document domain model now
+2. Later - I'll run /ctx:domain when ready
+3. Skip - this project doesn't need domain documentation
+```
+
+If yes: Run `/ctx:domain` (it will interview the user and create `domain.md`)
+
+### Step 8: Ask About Epics
 
 Ask user:
 
@@ -172,7 +191,7 @@ If no: Proceed to summary
 
 ---
 
-### Step 8: Summary
+### Step 9: Summary
 
 ```markdown
 ## Project Onboarded!
@@ -181,6 +200,7 @@ If no: Proceed to summary
 
 - `.context/vision.md` - Project vision (extracted)
 - `.context/patterns-architecture.md` - Architecture patterns (detected)
+- `.context/domain.md` - Business logic and domain model (if created)
 - `.project-init.md` - Technology stack (detected)
 - `.context/` folder structure
 

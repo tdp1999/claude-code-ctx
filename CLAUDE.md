@@ -41,6 +41,7 @@ For major releases (1.0.0, 2.0.0, ...) or when the user requests it, also create
 Skills depend on each other through specific files in the consumer's `.context/` folder:
 - `vision.md` — written by vision/start/onboard, read by architecture/techstack/epic
 - `patterns-architecture.md` — written by architecture/onboard, read by epic/breakdown/task
+- `domain.md` — written by domain (and via Domain Impact Protocol from epic/breakdown/task with user confirmation), read by epic/breakdown/task/investigate
 - `plans/epic-*.md` — written by epic, read by breakdown
 - `investigations/inv-*.md` — written by investigate, read by breakdown
 - `tasks/*.md` — written by breakdown/create-task, read by task/progress/sync
@@ -57,5 +58,5 @@ When modifying a skill, check `shared/conventions/file-contracts.md` to understa
 ### Status Lifecycles
 
 - **Tasks**: pending → in-progress ↔ blocked → completed (archived to `tasks-done/<epic-name>/`)
-- **Epics**: draft → ready → broken-down → in-progress → completed (archived to `epic-done/`)
-- **Investigations**: draft → ready → analyzed → broken-down → in-progress → completed (archived to `epic-done/`)
+- **Epics**: draft → ready → broken-down → in-progress → completed (archived to `plans-done/`)
+- **Investigations**: draft → ready → analyzed → broken-down → in-progress → completed (archived to `plans-done/`)

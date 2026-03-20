@@ -40,14 +40,15 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 | `onboard`      | `/ctx:onboard`       | Analyze existing project                  |
 | `start`        | `/ctx:start`         | Complete new project setup (orchestrator) |
 
-### Planning (4 skills)
+### Planning (5 skills)
 
-| Skill          | Usage                       | Description                             |
-| -------------- | --------------------------- | --------------------------------------- |
-| `epic`         | `/ctx:epic "Feature"`       | Create feature epic                     |
-| `investigate`  | `/ctx:investigate "Issue"`  | Investigate bug/refactor                |
-| `breakdown`    | `/ctx:breakdown epic-name`  | Decompose epic/investigation into tasks |
-| `log-decision` | `/ctx:log-decision "Topic"` | Record architecture decision            |
+| Skill          | Usage                       | Description                                          |
+| -------------- | --------------------------- | ---------------------------------------------------- |
+| `epic`         | `/ctx:epic "Feature"`       | Create feature epic                                  |
+| `investigate`  | `/ctx:investigate "Issue"`  | Investigate bug/refactor                             |
+| `domain`       | `/ctx:domain`               | Capture business logic, flows, rules, and edge cases |
+| `breakdown`    | `/ctx:breakdown epic-name`  | Decompose epic/investigation into tasks              |
+| `log-decision` | `/ctx:log-decision "Topic"` | Record architecture decision                         |
 
 ### Task Management (4 skills)
 
@@ -129,7 +130,7 @@ The plugin works with a `.context/` folder in your project:
 ├── investigations/     # Investigation files (inv-*.md)
 ├── tasks/              # Active task files (001-name.md)
 ├── tasks-done/         # Archived completed tasks (by epic subfolder)
-├── epic-done/          # Archived completed epics & investigations
+├── plans-done/          # Archived completed epics & investigations
 ├── progress.md         # Status tracker
 ├── patterns-*.md       # Architecture + code patterns
 ├── decisions.md        # ADRs

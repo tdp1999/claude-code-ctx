@@ -61,6 +61,34 @@ When modifying a file's format, check the **Read by** column to understand which
 
 ---
 
+## domain.md
+
+| | |
+|---|---|
+| **Location** | `.context/domain.md` and optionally `.context/domain/*.md` |
+| **Written by** | `/ctx:domain`, and via Domain Impact Protocol from `/ctx:epic`, `/ctx:breakdown`, `/ctx:task` (all require user confirmation) |
+| **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:task`, `/ctx:investigate` |
+
+**Required sections:**
+- `## Glossary` — table with Term, Definition, Type (Aggregate / Entity / Value Object / Domain Event)
+- `## Flows` — at least one flow with Trigger, Actors, Happy path, End states
+- `## Rules` — grouped by entity, each with a unique ID (e.g., `ORD-001`)
+
+**Optional sections:**
+- `## Invariants` — cross-entity constraints
+- `## Edge Cases` — known edge cases with expected behavior
+- `## Modules` — index of per-module files (only when split)
+- `## Changelog` — added by update mode
+
+**Per-module files (when split):**
+- Location: `.context/domain/<module-name>.md`
+- Required: `## Dependencies`, `## Flows`, `## Rules`
+- Optional: `## Edge Cases`, `## Changelog`
+
+**Rule ID format:** 3-letter entity code + dash + 3-digit number (e.g., `ORD-001`, `PAY-002`)
+
+---
+
 ## Epic files
 
 | | |
@@ -69,7 +97,7 @@ When modifying a file's format, check the **Read by** column to understand which
 | **Written by** | `/ctx:epic` |
 | **Read by** | `/ctx:breakdown` |
 
-**Archive location:** `.context/epic-done/` (moved by `/ctx:sync` when all tasks are done)
+**Archive location:** `.context/plans-done/` (moved by `/ctx:sync` when all tasks are done)
 
 **Required sections:**
 - `# Epic: [Name]` — title
@@ -93,7 +121,7 @@ When modifying a file's format, check the **Read by** column to understand which
 | **Written by** | `/ctx:investigate` |
 | **Read by** | `/ctx:breakdown` |
 
-**Archive location:** `.context/epic-done/` (moved by `/ctx:sync` when all tasks are done)
+**Archive location:** `.context/plans-done/` (moved by `/ctx:sync` when all tasks are done)
 
 **Required sections:**
 - `# Investigation: [Title]`

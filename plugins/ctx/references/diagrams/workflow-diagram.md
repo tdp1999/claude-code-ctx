@@ -46,16 +46,21 @@
     │ (feature)   │                    │ (bugs/refactor)  │
     └──────┬──────┘                    └────────┬─────────┘
            │                                     │
-           │         Calls /log-decision         │
-           ├─────────────────────────────────────┤
-           │                                     │
-           │                                     │
-           └──────────────────┬──────────────────┘
-                              │
-                      ┌───────▼───────┐
-                      │  /breakdown   │
-                      │ (decomposer)  │
-                      └───────┬───────┘
+           │   Calls /log-decision               │
+           │   Domain Impact Protocol            │
+           ├──────────┬──────────────────────────┤
+           │          │                          │
+           │   ┌──────▼──────┐                   │
+           │   │  /domain    │                   │
+           │   │(biz logic)  │                   │
+           │   └──────┬──────┘                   │
+           │          │                          │
+           └──────────┴──────────┬───────────────┘
+                                 │
+                      ┌──────────▼────────┐
+                      │    /breakdown     │
+                      │   (decomposer)    │
+                      └──────────┬────────┘
                               │
 ┌─────────────────────────────▼───────────────────────────────────┐
 │                      TASK EXECUTION                              │
@@ -137,6 +142,9 @@
 - **`/progress`** → Views current state, lists pending tasks by number
 - **`/log-decision`** → Records ADRs (called by other skills)
 
+### **Domain Knowledge** (Business logic)
+- **`/domain`** → Business flows, rules, edge cases (standalone or via Domain Impact Protocol)
+
 ### **Foundational** (Define project context)
 - **`/vision`** → Project goals/scope
 - **`/architecture`** → Patterns/boundaries
@@ -146,7 +154,7 @@
 
 ### **New Feature Flow:**
 ```
-/epic "User auth" → /breakdown epic-auth → /progress → /task 001 → [work] → /sync
+/epic "User auth" → [domain impact check] → /breakdown epic-auth → /progress → /task 001 → [work] → /sync
 ```
 
 ### **Bug Fix Flow:**
@@ -161,7 +169,7 @@
 
 ### **New Project Flow:**
 ```
-/vision → /architecture → /techstack → /init-context → /epic → /breakdown → /progress → /task [num]
+/vision → /architecture → /techstack → /init-context → /domain (optional) → /epic → /breakdown → /progress → /task [num]
 ```
 
 ### **Existing Project Flow:**
@@ -175,6 +183,7 @@
 |--------|---------|---------|
 | `/vision` | `vision.md` | `/architecture`, `/techstack`, `/epic` |
 | `/architecture` | `patterns-architecture.md` | `/epic`, `/breakdown`, `/task` |
+| `/domain` | `domain.md`, `domain/*.md` | `/epic`, `/breakdown`, `/task`, `/investigate` |
 | `/techstack` | `.project-init.md` | Reference for tooling |
 | `/epic` | `plans/epic-*.md` | `/breakdown` |
 | `/investigate` | `investigations/inv-*.md` | `/breakdown` |

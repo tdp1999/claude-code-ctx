@@ -85,7 +85,22 @@ Check if `.context/tasks/` exists:
 - Also check `.context/tasks-done/` for archived completed tasks (to avoid number conflicts)
 - If no, suggest running `/ctx:context-init` first
 
-Read `.context/patterns-architecture.md` and `.context/decisions.md` for project context.
+Read `.context/patterns-architecture.md`, `.context/decisions.md`, and `.context/domain.md` (if exists) for project context. When domain.md exists, use domain rule IDs in acceptance criteria for traceability (e.g., "Validate ORD-001: Order must contain at least one Line Item").
+
+## Step 2.5: Domain Impact Check
+
+If `.context/domain.md` exists:
+- Compare entities/flows/rules in the source document against domain.md
+- If the source references entities NOT in domain Glossary, or implies rules/flows not captured:
+  - Generate proposed domain changes using Domain Impact Protocol format:
+    ```
+    📘 Glossary — adding: ...
+    📋 Flows — updating: ...
+    📏 Rules — adding: ...
+    ```
+  - Present to user: "Before breaking down, this epic/investigation references domain concepts not yet documented:"
+  - **Wait for user confirmation** → update domain.md → then proceed with breakdown
+  - This ensures tasks get accurate domain-aware acceptance criteria
 
 ## Step 3: Decompose into Tasks
 

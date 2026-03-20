@@ -16,7 +16,7 @@ Update progress.md to match actual task file statuses, archive done tasks, and u
 ├── tasks-done/         # Archived done tasks (organized by epic subfolder)
 ├── plans/              # Epics
 ├── investigations/     # Investigation files
-├── epic-done/          # Archived done epics & investigations
+├── plans-done/          # Archived done epics & investigations
 └── progress.md         # Progress tracker
 ```
 
@@ -75,10 +75,34 @@ Skill-specific errors:
    - Check `.context/investigations/` for investigations with status "broken-down"
    - For each broken-down epic/investigation:
      - Find all tasks that belong to it (check both tasks/ and tasks-done/)
-     - If ALL tasks are done → update status to "done" and move the file to `.context/epic-done/` (create folder if needed, preserve original filename)
+     - If ALL tasks are done → update status to "done" and move the file to `.context/plans-done/` (create folder if needed, preserve original filename)
      - Keep as "broken-down" if any tasks are pending/in-progress
 
-8. **Report:**
+8. **Domain freshness check:**
+   If `.context/domain.md` exists:
+   - Check its last modified date
+   - Check if any epics completed since that date had business logic (scan for entity names, flow references, rule IDs in epic files in `plans-done/`)
+   - If domain.md is potentially stale, add to report:
+     ```
+     Domain Coverage:
+     ⚠ domain.md last updated [date] — [N] epics with business logic completed since then
+     → Consider reviewing with /ctx:domain
+     ```
+   - If domain.md is up to date: `Domain Coverage: ✓ Up to date`
+
+   When archiving a completed epic to `plans-done/`:
+   - If the epic references domain rule IDs, show a quick review:
+     ```
+     Epic "[name]" completed. Referenced domain rules:
+     - ORD-001: Order must contain at least one Line Item ← still accurate?
+     - ORD-003: Free shipping when total > $50 ← still accurate?
+
+     Confirm all still correct? Or need updates?
+     ```
+   - If user confirms → proceed with archive
+   - If user wants updates → apply changes to domain.md → then archive
+
+9. **Report:**
 
 ```
 Sync complete.
@@ -97,7 +121,7 @@ Task Changes:
 - [task] removed (no file)
 
 Epic/Investigation Updates:
-- [epic-name] status changed to "done" (all 5 tasks done) — archived to epic-done/
+- [epic-name] status changed to "done" (all 5 tasks done) — archived to plans-done/
 
 Current state:
 - Done: X (in tasks-done/)
@@ -112,7 +136,7 @@ Current state:
 - `draft` → Being written
 - `ready` → Ready to break down
 - `broken-down` → Has tasks, work in progress
-- `done` → All tasks finished (archived to `epic-done/`)
+- `done` → All tasks finished (archived to `plans-done/`)
 
 **Tasks:**
 - `pending` → Not started (in tasks/)
@@ -123,7 +147,7 @@ Current state:
 ## Notes
 
 - Done tasks are archived to keep `tasks/` folder focused on active work
-- Completed epics and investigations are archived to `epic-done/` to keep `plans/` and `investigations/` focused on active work
+- Completed epics and investigations are archived to `plans-done/` to keep `plans/` and `investigations/` focused on active work
 - Archived files retain their original naming for traceability
-- Use `tasks-done/` and `epic-done/` to review past work or reference implementations
+- Use `tasks-done/` and `plans-done/` to review past work or reference implementations
 - The `/ctx:task` skill should only look in `tasks/` for active work

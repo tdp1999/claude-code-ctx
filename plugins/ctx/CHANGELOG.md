@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-20
+
+### Added
+
+- **`/ctx:domain` skill** — 15th skill for capturing business logic, flows, rules, invariants, and edge cases in plain text using DDD naming conventions
+- **Domain Impact Protocol** — epic, breakdown, and task skills auto-detect business logic changes, generate proposed domain updates, and require user confirmation before writing
+- **Domain freshness check in `/ctx:sync`** — warns when domain.md may be stale relative to completed epics
+- **Domain coverage indicator in `/ctx:progress`** — shows whether business logic is documented, partial, or missing
+- **`domain-template.md`** in shared templates
+- **`domain.md` file contract** in file-contracts.md with full read/write relationships
+
+### Changed
+
+- **Renamed `epic-done/` → `plans-done/`** across all skills, conventions, workflows, and diagrams — reflects that the folder archives both epics and investigations
+- **`/ctx:epic`** now reads domain.md and runs Domain Impact Analysis after generating epic
+- **`/ctx:breakdown`** reads domain.md, references rule IDs in task acceptance criteria, checks for undocumented entities
+- **`/ctx:task`** reads domain.md, checks domain rules on completion, stops on code-vs-domain conflicts
+- **`/ctx:investigate`** reads domain.md to distinguish bugs from undocumented behavior
+- **`/ctx:context-init`** detects domain.md presence, suggests `/ctx:domain` if missing
+- **`/ctx:onboard`** suggests domain documentation when business logic patterns detected
+- **`/ctx:start`** adds optional domain model step (Step 4) in project setup flow
+- **`/ctx:architecture`** suggests `/ctx:domain` after `--add-domain`
+- Updated README: Planning section now 5 skills (added domain)
+- Updated skill-relationships.md and workflow-diagram.md with domain integration
+
+---
+
 ## [1.2.0] - 2026-03-16
 
 ### Added
@@ -168,6 +195,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.3.0 | 2026-03-20 | Add /ctx:domain skill, Domain Impact Protocol, rename epic-done → plans-done |
 | 1.2.0 | 2026-03-16 | Add epic-done archive, tasks-done subfolder org, remove stale workflow.md |
 | 1.1.5 | 2026-03-15 | Fix marketplace plugin source path |
 | 1.1.4 | 2026-03-15 | Fix marketplace source to use relative path |

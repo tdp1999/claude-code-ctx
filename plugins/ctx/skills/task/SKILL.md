@@ -43,6 +43,7 @@ If empty, ask user which task to work on.
 2. **Read context:**
    - Task file
    - `.context/patterns-architecture.md` (if exists)
+   - `.context/domain.md` (if exists) — read domain rules referenced by task acceptance criteria
    - Check task status and dependencies
 
 3. **Verify ready:**
@@ -66,6 +67,16 @@ If empty, ask user which task to work on.
    - Change `## Status: in-progress` to `## Status: done` in the task file
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
+
+7. **Domain check on completion:**
+   If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
+   - Ask: "This task referenced domain rules [list IDs]. Did the implementation match these rules exactly, or did business logic change?"
+   - If user says logic changed → generate proposed domain updates using Domain Impact Protocol format → show to user → require confirmation → update `domain.md`
+   - If user says matched exactly → no action needed
+
+   If during implementation you discover code behavior contradicts a domain rule:
+   - **STOP** — report the conflict: "[Rule ID] says X, but code does Y. Is this a bug or a stale rule?"
+   - Wait for user decision before proceeding
 
 ## Output
 

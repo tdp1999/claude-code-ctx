@@ -68,10 +68,13 @@ Visual map of which skills call other skills and their dependencies.
 └─────────────────────────────────────────────────────────┘
 
 Feature Flow:
-  epic → breakdown → progress → task → sync
+  epic → [domain impact?] → breakdown → progress → task → sync
 
 Bug Flow:
   investigate → breakdown → progress → task → sync
+
+Domain Flow:
+  domain → (standalone, or triggered by epic/breakdown/task)
 
 Update Flow:
   vision/architecture → log-decision
@@ -91,6 +94,7 @@ Update Flow:
 | **init** | - | start, onboard | .context/* structure |
 | **epic** | log-decision (on update) | (user), onboard | .context/plans/epic-*.md |
 | **investigate** | - | (user) | .context/investigations/inv-*.md |
+| **domain** | - | (user), epic, breakdown, task (via Domain Impact Protocol) | .context/domain.md, .context/domain/*.md |
 | **breakdown** | - | (user), after epic/investigate | .context/tasks/NNN-*.md |
 | **log-decision** | - | vision, architecture, epic | .context/decisions.md |
 | **create-task** | - | (user) | .context/tasks/NNN-*.md |
@@ -175,15 +179,17 @@ User → /ctx:vision [when .context/vision.md exists]
 
 ---
 
-### Planning (4 skills)
+### Planning (5 skills)
 - **Feature Planning**: epic
 - **Bug/Refactor**: investigate
+- **Domain Knowledge**: domain
 - **Decomposition**: breakdown
 - **Decision Recording**: log-decision
 
 **Dependencies**:
-- breakdown depends on: epic OR investigate (reads their files)
-- epic can call: log-decision (on updates)
+- breakdown depends on: epic OR investigate (reads their files), domain.md (optional)
+- epic can call: log-decision (on updates), domain (via Domain Impact Protocol)
+- domain: standalone or triggered by epic/breakdown/task when business logic changes
 
 ---
 
@@ -212,6 +218,11 @@ User → /ctx:vision [when .context/vision.md exists]
 - Read by: epic, breakdown, task
 - Created by: architecture
 - Purpose: Follow architectural patterns
+
+**`.context/domain.md`**:
+- Read by: epic, breakdown, task, investigate
+- Created by: domain (and via Domain Impact Protocol from epic/breakdown/task with user confirmation)
+- Purpose: Business logic, flows, rules, and edge cases
 
 **`.context/progress.md`**:
 - Read by: progress, sync, breakdown

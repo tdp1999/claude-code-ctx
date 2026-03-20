@@ -74,6 +74,8 @@ Examples:
 - "Update deprecated lodash methods"
 ```
 
+Read `.context/domain.md` (if exists) — domain rules help distinguish "bug" (code doesn't match domain intent) from "undocumented behavior" (code works differently but no rule covers it).
+
 Clarify:
 
 - What is the expected behavior?

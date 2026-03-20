@@ -16,9 +16,10 @@ Check for the existence of these paths:
 - `.context/investigations/` folder (for investigation files)
 - `.context/tasks/` folder (for active task files)
 - `.context/tasks-done/` folder (for archived completed tasks)
-- `.context/epic-done/` folder (for archived completed epics and investigations)
+- `.context/plans-done/` folder (for archived completed epics and investigations)
 - `.context/progress.md`
 - `.context/patterns-architecture.md` (NOTE: created by `/ctx:architecture`, not this skill)
+- `.context/domain.md` (NOTE: created by `/ctx:domain`, not this skill)
 - `.context/decisions.md`
 
 Also check if `CLAUDE.md` exists at the project root.
@@ -49,13 +50,16 @@ Create the following structure:
 ├── investigations/         # Investigation files go here
 ├── tasks/                  # Active task files (pending, in-progress, blocked)
 ├── tasks-done/             # Archived completed tasks, organized by epic subfolder (created by /sync)
-├── epic-done/              # Archived completed epics & investigations (created by /sync)
+├── plans-done/              # Archived completed epics & investigations (created by /sync)
 ├── progress.md            # Progress tracker
 └── decisions.md           # Architecture Decision Records
 ```
 
 **IMPORTANT:** Do NOT create `patterns-architecture.md` - this is created by `/ctx:architecture` skill.
 If `patterns-architecture.md` already exists (created by `/ctx:architecture`), leave it as-is.
+
+**IMPORTANT:** Do NOT create `domain.md` - this is created by `/ctx:domain` skill.
+If `domain.md` already exists, leave it as-is.
 
 ### progress.md template:
 
@@ -117,10 +121,16 @@ If not, add a section pointing to the context files:
 - `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
-- `.context/epic-done/` - Archived completed epics and investigations
+- `.context/plans-done/` - Archived completed epics and investigations
 - `.context/progress.md` - Current progress and blockers
 - `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
+- `.context/domain.md` - Business logic, flows, and rules (from /ctx:domain)
 - `.context/decisions.md` - Architecture decisions
+```
+
+If `domain.md` is missing and the project appears to have business logic (epics reference flows, rules, or user interactions), suggest:
+```
+💡 If this project has business rules or domain flows, run /ctx:domain to capture them.
 ```
 
 **Note:** If CLAUDE.md has content that should be moved to patterns-architecture.md or decisions.md (like code conventions or architectural notes), suggest this to the user but don't move automatically.
@@ -142,9 +152,10 @@ If CLAUDE.md doesn't exist, create a minimal one:
 - `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
-- `.context/epic-done/` - Archived completed epics and investigations
+- `.context/plans-done/` - Archived completed epics and investigations
 - `.context/progress.md` - Current progress and blockers
 - `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
+- `.context/domain.md` - Business logic, flows, and rules (from /ctx:domain)
 - `.context/decisions.md` - Architecture decisions
 ````
 
