@@ -306,3 +306,44 @@ Some skills call others directly:
 **Hub Skills** (both call and are called):
 - vision (calls log-decision, called by start/onboard)
 - architecture (calls log-decision, called by start/onboard)
+
+---
+
+## External Skill Ecosystem
+
+CTX skills can integrate with user-installed skills and agents via the **Skill Discovery Protocol** (see above) and **fallback discovery**. These integrations are optional — CTX never hard-depends on external skills.
+
+### Discovery Pattern
+
+All external integrations follow this convention:
+1. Check if relevant skill/agent exists (glob `~/.claude/skills/*/SKILL.md`, `~/.claude/agents/*.md`)
+2. If found → suggest it with context
+3. If not found → provide manual alternative
+4. **NEVER fail because an external skill is missing**
+
+### Common Complementary Skills
+
+These are examples of skill types that enhance CTX workflows. They are NOT requirements.
+
+| CTX Skill | Complementary Type | Purpose | Fallback |
+|-----------|-------------------|---------|----------|
+| task | Commit skill | Reference task ID in commits | Manual commit with `feat(task-NNN): goal` |
+| task | Test runner agent | Verify task output | Manual test command |
+| task | Build validator agent | Check build health | Manual build command |
+| investigate | Doc fetcher skill | Library/framework docs | Web search or manual lookup |
+| techstack | Package installer agent | Install dependencies | Manual install commands |
+| techstack | Doc fetcher skill | Tool documentation | Web search or manual lookup |
+| epic | Design skill | UI/UX guidance for features | Manual design decisions |
+| breakdown | Skill creator | When tasks need new specialized skills | Create skill manually |
+
+### MCP Integration Points
+
+When MCP tools are available (check allowed-tools), certain skills offer optional integrations:
+
+| CTX Skill | MCP Integration | Config Gate | Behavior |
+|-----------|----------------|-------------|----------|
+| sync | Atlassian (Jira) | `integrations.jiraSync` | Map task status → Jira transition |
+| progress | Atlassian (Jira) | `integrations.jiraSync` | Cross-reference tasks with Jira issues |
+| investigate | Atlassian (Jira) | (always offer) | Fetch related Jira issue details |
+
+If MCP tools are NOT available → skip silently, no error.
