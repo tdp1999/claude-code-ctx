@@ -1,6 +1,6 @@
 ---
 name: breakdown
-description: Break down a feature, plan, epic, or investigation into actionable task files in the .context/tasks/ folder
+description: Decompose an epic or investigation into actionable task files in .context/tasks/. Triggers on "break down", "decompose", "create tasks from", "split into tasks", "breakdown". Use when an epic or investigation is ready and needs concrete work items. For standalone tasks without an epic, use /ctx:create-task.
 argument-hint: "[epic/investigation name or file path]"
 allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion, Task
 ---
@@ -226,11 +226,12 @@ Reference `.context/patterns-architecture.md` if relevant.
 - Update investigation status from "investigating" or "ready" to "broken-down"
 - Add note in investigation: "Broken down into tasks 001-003 on [date]"
 
-**Status Lifecycle:**
-- `draft` → Epic/investigation being written
+**Status Lifecycle** (see `shared/conventions/status-lifecycle.md` for full reference):
+- `draft` → Being written
 - `ready` → Ready to be broken down
 - `broken-down` → Has been decomposed into tasks
-- `completed` → All tasks finished (set by /ctx:sync when all tasks done)
+- `in-progress` → Tasks underway
+- `completed` → All tasks finished, archived to plans-done/ (set by /ctx:sync)
 
 ## Step 6: Update Progress Tracker
 
@@ -272,95 +273,14 @@ Recommend which task to start first based on:
 
 Suggest: "Start with `/ctx:task [number]` when ready to begin"
 
-## Self-Verification Checklist
+## Quality Standards & Self-Verification
 
-Before finalizing, verify:
-- [ ] All requirements from source are covered
-- [ ] No orphan dependencies (referencing non-existent tasks)
-- [ ] No circular dependencies
-- [ ] All tasks have clear acceptance criteria
-- [ ] Task numbering is sequential with no gaps
-- [ ] progress.md is updated
-- [ ] File names follow convention
+For quality standards, self-verification checklist, and complete examples, read `references/examples.md`.
 
-## Quality Standards
-
-**Completeness:** Every requirement should trace to a task
-**Clarity:** Tasks should be understandable without the source document
-**Actionability:** Someone can start working immediately
-**Right-sized:** Not too big (multi-day), not too small (trivial)
-
-## Examples
-
-**Good task title:** "Set up Strapi content types"
-**Bad task title:** "Backend stuff"
-
-**Good acceptance criterion:** "User can log in with email/password and receive JWT token"
-**Bad acceptance criterion:** "Authentication works"
-
-**Good complexity estimate:**
-- S: Single file change, < 50 lines
-- M: Multiple files, clear path, 50-200 lines
-- L: Multiple components, some unknowns, 200-500 lines
-- XL: Significant feature, research needed, 500+ lines
-
----
-
-## Examples
-
-### Empty Argument (List Epics and Investigations)
-
-```
-User: /ctx:breakdown
-
-Assistant checks .context/plans/ and .context/investigations/
-
-Found:
-- epic-auth.md (status: ready)
-- epic-payment.md (status: draft)
-- inv-checkout-bug.md (status: ready)
-
-Assistant shows:
-"Available to break down:
-
-Epics:
-1. epic-auth.md (ready) - User authentication
-2. epic-payment.md (draft) - Payment processing
-
-Investigations:
-3. inv-checkout-bug.md (ready) - Checkout 500 error
-
-Which would you like to break down?"
-```
-
-### Epic Name
-
-```
-User: /ctx:breakdown auth
-
-Assistant finds .context/plans/epic-auth.md
-Reads: Summary, Requirements, Technical Considerations, Risks
-Creates tasks:
-- 001-setup-user-model.md
-- 002-implement-registration.md
-- 003-implement-login.md
-- 004-password-reset-flow.md
-- 005-jwt-token-handling.md
-
-Updates epic status to "broken-down"
-Adds tasks to progress.md
-```
-
-### Ad-hoc Feature
-
-```
-User: /ctx:breakdown "Add caching layer"
-
-No epic exists, so this is ad-hoc.
-Assistant asks clarifying questions.
-Creates tasks based on description.
-Note: Less context than epic-based breakdown.
-```
+Key points:
+- Every requirement traces to a task
+- Tasks understandable without source document
+- Verify: no orphan/circular dependencies, sequential numbering, progress.md updated
 
 ---
 
@@ -373,3 +293,11 @@ Note: Less context than epic-based breakdown.
 - Ad-hoc breakdowns are fine for small additions
 - If user provides vague description, suggest creating an epic or investigation first
 - Use Explore subagent when tasks need specific file paths
+
+## Gotchas
+
+- **Domain Impact Check BEFORE breaking down**: If epic references entities/flows/rules not in domain.md, propose domain updates first. Do not create tasks that reference undocumented domain concepts.
+- **Check both tasks/ and tasks-done/ for numbering**: Task numbers are globally unique and never reused. Find the highest number across both directories before assigning new numbers.
+- **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
+- **Skill Discovery scans ONCE per breakdown**: Do not re-scan for each task. Scan all installed skills once, match to requirements, write references into individual task files.
+- **Epic must have High-Level Requirements**: Cannot break down an epic in "draft" status. It needs at least "ready" with requirements defined.

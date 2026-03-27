@@ -1,6 +1,6 @@
 ---
 name: task
-description: Load a task file and continue working on it
+description: Load a task file from .context/tasks/ and work on it, following acceptance criteria and patterns. Triggers on "work on task", "start task", "continue task", "task NNN", "pick up where I left off", "next task". Use when user wants to implement a specific task.
 argument-hint: "[task number or name]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
@@ -91,7 +91,26 @@ If empty, ask user which task to work on.
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
 
-8. **Domain check on completion:**
+8. **Verification on completion:**
+   Read the task's `## Verification:` field (none / test / full).
+   If config `verification.carefulMode` is true → treat as `full` regardless.
+
+   - **none**: Skip verification entirely.
+   - **test**: Check if a test-runner agent exists (glob `~/.claude/agents/test-runner*`).
+     - If found → suggest: "Run tests for affected code? (yes/no)"
+     - If not found → suggest: "Consider running tests manually before marking complete."
+   - **full**: Check for both test-runner and build-validator agents.
+     - If found → suggest: "Run tests and build validation? (yes/no)"
+     - If not found → suggest: "Consider running tests and build manually."
+   - NEVER auto-run — always ask user first.
+
+9. **Suggest commit (discovery-based):**
+   After task completion, if a commit-related skill is available:
+   - Quick glob: `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
+   - If found → suggest: "Task complete. Use [skill-name] to commit with task ID in scope? e.g., `feat(task-NNN): [goal]`"
+   - If not found → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
+
+10. **Domain check on completion:**
    If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
    - Ask: "This task referenced domain rules [list IDs]. Did the implementation match these rules exactly, or did business logic change?"
    - If user says logic changed → generate proposed domain updates using Domain Impact Protocol format → show to user → require confirmation → update `domain.md`
@@ -107,3 +126,11 @@ Confirm task loaded and show:
 - Goal
 - Acceptance criteria (with current status)
 - Next action to take
+
+## Gotchas
+
+- **Only search tasks/, never tasks-done/**: Done tasks are archived and read-only. If user asks for a completed task, inform them it's in tasks-done/ but do not re-open it.
+- **AC checkbox updates are MANDATORY and immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
+- **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.
+- **Blocked tasks need a reason**: If a task cannot proceed, update status to `blocked` and document why. Do not silently skip to another task.
+- **Verification field controls post-completion behavior**: Check the task's `Verification:` field. Only suggest test/build runs when the level warrants it (see config-convention).

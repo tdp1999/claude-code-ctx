@@ -1,6 +1,6 @@
 ---
 name: vision
-description: Define or update project vision and scope. Use when starting new projects, pivoting strategy, or documenting existing projects. Supports extract mode for existing codebases.
+description: Define or update project vision and scope. Triggers on "vision", "project idea", "what are we building", "scope", "goals", "target users", starting a new project, or pivoting strategy. Supports extract mode for existing codebases. For architecture patterns, use /ctx:architecture instead.
 allowed-tools: Read, Write, Edit, AskUserQuestion, Skill, Task, Glob
 ---
 
@@ -243,3 +243,10 @@ Creates .context/vision.md with extracted + confirmed data.
 - In update mode, always ask "why" - this is critical for decision logging
 - Impact analysis helps user understand downstream effects
 - The changelog provides traceability over time
+
+## Gotchas
+
+- **Never update vision.md without asking why**: The reason drives the decision log entry. Skipping "why" produces meaningless changelog entries.
+- **Extract mode reads code, it doesn't invent**: In `--extract` mode, document only what you can verify from README, package.json, and docs. Do not guess project goals.
+- **Impact analysis is not optional on updates**: Changing vision affects architecture, epics, and tasks downstream. Always run impact analysis before confirming an update.
+- **Missing .context/ folder**: Do not create it manually — suggest `/ctx:context-init` instead.

@@ -1,6 +1,6 @@
 ---
 name: techstack
-description: Select or update concrete tools and technologies for a project. Reads vision.md and patterns.md for smart defaults. Exports to .project-init.md. Can add new tools mid-project. Supports extract mode for existing projects.
+description: Select or update concrete tools and technologies. Triggers on "techstack", "what tools", "which framework", "database choice", "add package/tool", "technology selection", "stack". Reads vision.md and patterns.md for smart defaults. For how tools are organized, use /ctx:architecture instead.
 argument-hint: '[optional: --add <tool> | --extract]'
 ---
 
@@ -355,3 +355,10 @@ User wants to review or make general updates:
 - In update mode, be conservative - don't suggest changes unless asked
 - When adding tools mid-project, consider existing architecture
 - This skill focuses on "what tools" - architecture skill handles "how they're organized"
+
+## Gotchas
+
+- **.project-init.md is reference only**: No other CTX skill reads this file. It exists for the user's and Claude's general context, not as input to downstream skills.
+- **Don't suggest tool changes unprompted in update mode**: Only change what the user asks for. Unsolicited "you should switch to X" wastes tokens and annoys users.
+- **Smart defaults require vision.md**: Without vision context, defaults are generic and often wrong. If vision.md is missing, say so and ask more questions instead of guessing.
+- **Extract mode reads config files, not code**: Detect tools from package.json, Cargo.toml, go.mod, etc. — do not scan source code for import statements.

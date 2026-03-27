@@ -1,6 +1,6 @@
 ---
 name: epic
-description: Epic generator and idea expander. Takes a feature idea, helps improve it, foresees problems, and outputs epic-style file with high-level requirements to .context/plans/. Reusable for new features anytime.
+description: Plan a feature as an epic with requirements, risks, and scope. Triggers on "epic", "plan feature", "new feature", "feature idea", "I want to build", "let's plan". Use when user describes a feature to implement, even without saying "epic". For breaking into tasks, use /ctx:breakdown after.
 argument-hint: "[feature idea or epic file path]"
 allowed-tools: Read, Write, Edit, Glob, AskUserQuestion, Task
 ---
@@ -167,7 +167,7 @@ Use when creating a new epic from an idea.
 **Reasoning:** [Why this complexity estimate]
 
 ## Status
-draft | ready | in-progress | done
+draft | ready | broken-down | in-progress | completed
 
 ## Created
 [YYYY-MM-DD]
@@ -298,3 +298,10 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 - If epic feels too big (>10 tasks), suggest splitting into multiple epics
 - If epic feels too small (<3 tasks), suggest combining with related work
 - Status "draft" = still discussing, "ready" = ready to break down into tasks
+
+## Gotchas
+
+- **Domain Impact Protocol requires user confirmation**: When detecting new entities/flows/rules, you MUST show proposed changes and wait for explicit approval before writing to domain.md. Never auto-update.
+- **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
+- **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:context-init` if the folder structure doesn't exist.
+- **XL epics should be split**: If you estimate >10 tasks, propose splitting into 2-3 smaller epics before the user commits to one large one.

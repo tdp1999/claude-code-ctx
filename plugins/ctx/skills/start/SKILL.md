@@ -1,6 +1,6 @@
 ---
 name: start
-description: Master orchestrator for initializing new projects. Runs the full workflow: vision → architecture → techstack → epic → breakdown → context. Use when starting a fresh project.
+description: Full project setup wizard — vision, architecture, techstack, epic, breakdown in one guided flow. Triggers on "start project", "new project", "bootstrap", "init everything", "set up from scratch". For existing projects, use /ctx:onboard instead.
 argument-hint: "[optional: project idea]"
 allowed-tools: Skill, AskUserQuestion
 ---
@@ -175,7 +175,7 @@ Provide a complete summary:
 1. Review the files created
 2. Create more epics with `/ctx:epic "<feature idea>"`
 3. Break down epics with `/ctx:breakdown <epic-name>`
-4. Start working on tasks with `/ctx:task <number>` or `/ctx:next`
+4. Start working on tasks with `/ctx:task <number>`
 5. Begin scaffolding your project structure
 
 ### Quick Reference
@@ -268,3 +268,10 @@ Shows complete summary with all files and next steps
 - If user seems uncertain, offer to explain the step
 - Individual skills can be used later for updates/additions
 - This workflow is designed for new projects - for existing projects, use individual skills
+
+## Gotchas
+
+- **Cannot resume mid-flow**: If the session breaks at step 4, the user must re-run `/ctx:start`. However, skills that already created files (vision, architecture) will detect existing files and enter update mode instead of create mode.
+- **Existing files trigger update mode**: If vision.md already exists, `/ctx:vision` (called by start) enters update mode. This is correct behavior, not a bug — but inform the user.
+- **For existing projects, use /ctx:onboard**: This skill is for new projects. If the user has an existing codebase, redirect to `/ctx:onboard` instead.
+- **Domain step is optional**: Not every project needs domain.md. Skip if user says no business logic (e.g., CLI tools, libraries, static sites).

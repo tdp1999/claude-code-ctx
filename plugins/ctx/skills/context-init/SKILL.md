@@ -1,6 +1,6 @@
 ---
 name: context-init
-description: Initialize or check project context bank (.context folder with tasks, patterns, decisions, progress tracking)
+description: Initialize or check the .context/ folder structure for task tracking. Triggers on "init context", "setup context", "create .context", "initialize project tracking". Use when .context/ folder is missing or needs verification. For full project setup, use /ctx:start instead.
 allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion
 ---
 
@@ -159,7 +159,29 @@ If CLAUDE.md doesn't exist, create a minimal one:
 - `.context/decisions.md` - Architecture decisions
 ````
 
-## Step 5: Summary
+## Step 5: Offer Project Config (Optional)
+
+After creating the folder structure, ask:
+
+"Create project config (`.context/ctx-config.json`) with defaults? This controls verification behavior, logging, and naming conventions. (yes/no)"
+
+If yes, create `.context/ctx-config.json` with the minimal template from `config-convention.md`:
+
+```json
+{
+  "verification": {
+    "onTaskComplete": "ask",
+    "carefulMode": false
+  },
+  "logging": {
+    "enabled": true
+  }
+}
+```
+
+If no, skip. Config is optional — all skills use defaults when no config exists.
+
+## Step 6: Summary
 
 After completion, summarize:
 
@@ -167,3 +189,9 @@ After completion, summarize:
 - Next steps:
     - Use `/ctx:breakdown [feature]` to create tasks
     - Use `/ctx:task [num]` to start working
+
+## Gotchas
+
+- **Do NOT create patterns-architecture.md or domain.md**: Those are owned by `/ctx:architecture` and `/ctx:domain` respectively. This skill only creates the folder structure and boilerplate files (progress.md, decisions.md).
+- **Idempotent**: Running twice must not overwrite existing files. Check what exists, report it, create only what's missing.
+- **Do NOT create CLAUDE.md if one already exists**: Only offer to create it if the project has no CLAUDE.md at all.

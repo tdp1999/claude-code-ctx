@@ -1,6 +1,6 @@
 ---
 name: investigate
-description: Investigate bugs, refactors, performance issues, or tech debt. Uses subagents to analyze code, reproduce issues, and document findings. Outputs investigation file that can be broken down into tasks.
+description: Investigate bugs, performance issues, refactors, or tech debt by analyzing code and documenting findings. Triggers on "investigate", "debug", "why is X slow", "root cause", "what's wrong with", "tech debt", "performance issue". Use when a problem needs analysis before fixing. Outputs investigation file for /ctx:breakdown.
 argument-hint: '[issue description or file path]'
 allowed-tools: Task, Read, Write, Edit, Glob, Grep, AskUserQuestion
 ---
@@ -238,7 +238,7 @@ Create investigation file in `.context/investigations/`:
 
 ## Status
 
-investigating | ready | in-progress | done
+draft | ready | analyzed | broken-down | in-progress | completed
 
 ## Created
 
@@ -294,48 +294,7 @@ When path to existing investigation is provided:
 
 ## Examples
 
-### Bug Investigation
-
-```
-User: /ctx:investigate "Checkout fails with 500 error"
-
-[Explore] Traces checkout flow, finds error in payment service
-[test-runner] Runs payment tests - 2 failing
-[Findings] Missing null check when payment provider returns error
-
-Creates: .context/investigations/inv-checkout-500-error.md
-Recommends: Add null check and proper error handling
-Complexity: S
-```
-
-### Performance Investigation
-
-```
-User: /ctx:investigate "Dashboard loads slowly"
-
-[Explore] Analyzes dashboard component and data fetching
-[Findings] N+1 query problem - fetching user for each item
-[Findings] No pagination on large dataset
-
-Creates: .context/investigations/inv-dashboard-performance.md
-Recommends: Add eager loading and pagination
-Complexity: M
-```
-
-### Refactor Investigation
-
-```
-User: /ctx:investigate "Refactor auth module to hexagonal"
-
-[Explore] Maps current auth structure
-[Findings] Auth logic mixed with HTTP layer
-[Findings] Database calls directly in controllers
-[Affected] 12 files need changes
-
-Creates: .context/investigations/inv-auth-hexagonal-refactor.md
-Recommends: Phased migration - ports first, then adapters
-Complexity: L
-```
+For complete examples of Bug, Performance, and Refactor investigations, read `references/examples.md`.
 
 ---
 
@@ -348,3 +307,10 @@ Complexity: L
 - Investigations can be broken down with `/ctx:breakdown`
 - Link to related epics or tasks if they exist
 - Update investigations as you learn more
+
+## Gotchas
+
+- **Investigation ≠ fix**: This skill produces findings and recommendations, NOT code changes. If the user wants implementation, suggest `/ctx:breakdown` after investigation is complete.
+- **Missing project-specific agents are OK**: If test-runner or build-validator agents don't exist, skip them gracefully. Report what you skipped and why.
+- **Investigation naming collisions**: Check if `inv-<name>.md` already exists before creating.
+- **Distinguish bugs from undocumented behavior**: If domain.md exists, check whether the "bug" is actually expected behavior per domain rules. Report the conflict if found.

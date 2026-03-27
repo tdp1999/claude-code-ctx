@@ -1,6 +1,6 @@
 ---
 name: sync
-description: Synchronize progress.md with actual task file states
+description: Reconcile progress.md with actual task files, archive done tasks, update epic statuses, check domain freshness. Triggers on "sync", "reconcile", "clean up tasks", "archive done", "update progress". Use after completing tasks or when progress.md seems stale.
 allowed-tools: Read, Write, Edit, Glob
 ---
 
@@ -75,7 +75,7 @@ Skill-specific errors:
    - Check `.context/investigations/` for investigations with status "broken-down"
    - For each broken-down epic/investigation:
      - Find all tasks that belong to it (check both tasks/ and tasks-done/)
-     - If ALL tasks are done → update status to "done" and move the file to `.context/plans-done/` (create folder if needed, preserve original filename)
+     - If ALL tasks are done → update status to "completed" and move the file to `.context/plans-done/` (create folder if needed, preserve original filename)
      - Keep as "broken-down" if any tasks are pending/in-progress
 
 8. **Domain freshness check:**
@@ -102,7 +102,26 @@ Skill-specific errors:
    - If user confirms → proceed with archive
    - If user wants updates → apply changes to domain.md → then archive
 
-9. **Report:**
+9. **Failure Pattern Analysis (Self-Learning):**
+
+   If `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl` exists and logging is enabled:
+   - Scan for failure entries since the last sync (check `ts` field)
+   - Group failures by `skill` + `failure_type`
+   - If any skill has >= 2 failures of the same type:
+     - Draft a proposed gotcha based on the failure pattern
+     - Present to user: "Detected repeated failure in [skill]: [pattern]. Proposed gotcha: [text]. Add to skill's Gotchas section? (yes/no)"
+     - If confirmed → append to the skill's `## Gotchas` section
+     - Mark processed failures with `"gotcha_proposed": true`
+   - If no patterns found → skip silently
+
+10. **Write sync summary:**
+
+   If logging is enabled, append one line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/sync-history.jsonl`:
+   ```json
+   {"ts": "ISO-8601", "project": "name", "tasks_done": N, "tasks_pending": N, "tasks_blocked": N, "epics_completed": ["epic-name"]}
+   ```
+
+11. **Report:**
 
 ```
 Sync complete.
@@ -121,7 +140,7 @@ Task Changes:
 - [task] removed (no file)
 
 Epic/Investigation Updates:
-- [epic-name] status changed to "done" (all 5 tasks done) — archived to plans-done/
+- [epic-name] status changed to "completed" (all 5 tasks done) — archived to plans-done/
 
 Current state:
 - Done: X (in tasks-done/)
@@ -136,12 +155,12 @@ Current state:
 - `draft` → Being written
 - `ready` → Ready to break down
 - `broken-down` → Has tasks, work in progress
-- `done` → All tasks finished (archived to `plans-done/`)
+- `completed` → All tasks finished (archived to `plans-done/`)
 
 **Tasks:**
 - `pending` → Not started (in tasks/)
 - `in-progress` → Being worked on (in tasks/)
-- `done` → Done (moved to tasks-done/<epic-name>/)
+- `done` → Finished (moved to tasks-done/<epic-name>/)
 - `blocked` → Waiting on dependency (in tasks/)
 
 ## Notes
@@ -151,3 +170,11 @@ Current state:
 - Archived files retain their original naming for traceability
 - Use `tasks-done/` and `plans-done/` to review past work or reference implementations
 - The `/ctx:task` skill should only look in `tasks/` for active work
+
+## Gotchas
+
+- **Never delete archived files**: tasks-done/ and plans-done/ are permanent archives. Moving files there is correct; deleting them is not.
+- **Auto-status correction can surprise users**: If ACs are all checked but status says "in-progress", sync will correct to "done". Warn the user when this happens.
+- **Domain freshness check may produce false positives**: A stale domain.md doesn't always mean it's wrong — the epic may not have changed business logic. Present the finding but don't insist on updates.
+- **Missing progress.md is recoverable**: If it doesn't exist, create it from template and scan all task files to rebuild state. Do not error out.
+- **Epic archival is gated on ALL tasks done**: Do not archive an epic to plans-done/ if any of its tasks are still pending or in-progress.

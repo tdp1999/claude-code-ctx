@@ -1,6 +1,6 @@
 ---
 name: onboard
-description: Onboard an existing project by analyzing codebase and extracting vision, architecture, and techstack into context files. Use when joining or documenting an established codebase.
+description: Analyze an existing codebase and extract vision, architecture, techstack into context files. Triggers on "onboard", "analyze this project", "document existing codebase", "join project", "extract architecture". Use when working with an unfamiliar or undocumented codebase. For new projects, use /ctx:start instead.
 argument-hint: '[optional: path to project]'
 allowed-tools: Task, Read, Write, Edit, Glob, AskUserQuestion, Skill
 ---
@@ -285,3 +285,10 @@ User clarifies: "Jest is legacy, we're migrating to Vitest"
 - Note inconsistencies honestly - they're valuable documentation
 - This skill extracts what exists, not what should exist
 - If project is messy, document it as-is - don't idealize
+
+## Gotchas
+
+- **Always use Explore subagent, not manual Glob/Read**: Manual file reading wastes tokens and misses patterns. Explore is designed for codebase analysis.
+- **Existing .context/ must be handled carefully**: If .context/ already exists with content, ask user before overwriting. Never silently replace existing vision or architecture docs.
+- **Document what IS, not what SHOULD BE**: Extract mode captures current state. Recommendations for improvements go in a separate section, not mixed with findings.
+- **Missing README is not a blocker**: Many projects lack README. Fall back to package.json, source code analysis, and user questions.
