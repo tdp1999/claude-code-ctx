@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-03-27
+
+### Added
+
+- **Gotchas sections** for all 16 skills — documenting specific failure modes Claude encounters, with auto-maintenance protocol via `/ctx:sync`
+- **`gotchas-convention.md`** — standard format and maintenance rules for gotchas
+- **Dynamic Config System** — layered config (`${CLAUDE_PLUGIN_DATA}/ctx-config.json` → `.context/ctx-config.json`) with defaults for naming, verification, logging, integrations, and onboarding tiers
+- **`config-convention.md`** — config schema, merge rules, and loading protocol
+- **Logging Infrastructure** — execution.jsonl (all skill invocations), sync-history.jsonl (velocity tracking), recaps.log (weekly summaries)
+- **`logging-convention.md`** — log schemas, failure tracking, and data retention
+- **Impact-Based Verification** — `Verification: none | test | full` field in task template; breakdown/create-task set level based on scope; task skill respects level on completion
+- **Self-Learning Mechanisms** — sync skill scans failure logs, detects patterns (>= 2 failures of same type), proposes new gotchas with user confirmation
+- **Execution Metrics** — `/ctx:progress --metrics` shows velocity, trend, top failing skills from log data
+- **Careful/Freeze Modes** — config-driven behavior overrides: careful mode forces full verification, freeze mode makes task/sync read-only
+- **`modes-convention.md`** — documents careful and freeze mode behavior per skill
+- **`/ctx:recap` skill** (16th skill) — weekly progress recap with velocity trends, git activity, and week-over-week comparison
+- **External Skill Ecosystem** section in skill-relationships.md — documents discovery-based integration with user-scope skills and MCP tools
+- **CTX task context detection in `/cap`** — auto-detects in-progress task and suggests task ID in commit scope
+- **Discovery-based verification** in `/ctx:task` — discovers test-runner/build-validator agents if available, suggests running with user confirmation
+- **Discovery-based commit suggestion** in `/ctx:task` — discovers commit skills and suggests using them with task reference
+
+### Changed
+
+- **All 15 skill descriptions rewritten** for model triggering — added trigger keywords, negative triggers, and use-case examples
+- **6 oversized skills extracted** into progressive disclosure references (domain 491→316, create-task 414→323, architecture 403→337, breakdown 384→302, investigate 358→316)
+- **`/ctx:context-init`** now offers project config creation (`.context/ctx-config.json`)
+- **`file-contracts.md`** updated with Verification field, config contracts, and logging contracts
+- **Task template** updated with `## Verification: none | test | full` field
+- **`remember` global skill** description updated with trigger patterns
+
+### Fixed
+
+- **Epic status values** aligned: template now uses `draft | ready | broken-down | in-progress | completed` (was `draft | ready | in-progress | done`)
+- **Investigation status values** aligned: template now uses `draft | ready | analyzed | broken-down | in-progress | completed` (was `investigating | ready | in-progress | done`)
+- **Sync skill** now writes `completed` for epic/investigation terminal status (was `done`)
+- **Sync embedded lifecycle** table aligned with status-lifecycle.md
+- **Breakdown lifecycle listing** now includes all states with reference to status-lifecycle.md
+- **Start skill** removed broken `/ctx:next` reference
+
+---
+
 ## [1.3.1] - 2026-03-20
 
 ### Added
@@ -207,6 +248,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.0.0 | 2026-03-27 | Self-learning, config system, logging, progressive disclosure, recap skill, cross-connections |
 | 1.3.1 | 2026-03-20 | Add Skill Discovery Protocol for breakdown and task skills |
 | 1.3.0 | 2026-03-20 | Add /ctx:domain skill, Domain Impact Protocol, rename epic-done → plans-done |
 | 1.2.0 | 2026-03-16 | Add epic-done archive, tasks-done subfolder org, remove stale workflow.md |

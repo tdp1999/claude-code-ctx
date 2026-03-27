@@ -50,14 +50,15 @@ The `ctx` plugin provides a unified system for managing project context, plannin
 | `breakdown`    | `/ctx:breakdown epic-name`  | Decompose epic/investigation into tasks              |
 | `log-decision` | `/ctx:log-decision "Topic"` | Record architecture decision                         |
 
-### Task Management (4 skills)
+### Task Management (5 skills)
 
-| Skill         | Usage                            | Description                   |
-| ------------- | -------------------------------- | ----------------------------- |
-| `create-task` | `/ctx:create-task "Description"` | Create standalone task        |
-| `task`        | `/ctx:task [number]`             | Load and work on task         |
-| `progress`    | `/ctx:progress`                  | View project status           |
-| `sync`        | `/ctx:sync`                      | Reconcile progress with files |
+| Skill         | Usage                            | Description                       |
+| ------------- | -------------------------------- | --------------------------------- |
+| `create-task` | `/ctx:create-task "Description"` | Create standalone task            |
+| `task`        | `/ctx:task [number]`             | Load and work on task             |
+| `progress`    | `/ctx:progress [--metrics]`      | View project status and velocity  |
+| `sync`        | `/ctx:sync`                      | Reconcile progress with files     |
+| `recap`       | `/ctx:recap`                     | Weekly progress recap with trends |
 
 ## Common Workflows
 
