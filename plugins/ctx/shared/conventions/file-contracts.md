@@ -152,6 +152,14 @@ When modifying a file's format, check the **Read by** column to understand which
 - `## Goal` — one sentence
 - `## Acceptance Criteria` — checklist with `- [ ]` items (minimum 1)
 - `## Complexity` — one of: `S`, `M`, `L`, `XL`
+- `## Verification` — one of: `none`, `test`, `full` (see below)
+
+**Verification levels:**
+- `none` — text/content/style/config changes, complexity S. Skip verification on completion.
+- `test` — logic changes in 1-2 files, no API changes. Suggest running test-runner agent (if available).
+- `full` — API changes, shared types, infrastructure, complexity L/XL. Suggest test-runner + build-validator (if available).
+- Set by `/ctx:breakdown` and `/ctx:create-task` based on task scope. Read by `/ctx:task` on completion.
+- When `config.verification.carefulMode` is true, all tasks are treated as `full` regardless of this field.
 
 **Optional but recommended:**
 - `## Context`, `## Technical Notes`, `## Files to Touch`
@@ -191,6 +199,30 @@ When modifying a file's format, check the **Read by** column to understand which
 **Required format per entry:**
 - `### [Date] Decision Title`
 - `**Context:**`, `**Decision:**`, `**Rationale:**`, `**Consequences:**`
+
+---
+
+## ctx-config.json
+
+| | |
+|---|---|
+| **Location** | `.context/ctx-config.json` (project-level) and `${CLAUDE_PLUGIN_DATA}/ctx-config.json` (user-level) |
+| **Written by** | `/ctx:context-init` (project-level, optional), user manually |
+| **Read by** | All skills (preamble step) |
+
+See `config-convention.md` for schema and merge rules.
+
+---
+
+## Execution Logs
+
+| | |
+|---|---|
+| **Location** | `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`, `sync-history.jsonl`, `recaps.log` |
+| **Written by** | All skills (`execution.jsonl`), `/ctx:sync` (`sync-history.jsonl`), `/ctx:recap` (`recaps.log`) |
+| **Read by** | `/ctx:sync` (failure analysis), `/ctx:progress --metrics`, `/ctx:recap` |
+
+See `logging-convention.md` for schema and protocols.
 
 ---
 

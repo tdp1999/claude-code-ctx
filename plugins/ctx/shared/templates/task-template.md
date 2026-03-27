@@ -36,6 +36,11 @@ Reference `.context/patterns-architecture.md` if relevant.
 
 ## Complexity: S | M | L | XL
 
+## Verification: none | test | full
+<!-- none = text/config/style changes, skip verification -->
+<!-- test = logic changes in 1-2 files, suggest test-runner -->
+<!-- full = API/shared types/infrastructure changes, suggest test-runner + build-validator -->
+
 ## Progress Log
 
 ---
