@@ -1,6 +1,6 @@
 {
 	"name": "ctx",
-	"version": "2.0.3",
+	"version": "2.0.4",
 	"description": "Complete task-driven development workflow for .context/ folder management. Includes project setup (vision, architecture, techstack), planning (epic, investigate), task breakdown, and progress tracking with TDD support.",
 	"author": {
 		"name": "Phuong Tran",
@@ -9,6 +9,5 @@
 	"homepage": "https://thunderphong.com",
 	"repository": "https://github.com/tdp1999/claude-code-ctx",
 	"license": "MIT",
-	"keywords": ["task-management", "project-planning", "workflow", "context", "epic", "breakdown", "tdd", "task-driven-development", "project-setup"],
-	"hooks": "./hooks/hooks.json"
+	"keywords": ["task-management", "project-planning", "workflow", "context", "epic", "breakdown", "tdd", "task-driven-development", "project-setup"]
 }
