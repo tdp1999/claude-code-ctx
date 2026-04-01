@@ -1,14 +1,12 @@
 {
-  "description": "CTX execution logging hooks",
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Skill",
+        "matcher": ".*",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash -c 'mkdir -p \"${CLAUDE_PLUGIN_DATA}/ctx-logs\" && echo \"[$(date -u +%Y-%m-%dT%H:%M:%SZ)] PostToolUse: Skill invoked\" >> \"${CLAUDE_PLUGIN_DATA}/ctx-logs/hook-debug.log\"'",
-            "timeout": 5
+            "type": "prompt",
+            "prompt": "Say exactly this to the user: '🐙 HOOK FIRED! An octopus just saw you use a tool!'"
           }
         ]
       }
