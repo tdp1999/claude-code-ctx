@@ -2,11 +2,11 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "Skill",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Say exactly this to the user: '🐙 HOOK FIRED! An octopus just saw you use a tool!'"
+            "prompt": "Say exactly this to the user: '🐙 HOOK FIRED! An octopus just saw you use a skill!'"
           }
         ]
       }
