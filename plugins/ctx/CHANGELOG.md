@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-01
+
+### Added
+
+- **Plugin hook for execution logging** — `hooks/hooks.json` with `PostToolUse` hook that fires after every ctx skill invocation. This is a debug/verification version to confirm hook input format before building full logging.
+
+### Changed
+
+- **Logging strategy** — moved from convention-only (skills self-log as final step) to hybrid approach: plugin hooks for guaranteed basic logging + skill-level logging for outcome data
+
+---
+
 ## [2.0.0] - 2026-03-27
 
 ### Added
@@ -248,6 +260,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.0.1 | 2026-04-01 | Plugin hook for execution logging (debug version) |
 | 2.0.0 | 2026-03-27 | Self-learning, config system, logging, progressive disclosure, recap skill, cross-connections |
 | 1.3.1 | 2026-03-20 | Add Skill Discovery Protocol for breakdown and task skills |
 | 1.3.0 | 2026-03-20 | Add /ctx:domain skill, Domain Impact Protocol, rename epic-done → plans-done |

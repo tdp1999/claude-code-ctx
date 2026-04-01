@@ -1,0 +1,17 @@
+{
+  "description": "CTX execution logging hooks",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"[$(date -u +%Y-%m-%dT%H:%M:%SZ)] PostToolUse fired | input: $TOOL_INPUT\" >> \"${CLAUDE_PLUGIN_DATA:-/tmp}/ctx-logs/hook-debug.log\"'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

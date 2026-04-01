@@ -6,14 +6,14 @@
 	},
 	"metadata": {
 		"description": "Curated Claude Code plugins for task-driven development and productivity",
-		"version": "2.0.0"
+		"version": "2.0.1"
 	},
 	"plugins": [
 		{
 			"name": "ctx",
 			"source": "./plugins/ctx",
 			"description": "Complete task-driven development workflow for .context/ folder management. Includes project setup (vision, architecture, techstack), planning (epic, investigate), task breakdown, and progress tracking with TDD support.",
-			"version": "2.0.0",
+			"version": "2.0.1",
 			"author": {
 				"name": "Phuong Tran",
 				"email": "tdp99.business@gmail.com"
@@ -23,6 +23,21 @@
 			"license": "MIT",
 			"keywords": ["task-management", "project-planning", "workflow", "context", "epic", "breakdown", "tdd", "task-driven-development", "project-setup"],
 			"category": "productivity"
+		},
+		{
+			"name": "libref",
+			"source": "./plugins/libref",
+			"description": "Library and framework reference guides. Teaches Claude how to correctly use specific tools, libraries, and frameworks within your project conventions.",
+			"version": "0.1.0",
+			"author": {
+				"name": "Phuong Tran",
+				"email": "tdp99.business@gmail.com"
+			},
+			"homepage": "https://thunderphong.com",
+			"repository": "https://github.com/tdp1999/claude-code-ctx",
+			"license": "MIT",
+			"keywords": ["library", "framework", "reference", "guide", "conventions", "api-reference", "tool-guide"],
+			"category": "library-reference"
 		}
 	]
 }

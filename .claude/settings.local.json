@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__stitch__list_projects",
+      "mcp__stitch__list_design_systems",
+      "mcp__stitch__list_screens",
+      "Read(//c/study/portfolio/.context/**)"
+    ]
+  }
+}
