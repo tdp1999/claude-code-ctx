@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-04-01
+
+### Fixed
+
+- **Plugin hooks not firing** — added `hooks.source` declaration in plugin.json manifest so plugin system loads hooks.json
+- **Hook command** — removed non-existent `$TOOL_INPUT` env var, added `mkdir -p` for log directory creation
+
+---
+
 ## [2.0.1] - 2026-04-01
 
 ### Added
@@ -260,6 +269,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.0.2 | 2026-04-01 | Fix plugin hooks not firing — add manifest declaration |
 | 2.0.1 | 2026-04-01 | Plugin hook for execution logging (debug version) |
 | 2.0.0 | 2026-03-27 | Self-learning, config system, logging, progressive disclosure, recap skill, cross-connections |
 | 1.3.1 | 2026-03-20 | Add Skill Discovery Protocol for breakdown and task skills |
