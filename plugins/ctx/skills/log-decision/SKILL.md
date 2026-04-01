@@ -60,3 +60,12 @@ Related updates:
 - **decisions.md is append-only**: Never edit or remove existing entries. New decisions are appended at the end. If a decision is reversed, add a new entry referencing the old one.
 - **Keep entries concise**: Each entry should be 3-5 lines (date, context, decision, rationale, consequences). This is a log, not an essay.
 - **Don't duplicate as a gotcha what belongs in patterns-architecture.md**: If the decision changes architecture, update patterns-architecture.md. decisions.md records the WHY, patterns records the WHAT.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

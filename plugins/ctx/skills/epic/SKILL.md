@@ -305,3 +305,12 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 - **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
 - **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:context-init` if the folder structure doesn't exist.
 - **XL epics should be split**: If you estimate >10 tasks, propose splitting into 2-3 smaller epics before the user commits to one large one.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

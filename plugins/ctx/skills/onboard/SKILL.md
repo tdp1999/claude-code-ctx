@@ -292,3 +292,12 @@ User clarifies: "Jest is legacy, we're migrating to Vitest"
 - **Existing .context/ must be handled carefully**: If .context/ already exists with content, ask user before overwriting. Never silently replace existing vision or architecture docs.
 - **Document what IS, not what SHOULD BE**: Extract mode captures current state. Recommendations for improvements go in a separate section, not mixed with findings.
 - **Missing README is not a blocker**: Many projects lack README. Fall back to package.json, source code analysis, and user questions.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

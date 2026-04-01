@@ -301,3 +301,12 @@ Key points:
 - **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
 - **Skill Discovery scans ONCE per breakdown**: Do not re-scan for each task. Scan all installed skills once, match to requirements, write references into individual task files.
 - **Epic must have High-Level Requirements**: Cannot break down an epic in "draft" status. It needs at least "ready" with requirements defined.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

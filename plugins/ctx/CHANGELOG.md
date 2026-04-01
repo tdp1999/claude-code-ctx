@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2026-04-01
+
+### Changed
+
+- **Logging strategy revised** — removed plugin hooks approach (unreliable on Windows); added explicit "Final Step — Execution Log" to all 14 skills
+- Skills now directly append to `execution.jsonl` with full outcome data (success/failure/partial/corrected + details)
+- Plugin hooks removed; logging now guaranteed via skill-level instructions
+
+### Removed
+
+- `hooks/` folder and `hooks.json` — plugin hooks were not firing reliably
+
+---
+
 ## [2.0.4] - 2026-04-01
 
 ### Fixed
@@ -285,6 +299,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.0.5 | 2026-04-01 | Move logging from plugin hooks to skill-level instructions |
 | 2.0.4 | 2026-04-01 | Remove duplicate hooks declaration — auto-discovered |
 | 2.0.3 | 2026-04-01 | Fix invalid manifest — hooks field must be string path |
 | 2.0.2 | 2026-04-01 | Fix plugin hooks not firing — add manifest declaration |

@@ -250,3 +250,12 @@ Creates .context/vision.md with extracted + confirmed data.
 - **Extract mode reads code, it doesn't invent**: In `--extract` mode, document only what you can verify from README, package.json, and docs. Do not guess project goals.
 - **Impact analysis is not optional on updates**: Changing vision affects architecture, epics, and tasks downstream. Always run impact analysis before confirming an update.
 - **Missing .context/ folder**: Do not create it manually — suggest `/ctx:context-init` instead.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

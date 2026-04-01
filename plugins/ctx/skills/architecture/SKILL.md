@@ -327,6 +327,15 @@ For complete examples of Create, Update, Add Module, Add Domain, and Extract mod
 - In update mode, always ask "why" for decision logging
 - Module and domain modes are additive - they append, not replace
 - Architectural changes should trigger code refactoring tasks
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:architecture"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema
 - Keep patterns-architecture.md as the single source of truth for both architecture and code patterns
 
 ## Gotchas

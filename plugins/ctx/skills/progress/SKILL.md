@@ -82,3 +82,12 @@ Total: X tasks
 - **Read-only skill**: This skill displays information. It does NOT modify progress.md, task files, or any other file. If state is stale, suggest `/ctx:sync`.
 - **Scan tasks-done/ for accurate counts**: Completed task count must include archived tasks in tasks-done/ subfolders, not just progress.md entries.
 - **Domain coverage can be misleading**: "Partial coverage" means some entities aren't in the glossary — it doesn't mean domain.md is wrong. Don't alarm the user unnecessarily.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

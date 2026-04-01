@@ -362,3 +362,12 @@ User wants to review or make general updates:
 - **Don't suggest tool changes unprompted in update mode**: Only change what the user asks for. Unsolicited "you should switch to X" wastes tokens and annoys users.
 - **Smart defaults require vision.md**: Without vision context, defaults are generic and often wrong. If vision.md is missing, say so and ask more questions instead of guessing.
 - **Extract mode reads config files, not code**: Detect tools from package.json, Cargo.toml, go.mod, etc. — do not scan source code for import statements.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

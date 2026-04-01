@@ -275,3 +275,12 @@ Shows complete summary with all files and next steps
 - **Existing files trigger update mode**: If vision.md already exists, `/ctx:vision` (called by start) enters update mode. This is correct behavior, not a bug — but inform the user.
 - **For existing projects, use /ctx:onboard**: This skill is for new projects. If the user has an existing codebase, redirect to `/ctx:onboard` instead.
 - **Domain step is optional**: Not every project needs domain.md. Skip if user says no business logic (e.g., CLI tools, libraries, static sites).
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

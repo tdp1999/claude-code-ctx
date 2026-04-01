@@ -195,3 +195,12 @@ After completion, summarize:
 - **Do NOT create patterns-architecture.md or domain.md**: Those are owned by `/ctx:architecture` and `/ctx:domain` respectively. This skill only creates the folder structure and boilerplate files (progress.md, decisions.md).
 - **Idempotent**: Running twice must not overwrite existing files. Check what exists, report it, create only what's missing.
 - **Do NOT create CLAUDE.md if one already exists**: Only offer to create it if the project has no CLAUDE.md at all.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

@@ -314,3 +314,12 @@ For complete examples of Bug, Performance, and Refactor investigations, read `re
 - **Missing project-specific agents are OK**: If test-runner or build-validator agents don't exist, skip them gracefully. Report what you skipped and why.
 - **Investigation naming collisions**: Check if `inv-<name>.md` already exists before creating.
 - **Distinguish bugs from undocumented behavior**: If domain.md exists, check whether the "bug" is actually expected behavior per domain rules. Report the conflict if found.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

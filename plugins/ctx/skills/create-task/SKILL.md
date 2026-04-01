@@ -321,3 +321,12 @@ Key points:
 - **Check both tasks/ and tasks-done/ for numbering**: Task numbers are globally unique. A deleted task's number is never reused.
 - **User must approve before file creation**: Always show the draft task and get explicit confirmation. Do not create the file silently.
 - **Standalone tasks are marked differently in progress.md**: Use "(standalone)" label so they're distinguishable from epic-sourced tasks.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema

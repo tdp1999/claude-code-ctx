@@ -6,14 +6,14 @@
 	},
 	"metadata": {
 		"description": "Curated Claude Code plugins for task-driven development and productivity",
-		"version": "2.0.6"
+		"version": "2.0.5"
 	},
 	"plugins": [
 		{
 			"name": "ctx",
 			"source": "./plugins/ctx",
 			"description": "Complete task-driven development workflow for .context/ folder management. Includes project setup (vision, architecture, techstack), planning (epic, investigate), task breakdown, and progress tracking with TDD support.",
-			"version": "2.0.6",
+			"version": "2.0.5",
 			"author": {
 				"name": "Phuong Tran",
 				"email": "tdp99.business@gmail.com"

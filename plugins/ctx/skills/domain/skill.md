@@ -314,3 +314,12 @@ For complete examples of Create, Update, and Split modes, read `references/examp
 - **Business-level descriptions, not code-level**: Flow steps should survive a UI framework change. Write "User submits order" not "User clicks Submit button which dispatches ORDER_SUBMIT action".
 - **Code vs domain conflict = STOP**: If code behavior contradicts a domain rule, stop immediately. Report the conflict and wait for user decision — do not silently pick one.
 - **Split mode is irreversible**: Once domain.md is split into per-module files, merging back requires manual effort. Confirm with user before splitting.
+
+---
+
+## Final Step — Execution Log
+
+If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
+- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
+- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
+- See `shared/conventions/logging-convention.md` for schema
