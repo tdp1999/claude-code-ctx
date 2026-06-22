@@ -188,7 +188,12 @@ Why this matters, background info, relation to other work.
 Implementation hints, patterns to follow, edge cases.
 Reference `.context/patterns-architecture.md` if relevant.
 
-<!-- If a specialized skill was matched in Step 2.7, add: -->
+<!-- If a specialized skill was matched in Step 2.7, add the two lines below.
+     PATH: record the SKILL.md location exactly where the Step 2.7 glob found it —
+     a project-level `.claude/skills/<name>/SKILL.md` takes precedence over a
+     user-level `~/.claude/skills/<name>/SKILL.md`. Do NOT assume the home (`~`) path.
+     Use forward slashes + `~` (home); Claude Code resolves these on macOS, Linux,
+     and Windows alike — never write OS-specific separators or absolute paths. -->
 **Specialized Skill:** [skill-name] — read `[path/to/skill/SKILL.md]` for guidelines.
 **Key sections to read:** [§Section1, §Section2] (only the sections relevant to this task)
 

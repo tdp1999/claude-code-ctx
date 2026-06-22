@@ -23,7 +23,10 @@ Why this matters, background info, relation to other work.
 Implementation hints, patterns to follow, edge cases.
 Reference `.context/patterns-architecture.md` if relevant.
 
-<!-- Optional: Added by /ctx:breakdown when a specialized skill matches this task -->
+<!-- Optional: Added by /ctx:breakdown when a specialized skill matches this task. -->
+<!-- PATH: use where the skill was actually found — project-level `.claude/skills/<name>/SKILL.md`
+     takes precedence over user-level `~/.claude/skills/<name>/SKILL.md`. Forward slashes + `~`
+     resolve on macOS, Linux, and Windows; never use OS-specific separators or absolute paths. -->
 <!-- **Specialized Skill:** [skill-name] — read `[path/to/SKILL.md]` for guidelines. -->
 <!-- **Key sections to read:** [§Section1, §Section2] -->
 

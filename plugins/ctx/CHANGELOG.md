@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.6] - 2026-06-22
+
+### Fixed
+
+- **Specialized-skill path resolution** — `/ctx:breakdown` now records each skill's SKILL.md at the location the discovery glob actually found it, with project-level `.claude/skills/<name>/` taking precedence over user-level `~/.claude/skills/<name>/`. Previously it could hardcode the `~/.claude/...` path even when the skill lived project-level, so `/ctx:task` failed to load it.
+- **`/ctx:task` self-heals stale skill paths** — when a task's `**Specialized Skill:**` path does not resolve, the skill now re-discovers by globbing `.claude/skills/<name>/` then `~/.claude/skills/<name>/` instead of aborting. Existing tasks with the old hardcoded path keep working.
+- **Agent + commit-skill discovery now checks project-level too** — the verification (test-runner) and commit-skill globs in `/ctx:task` scan `.claude/agents/` & `.claude/skills/` before `~/.claude/...`, no longer user-level only.
+
+### Changed
+
+- Path guidance in `breakdown/SKILL.md`, `task/SKILL.md`, `task-template.md`, and the skill-relationships diagram now states that paths use forward slashes + `~` (home), which Claude Code resolves on macOS, Linux, and Windows alike — never OS-specific separators or absolute paths.
+
+---
+
 ## [2.0.5] - 2026-04-01
 
 ### Changed
@@ -299,6 +313,7 @@ ctx/
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.0.6 | 2026-06-22 | Fix specialized-skill path resolution (project-level precedence, self-healing, cross-platform notes) |
 | 2.0.5 | 2026-04-01 | Move logging from plugin hooks to skill-level instructions |
 | 2.0.4 | 2026-04-01 | Remove duplicate hooks declaration — auto-discovered |
 | 2.0.3 | 2026-04-01 | Fix invalid manifest — hooks field must be string path |

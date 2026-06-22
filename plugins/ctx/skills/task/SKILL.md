@@ -53,6 +53,12 @@ If empty, ask user which task to work on.
    **If found:**
    - Read ONLY the sections listed in `**Key sections to read:**` from the referenced SKILL.md
    - Do NOT read the entire skill file — only the relevant sections, to keep context lean
+   - **If the referenced path does not resolve** (e.g., an older task hardcoded
+     `~/.claude/skills/<name>/SKILL.md` but the skill lives project-level — or vice
+     versa), re-discover by globbing `.claude/skills/<name>/SKILL.md` then
+     `~/.claude/skills/<name>/SKILL.md` and read whichever exists (project-level
+     wins). Do not abort on a stale path. These globs use forward slashes + `~`,
+     which Claude Code resolves on macOS, Linux, and Windows alike.
    - Follow the skill's guidelines for the ACs in this task alongside patterns-architecture.md
    - Note in progress log: `- [date] Using [skill-name] for [what]`
 
@@ -96,7 +102,7 @@ If empty, ask user which task to work on.
    If config `verification.carefulMode` is true → treat as `full` regardless.
 
    - **none**: Skip verification entirely.
-   - **test**: Check if a test-runner agent exists (glob `~/.claude/agents/test-runner*`).
+   - **test**: Check if a test-runner agent exists (glob `.claude/agents/test-runner*` then `~/.claude/agents/test-runner*` — project-level wins).
      - If found → suggest: "Run tests for affected code? (yes/no)"
      - If not found → suggest: "Consider running tests manually before marking complete."
    - **full**: Check for both test-runner and build-validator agents.
@@ -106,7 +112,7 @@ If empty, ask user which task to work on.
 
 9. **Suggest commit (discovery-based):**
    After task completion, if a commit-related skill is available:
-   - Quick glob: `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
+   - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
    - If found → suggest: "Task complete. Use [skill-name] to commit with task ID in scope? e.g., `feat(task-NNN): [goal]`"
    - If not found → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
 

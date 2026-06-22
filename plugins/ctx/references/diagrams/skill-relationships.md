@@ -214,7 +214,7 @@ CTX can discover and leverage specialized skills installed by the user (project 
 - `/ctx:task` reads the reference and loads only the relevant sections of the external skill — no re-scanning needed
 - If a task was created without breakdown (e.g., `/ctx:create-task`), `/ctx:task` does a lightweight fallback scan only when ACs clearly need specialized work
 
-**Scan locations:**
+**Scan locations** (project-level takes precedence on a name clash):
 - `.claude/skills/*/SKILL.md` (project-level)
 - `~/.claude/skills/*/SKILL.md` (user-level)
 
@@ -316,7 +316,7 @@ CTX skills can integrate with user-installed skills and agents via the **Skill D
 ### Discovery Pattern
 
 All external integrations follow this convention:
-1. Check if relevant skill/agent exists (glob `~/.claude/skills/*/SKILL.md`, `~/.claude/agents/*.md`)
+1. Check if relevant skill/agent exists — glob project-level first, then user-level: `.claude/skills/*/SKILL.md` + `~/.claude/skills/*/SKILL.md`, and `.claude/agents/*.md` + `~/.claude/agents/*.md` (project-level wins)
 2. If found → suggest it with context
 3. If not found → provide manual alternative
 4. **NEVER fail because an external skill is missing**
