@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-06-30
+
+### Added
+
+- **`/ctx:task` now briefs the user before implementing** — a new mandatory step runs before "Begin work" with two parts:
+  - **Explain the task & its context** — describes, in plain language, what the task accomplishes, why it exists (the parent epic/investigation), and where it fits in the bigger picture. Written for a reader who knows the overall system but nothing about this task or its epic.
+  - **Reconcile the approach** — summarizes the approach the task file prescribes, then scans/verifies the actual code and presents the recommended approach, explicitly flagging any mismatch between the task's (possibly stale) assumptions and the current state. Pauses for confirmation when a significant mismatch is found.
+
+---
+
 ## [2.0.6] - 2026-06-22
 
 ### Fixed

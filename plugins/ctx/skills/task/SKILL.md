@@ -79,25 +79,43 @@ If empty, ask user which task to work on.
    - Dependencies should be done
    - If blocked, report why
 
-5. **Begin work:**
+5. **Brief the user & reconcile approach (MANDATORY — before beginning work):**
+
+   Do NOT jump straight into implementation. First produce a briefing with two parts and show it to the user.
+
+   **5a. Explain what the task is and its context:**
+   - Assume the user has NO knowledge of this specific task or the epic/investigation it belongs to — but DOES have a general understanding of the overall system. Write for that reader.
+   - In plain language (avoid internal jargon and bare rule IDs — expand them), explain:
+     - **What this task accomplishes** and the concrete problem/need it addresses
+     - **Why it exists** — the parent epic (`.context/plans/epic-*.md`) or investigation it came from, and how this task fits into that larger goal
+     - **Where it sits in the bigger picture** — what depends on it, what it unblocks, what part of the system it touches
+   - Keep it tight but genuinely explanatory — enough that someone seeing the task cold understands the "why" before the "how".
+
+   **5b. Present the approach — task's vs. yours after verification:**
+   - First summarize the approach the **task file prescribes** (from its acceptance criteria and `## Technical Notes`).
+   - Then **scan and verify the actual code** the task references (files, functions, APIs, current behavior). Tasks are often written well before they are picked up, so their assumptions can be stale — files moved or renamed, APIs changed, part of the work already done, or the described state no longer matching reality.
+   - Present **your recommended approach** after that verification, and **explicitly flag any mismatch** between what the task assumes and the current state of the code. For each mismatch note: what the task assumed, what you actually found, and how it changes the plan.
+   - **If there is a significant mismatch** (stale assumptions, work already partially done, a materially better approach), pause and confirm the direction with the user before proceeding. If everything lines up, say so and continue.
+
+6. **Begin work:**
    - Update status to `in-progress` if pending
    - Add progress log entry: `- [date] Started`
    - Work through acceptance criteria in order
 
-6. **During work:**
+7. **During work:**
    - Follow patterns from patterns-architecture.md
    - If a specialized skill is loaded, follow its guidelines for relevant ACs
    - Update progress log with significant milestones
    - If blocked, update status and note blocker
    - **AC tracking (MANDATORY):** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
 
-7. **On completion (MANDATORY):**
+8. **On completion (MANDATORY):**
    After all acceptance criteria are checked `[x]`:
    - Change `## Status: in-progress` to `## Status: done` in the task file
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
 
-8. **Verification on completion:**
+9. **Verification on completion:**
    Read the task's `## Verification:` field (none / test / full).
    If config `verification.carefulMode` is true → treat as `full` regardless.
 
@@ -110,21 +128,21 @@ If empty, ask user which task to work on.
      - If not found → suggest: "Consider running tests and build manually."
    - NEVER auto-run — always ask user first.
 
-9. **Suggest commit (discovery-based):**
-   After task completion, if a commit-related skill is available:
-   - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
-   - If found → suggest: "Task complete. Use [skill-name] to commit with task ID in scope? e.g., `feat(task-NNN): [goal]`"
-   - If not found → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
+10. **Suggest commit (discovery-based):**
+    After task completion, if a commit-related skill is available:
+    - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
+    - If found → suggest: "Task complete. Use [skill-name] to commit with task ID in scope? e.g., `feat(task-NNN): [goal]`"
+    - If not found → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
 
-10. **Domain check on completion:**
-   If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
-   - Ask: "This task referenced domain rules [list IDs]. Did the implementation match these rules exactly, or did business logic change?"
-   - If user says logic changed → generate proposed domain updates using Domain Impact Protocol format → show to user → require confirmation → update `domain.md`
-   - If user says matched exactly → no action needed
+11. **Domain check on completion:**
+    If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
+    - Ask: "This task referenced domain rules [list IDs]. Did the implementation match these rules exactly, or did business logic change?"
+    - If user says logic changed → generate proposed domain updates using Domain Impact Protocol format → show to user → require confirmation → update `domain.md`
+    - If user says matched exactly → no action needed
 
-   If during implementation you discover code behavior contradicts a domain rule:
-   - **STOP** — report the conflict: "[Rule ID] says X, but code does Y. Is this a bug or a stale rule?"
-   - Wait for user decision before proceeding
+    If during implementation you discover code behavior contradicts a domain rule:
+    - **STOP** — report the conflict: "[Rule ID] says X, but code does Y. Is this a bug or a stale rule?"
+    - Wait for user decision before proceeding
 
 ## Output
 
@@ -135,6 +153,8 @@ Confirm task loaded and show:
 
 ## Gotchas
 
+- **Brief before building**: Always run step 5 (explain the task + reconcile the approach) before touching code. Skipping straight to implementation is wrong even when the task looks trivial — the explanation and the staleness check are the point.
+- **Trust the code over the task file**: Tasks can be written long before they're picked up. Verify the task's assumptions against the actual code, and flag mismatches instead of blindly following a stale plan.
 - **Only search tasks/, never tasks-done/**: Done tasks are archived and read-only. If user asks for a completed task, inform them it's in tasks-done/ but do not re-open it.
 - **AC checkbox updates are MANDATORY and immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
 - **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.

@@ -190,7 +190,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 1.2.0
+Current version: 2.1.0
 
 ## Changelog
 
