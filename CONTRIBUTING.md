@@ -56,11 +56,15 @@ Each skill lives in `plugins/ctx/skills/<skill-name>/` with at minimum a `SKILL.
 - Follow naming conventions in `shared/conventions/task-naming.md`
 - Keep templates minimal — avoid over-prescribing structure
 
-## Version Bumping
+## Version Bumping & Releases
 
-If your change warrants a version bump, update ALL of:
+See **[RELEASING.md](RELEASING.md)** for the full process — choosing a SemVer bump
+level, the exact files to update per plugin, the changelog format, tagging, and
+publishing GitHub releases.
+
+In short, an `ctx` version bump touches:
 - `plugins/ctx/.claude-plugin/plugin.json`
-- `.claude-plugin/marketplace.json`
+- `.claude-plugin/marketplace.json` (the `ctx` entry **and** `metadata.version`)
 - `plugins/ctx/CHANGELOG.md`
 - `plugins/ctx/README.md` (if applicable)
 

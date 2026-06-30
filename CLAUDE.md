@@ -20,6 +20,8 @@ No build system, test suite, or linting — this is a documentation-driven plugi
 
 ### Version Bumping
 
+> Canonical, fuller process (SemVer levels, multi-plugin tagging, releases): **`RELEASING.md`** at the repo root.
+
 When bumping the version, update ALL of these files:
 - `plugins/ctx/.claude-plugin/plugin.json` (version field)
 - `.claude-plugin/marketplace.json` (version field)
