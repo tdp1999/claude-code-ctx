@@ -110,10 +110,29 @@ If empty, ask user which task to work on.
    - **AC tracking (MANDATORY):** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
 
 8. **On completion (MANDATORY):**
-   After all acceptance criteria are checked `[x]`:
+
+   **Gate: `done` requires every AC checked `[x]`.** Before writing the status,
+   re-read the `## Acceptance Criteria` block and count. If a single `- [ ]`
+   remains, the task is not done — no matter how finished the work feels.
+
+   When all ACs are `[x]`:
    - Change `## Status: in-progress` to `## Status: done` in the task file
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
+
+   When work is finished but an AC cannot be verified yet (needs a server
+   restart, a release to land, someone else's review):
+   - Status stays `in-progress`, or becomes `blocked` if the wait is on someone
+     else. The unverified AC stays `- [ ]`.
+   - Put the reason in `## Progress Log`, naming exactly what is outstanding.
+   - **Never encode the caveat in the status line.** `## Status: done (pending
+     visual verify)` is not a status: sync cannot parse it, so the task is
+     neither archived nor reported, and it falls out of every count until
+     someone reads the file by hand. The parenthetical is the proof it is not
+     done — write `in-progress` and say why in the log.
+
+   The `## Status:` line holds exactly one of `pending` / `in-progress` /
+   `blocked` / `done`. Nothing else on that line, ever.
 
 9. **Verification on completion:**
    Read the task's `## Verification:` field (none / test / full).
@@ -157,6 +176,8 @@ Confirm task loaded and show:
 - **Trust the code over the task file**: Tasks can be written long before they're picked up. Verify the task's assumptions against the actual code, and flag mismatches instead of blindly following a stale plan.
 - **Only search tasks/, never tasks-done/**: Done tasks are archived and read-only. If user asks for a completed task, inform them it's in tasks-done/ but do not re-open it.
 - **AC checkbox updates are MANDATORY and immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
+- **`done` is gated on the checkboxes, not on how finished it feels**: count the ACs before writing the status. One `- [ ]` left means `in-progress`.
+- **Never qualify the status line**: `## Status: done (pending X)` parses as neither `done` nor anything else, so sync skips the task entirely and it silently leaves every count. Caveats go in `## Progress Log`; the status stays a bare token.
 - **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.
 - **Blocked tasks need a reason**: If a task cannot proceed, update status to `blocked` and document why. Do not silently skip to another task.
 - **Verification field controls post-completion behavior**: Check the task's `Verification:` field. Only suggest test/build runs when the level warrants it (see config-convention).

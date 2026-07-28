@@ -81,8 +81,15 @@ Skill-specific errors:
 ## Step 2: Check Context Bank
 
 Check if `.context/tasks/` exists:
-- If yes, read existing task files to understand numbering and avoid duplicates
-- Also check `.context/tasks-done/` for archived completed tasks (to avoid number conflicts)
+- If yes, get the highest number in use with the canonical scan — `tasks-done/` is
+  nested by epic, so a flat `ls` of it returns directory names and misses every
+  archived task:
+  ```bash
+  find .context/tasks .context/tasks-done -name '[0-9][0-9][0-9]*.md' 2>/dev/null \
+    | sed 's#.*/##' | grep -oE '^[0-9]+' | sort -n | tail -1
+  ```
+  A breakdown mints a whole block of numbers, so a wrong starting point duplicates
+  every one of them. See `../../shared/conventions/task-naming.md`.
 - If no, suggest running `/ctx:context-init` first
 
 Read `.context/patterns-architecture.md`, `.context/decisions.md`, and `.context/domain.md` (if exists) for project context. When domain.md exists, use domain rule IDs in acceptance criteria for traceability (e.g., "Validate ORD-001: Order must contain at least one Line Item").
@@ -302,7 +309,7 @@ Key points:
 ## Gotchas
 
 - **Domain Impact Check BEFORE breaking down**: If epic references entities/flows/rules not in domain.md, propose domain updates first. Do not create tasks that reference undocumented domain concepts.
-- **Check both tasks/ and tasks-done/ for numbering**: Task numbers are globally unique and never reused. Find the highest number across both directories before assigning new numbers.
+- **Never `ls` tasks-done/ to find the highest number**: it is nested by epic, so a flat listing returns folder names and every archived task goes unseen. Use the `find … | sort -n` scan from Step 2. A breakdown assigns a block of numbers at once, so one bad starting point duplicates the entire block.
 - **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
 - **Skill Discovery scans ONCE per breakdown**: Do not re-scan for each task. Scan all installed skills once, match to requirements, write references into individual task files.
 - **Epic must have High-Level Requirements**: Cannot break down an epic in "draft" status. It needs at least "ready" with requirements defined.

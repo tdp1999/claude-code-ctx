@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-07-28
+
+### Fixed
+
+- **Duplicate task numbers** — the "find the next number" recipe in `task-naming.md` was `ls .context/tasks-done/ | tail -1`. Since tasks are archived into per-epic subfolders (`tasks-done/epic-auth/…`), that flat listing returns *directory names*, so every archived task was invisible to the scan and freshly archived numbers were handed straight back out. Observed in the wild: two task 390s and two task 391s in one project. All numbering now goes through a recursive, numerically-sorted scan of both directories, plus an explicit "is this number free" check before the file is written. Applied to `create-task` and `breakdown` (which mints a whole block at once, so a bad start duplicates all of it).
+- **`done` with unfinished acceptance criteria** — `/ctx:task` said to mark `done` after all ACs are checked, but nothing stopped `done` being written while ACs were still `[ ]`. `/ctx:sync` only auto-corrected the opposite direction (all ACs checked → `done`), so the contradiction was never surfaced. `done` is now explicitly gated on the checkbox count, and sync reports the contradiction and proposes `done → in-progress` rather than resolving it silently.
+- **Qualified status lines silently drop a task from every count** — `## Status: done (pending visual verify)` matches no status token, so sync neither archived nor flagged the task and it disappeared from the progress tracker until someone opened the file by hand. The status line is now specified as one bare token (`pending` / `in-progress` / `blocked` / `done`), caveats belong in `## Progress Log`, and sync reports a decorated status as malformed instead of prefix-matching it.
+- **`status-lifecycle.md` documented a vocabulary nothing used** — it described task statuses as `completed` in `**Status:**` frontmatter, while the template, `/ctx:task` and `/ctx:sync` all use `done` on a `## Status:` line. The task sections now match what the skills actually read. (`completed` remains correct for epics and investigations, which are separate lifecycles.)
+
+### Added
+
+- **`/ctx:sync` integrity check** — sync is the only skill that sees every task at once, so it now scans for duplicate task numbers and status/AC contradictions on every run. Both are report-only: a task number appears in commit messages and branch names, so renumbering is the user's call, and only the newest file is ever a candidate (an archived number is already in git history).
+
+---
+
 ## [2.1.0] - 2026-06-30
 
 ### Added

@@ -8,14 +8,32 @@ Different file types have different status lifecycles. Understanding these helps
 
 ## Task Status Lifecycle
 
+### The Status Line
+
+A task file declares its status on one line, in this exact shape:
+
+```markdown
+## Status: in-progress
+```
+
+**The value is one bare token from the table below — nothing else on the line.**
+No parenthetical, no qualifier, no date, no "done (pending review)". Every reader
+(sync, task, progress) matches the token exactly, so a decorated status matches
+nothing: the task is neither archived nor flagged, and it quietly drops out of
+every count until a human opens the file. If there is something to say about the
+status, `## Progress Log` is where it goes.
+
+Tasks use `done`. (`completed` is the *epic* and *investigation* vocabulary —
+they are different lifecycles, see below.)
+
 ### Available Statuses
 
 | Status | Meaning | Location | Next Action |
 |--------|---------|----------|-------------|
 | `pending` | Not started | `tasks/` | Start work → `in-progress` |
-| `in-progress` | Currently working | `tasks/` | Complete → `completed` or hit blocker → `blocked` |
+| `in-progress` | Currently working | `tasks/` | Complete → `done` or hit blocker → `blocked` |
 | `blocked` | Cannot proceed | `tasks/` | Resolve blocker → `in-progress` or `pending` |
-| `completed` | Finished | `tasks-done/<epic-name>/` | Archive (auto or manual) |
+| `done` | Finished, **every AC checked** | `tasks-done/<epic-name>/` | Archive (auto or manual) |
 
 ### Status Flow
 
@@ -24,8 +42,19 @@ pending
    ↓
 in-progress ←→ blocked
    ↓
-completed → [archived to tasks-done/<epic-name>/]
+done → [archived to tasks-done/<epic-name>/]
 ```
+
+### `done` Is Gated on the Acceptance Criteria
+
+`done` means every `- [ ]` under `## Acceptance Criteria` is now `- [x]`. It is a
+statement about the checkboxes, not about how finished the work feels.
+
+Work that is functionally complete but has an AC nobody can verify yet — a server
+restart, a release to land, a review to come back — is **not** `done`. It stays
+`in-progress`, or `blocked` when the wait is on someone else, with the outstanding
+item named in the progress log. That way it keeps showing up in active counts,
+which is exactly what you want from something unfinished.
 
 ### Status Details
 
@@ -128,43 +157,45 @@ OpenAPI schema for new endpoints. Estimated unblock: Feb 15.
 - Document how blocker was resolved
 - Continue work
 
-#### completed
+#### done
 
 **When to use:**
-- All acceptance criteria met
+- Every acceptance criterion is checked `[x]` — this is the gate
 - Tests passing
 - Code reviewed (if applicable)
 - Merged to main branch
 
-**Example:**
-```yaml
-status: completed
-completed_date: 2026-02-11
-```
-
 **Typical in file:**
 ```markdown
-# Add User Dashboard Component
+# Task: Add User Dashboard Component
 
-**Status:** completed
-**Complexity:** M
-**Completed:** 2026-02-11
+## Status: done
 
-## Description
-Create dashboard component to display user stats.
+## Acceptance Criteria
+- [x] Component scaffold created
+- [x] User service injected
+- [x] Template implemented
+- [x] Unit tests added
 
-## Completed Work
-- [x] Create component scaffold
-- [x] Add service injection
-- [x] Implement template
-- [x] Add unit tests
-- [x] Code review passed
-- [x] Merged to main
-
-## Outcome
-Dashboard component displaying user stats (login count,
-last active, profile completion). 95% test coverage.
+## Progress Log
+- [2026-02-11] Done — all ACs satisfied. 95% coverage.
 ```
+
+**Not done, even though the code is written:**
+```markdown
+## Status: in-progress
+
+## Acceptance Criteria
+- [x] Component scaffold created
+- [x] Template implemented
+- [ ] Verified against the staging API   ← still open
+
+## Progress Log
+- [2026-02-11] Implementation complete. Last AC blocked on staging redeploy (ETA Feb 13).
+```
+The temptation here is `## Status: done (pending staging check)`. That line
+matches no status token, so sync neither archives nor flags the task and it
+vanishes from every count. Leave it `in-progress` and say why in the log.
 
 **Archiving:**
 - File moves from `tasks/` to `tasks-done/<epic-name>/` (organized by source epic)
@@ -360,11 +391,12 @@ completed → [archived to plans-done/]
 | `pending` | `in-progress` | ✅ | Start work |
 | `pending` | `blocked` | ✅ | Hit blocker before starting |
 | `in-progress` | `blocked` | ✅ | Hit blocker during work |
-| `in-progress` | `completed` | ✅ | Finish work |
+| `in-progress` | `done` | ✅ | Finish work — **only with every AC checked** |
 | `blocked` | `pending` | ✅ | Blocker resolved, not resuming yet |
 | `blocked` | `in-progress` | ✅ | Blocker resolved, resume work |
-| `completed` | `in-progress` | ❌ | Don't reopen completed tasks |
-| `completed` | `pending` | ❌ | Create new task instead |
+| `done` | `in-progress` | ⚠️ | Only to undo a premature `done` (ACs still open), and only with the user's say-so. Never to reopen finished work — create a new task for that. |
+| `done` | `pending` | ❌ | Create new task instead |
+| any | `done (…)` | ❌ | A qualified status is not a status. See The Status Line above. |
 
 ### Epics
 
@@ -395,8 +427,8 @@ completed → [archived to plans-done/]
 ### When to Archive
 
 **Tasks:**
-- Status is `completed`
-- All acceptance criteria met
+- Status line is exactly `done` — a qualified status disqualifies it
+- Every acceptance criterion is checked `[x]`
 - Merged to main branch
 - No pending follow-up work
 
@@ -528,7 +560,8 @@ cat .context/investigations/003-memory-leak.md
 
 - Mark `in-progress` when you start
 - Mark `blocked` as soon as you hit blocker
-- Mark `completed` when truly done (tests passing, merged)
+- Mark a task `done` (an epic/investigation `completed`) only when truly finished —
+  tests passing, merged, every AC checked
 
 ### Document Status Changes
 
@@ -543,8 +576,8 @@ cat .context/investigations/003-memory-leak.md
 
 ### Don't Skip Statuses
 
-❌ **Bad:** `pending` → `completed` (what happened to in-progress?)
-✅ **Good:** `pending` → `in-progress` → `completed`
+❌ **Bad:** `pending` → `done` (what happened to in-progress?)
+✅ **Good:** `pending` → `in-progress` → `done`
 
 ### Use Blocked Thoughtfully
 

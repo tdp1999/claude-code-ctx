@@ -41,22 +41,66 @@ Skill-specific errors:
 
 2. **Extract from each:**
    - Task number and name
-   - Current status
+   - Current status — the token on the `## Status:` line, read **exactly**
    - Source epic/investigation (from "from:" note or context)
    - Any blockers noted
    - Acceptance criteria completion (count `- [x]` vs `- [ ]`)
+
+2.5. **Integrity check (report-only, never auto-fix):**
+
+   Sync is the only skill that sees every task at once, so it is where corruption
+   gets caught. Both checks below exist because both failures happened silently.
+
+   **a. Duplicate task numbers:**
+   ```bash
+   find .context/tasks .context/tasks-done -name '[0-9][0-9][0-9]*.md' 2>/dev/null \
+     | sed 's#.*/##' | grep -oE '^[0-9]+[a-z]?' | sort | uniq -d
+   ```
+   For each number returned, list every file holding it:
+   ```bash
+   find .context/tasks .context/tasks-done -name '<NNN>-*.md'
+   ```
+
+   The `[a-z]?` is load-bearing. `NNNb`-style split suffixes (`277b-…`) are a
+   legitimate manual split, **not** a duplicate of `277-…`; without it every split
+   task reports as a collision and the real ones get lost in the noise.
+
+   **Do not renumber automatically.** A task number is quoted in progress.md,
+   epics, commit messages, and branch names. Report the collision, say which file
+   is the newer one, and let the user decide. If they want it fixed: rename the
+   **newest** file to the next free number (never touch an archived task — its
+   number is already in git history) and update every reference.
+
+   **b. Status/AC contradictions** — for each task in `tasks/`:
+   - Status line carries anything beyond the bare token (a parenthetical, a
+     qualifier, a date: `## Status: done (pending visual verify)`) → report as
+     **malformed**. Do not infer intent from it and do not archive it.
+   - Status is `done` but one or more ACs are `[ ]` → report as **contradictory**.
+
+   A `## Status:` line holds one of `pending` / `in-progress` / `blocked` / `done`
+   and nothing else. Caveats belong in `## Progress Log`; if work cannot be
+   finished, the status is `in-progress` or `blocked`, not `done` with an excuse.
 
 3. **Fix stale task statuses:**
    For each task in `.context/tasks/`:
    - If ALL ACs are `[x]` but status is NOT `done` → update status to `done`
    - If SOME ACs are `[x]` and status is `pending` → update status to `in-progress`
+   - If status is `done` but ANY AC is `[ ]` → **do not silently accept it**. This is
+     the reverse of the correction above and it must never be auto-resolved in the
+     `done` direction: sync cannot know whether the ACs were genuinely met and left
+     unticked, or the task was called done early. Report it, propose
+     `done → in-progress`, and apply only on user confirmation.
    - Report every status correction made
 
 4. **Archive done tasks:**
+   - Archive a task only when **both** hold: the `## Status:` line is exactly
+     `done` (no qualifier), and every AC is `[x]`. Anything flagged in step 2.5b
+     stays in `tasks/` until the user resolves it — archiving is one-way in
+     practice, so a premature move buries unfinished work in the archive.
    - Determine the source epic/investigation name for each done task
    - Create `.context/tasks-done/<epic-name>/` subfolder if it doesn't exist (e.g., `tasks-done/epic-auth-frontend/`)
    - If task has no associated epic, use `tasks-done/other/`
-   - Move any task with `## Status: done` from `tasks/` to the appropriate subfolder
+   - Move the qualifying tasks from `tasks/` to the appropriate subfolder
    - Preserve original filename
 
 5. **Compare with progress.md:**
@@ -126,6 +170,14 @@ Skill-specific errors:
 ```
 Sync complete.
 
+Integrity (needs a decision — nothing auto-fixed):
+⚠ Duplicate task number 391:
+   - tasks-done/epic-design-skill/391-design-skill-distill-universal.md (archived)
+   - tasks-done/other/391-landing-i18n-post-review-hardening.md (newer)
+   → rename the newer one to the next free number?
+⚠ 381-rte-heading-levels.md: status "done (pending visual verify)" is malformed,
+   and 0/3 ACs are checked → propose done → in-progress
+
 Status Corrections:
 - 007-build-ui.md: pending → in-progress (3/5 ACs checked)
 - 008-write-tests.md: in-progress → done (all ACs checked)
@@ -175,6 +227,9 @@ Current state:
 
 - **Never delete archived files**: tasks-done/ and plans-done/ are permanent archives. Moving files there is correct; deleting them is not.
 - **Auto-status correction can surprise users**: If ACs are all checked but status says "in-progress", sync will correct to "done". Warn the user when this happens.
+- **Auto-correction runs in ONE direction only**: unchecked ACs never justify writing `done`. All-ACs-checked → `done` is safe because the evidence is in the file; `done` with unticked ACs is a contradiction sync cannot resolve on its own. Report it, propose the downgrade, wait.
+- **A qualified status is a malformed status, not a `done`**: `## Status: done (pending X)` must not be prefix-matched to `done`. Either the task is done or it is not; the qualifier is the tell that it is not. Report and leave it in `tasks/`.
+- **Only sync sees duplicate task numbers**: every other skill looks at one task at a time, so a collision is invisible until it is quoted in two places. Run the duplicate scan every sync, and never renumber without asking — the number lives in commits and branch names too.
 - **Domain freshness check may produce false positives**: A stale domain.md doesn't always mean it's wrong — the epic may not have changed business logic. Present the finding but don't insist on updates.
 - **Missing progress.md is recoverable**: If it doesn't exist, create it from template and scan all task files to rebuild state. Do not error out.
 - **Epic archival is gated on ALL tasks done**: Do not archive an epic to plans-done/ if any of its tasks are still pending or in-progress.

@@ -103,8 +103,14 @@ I need more details to create an effective task:
 **Read relevant context files:**
 
 1. **Check task numbering:**
-   - Read existing tasks in `.context/tasks/` to determine next task number
-   - Also check `.context/tasks-done/` for highest completed number
+
+   Run the canonical scan — `tasks-done/` is nested by epic, so a flat `ls` of it
+   returns directory names and misses every archived task:
+   ```bash
+   find .context/tasks .context/tasks-done -name '[0-9][0-9][0-9]*.md' 2>/dev/null \
+     | sed 's#.*/##' | grep -oE '^[0-9]+' | sort -n | tail -1
+   ```
+   Next number = that + 1. See `../../shared/conventions/task-naming.md` → Finding Next Number.
 
 2. **Read project patterns:**
    - `.context/patterns-architecture.md` for coding standards
@@ -229,8 +235,15 @@ Show the task content to the user for review:
 **If user approves:**
 
 1. **Determine task number:**
-   - Find highest number in `.context/tasks/` and `.context/tasks-done/`
+   - Highest number = the `find … | sort -n | tail -1` scan from Step 2 (covers
+     `tasks/` **and** every epic subfolder under `tasks-done/`)
    - Increment by 1
+   - **Then confirm it is free before writing** — this must print nothing:
+     ```bash
+     find .context/tasks .context/tasks-done -name '<NNN>-*.md' -o -name '<NNN>[a-z]-*.md'
+     ```
+     If it prints a path, increment and check again. Writing a number that is
+     already taken silently forks the task history.
 
 2. **Create filename:**
    ```
@@ -318,7 +331,7 @@ Key points:
 ## Gotchas
 
 - **Plan only, do not implement**: This skill creates the task file. It does NOT start working on the task. Suggest `/ctx:task NNN` after creation.
-- **Check both tasks/ and tasks-done/ for numbering**: Task numbers are globally unique. A deleted task's number is never reused.
+- **Never `ls` tasks-done/ to find the highest number**: it is nested by epic, so a flat listing returns folder names and every archived task goes unseen — the exact way duplicate task IDs get minted. Use the `find … | sort -n` scan, and check the chosen number is free before writing.
 - **User must approve before file creation**: Always show the draft task and get explicit confirmation. Do not create the file silently.
 - **Standalone tasks are marked differently in progress.md**: Use "(standalone)" label so they're distinguishable from epic-sourced tasks.
 

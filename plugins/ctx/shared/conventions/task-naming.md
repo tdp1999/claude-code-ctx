@@ -45,18 +45,34 @@ tasks-done/
 
 ### Finding Next Number
 
-Check last task in both directories:
+**Use this command. Do not improvise a substitute.**
+
 ```bash
-# Last active task
-ls .context/tasks/ | tail -1
-# 042-fix-header-styles.md
-
-# Last archived task
-ls .context/tasks-done/ | tail -1
-# 041-add-footer-component.md
-
-# Next task number: 043
+# Highest number currently in use, across active AND archived tasks
+find .context/tasks .context/tasks-done -name '[0-9][0-9][0-9]*.md' 2>/dev/null \
+  | sed 's#.*/##' | grep -oE '^[0-9]+' | sort -n | tail -1
+# 042  → next task number is 043
 ```
+
+Then **verify the number is free before writing the file**:
+
+```bash
+# Must print nothing. If it prints a path, the number is taken — increment and retry.
+find .context/tasks .context/tasks-done -name '043-*.md' -o -name '043[a-z]-*.md'
+```
+
+**Why the command looks like this** — each part exists because a simpler
+version produced a real collision:
+
+| Part | Reason |
+|------|--------|
+| `find`, not `ls` | `tasks-done/` is **nested by epic** (`tasks-done/epic-auth/…`). A flat `ls .context/tasks-done/` lists *directory names*, so every archived task is invisible and the highest number found is far too low. This is the bug that minted two task 390s and two task 391s in one project. |
+| `sort -n`, not `tail -1` on a plain listing | Lexicographic order is only accidentally right. It breaks on the `NNNb` split-suffix (`277b` sorts after `280`) and on any project that reaches 1000. |
+| both directories | A number is retired for good once used. Archiving must never free it for reuse. |
+| the free-number check | The max-scan answers "what is the highest", not "is this one free". Gaps exist (a deleted draft, a manual `NNNb` split), and writing into a gap silently overwrites or duplicates. |
+
+**Never derive the next number from `progress.md`.** It is a summary that drifts;
+the filesystem is the source of truth.
 
 ## Name Length Guidelines
 
@@ -265,7 +281,8 @@ Split into:
 
 Before creating a task file, verify:
 
-- [ ] Number is next in sequence (check tasks/ and tasks-done/)
+- [ ] Number came from the `find | sort -n` command above (**not** `ls`, **not** `progress.md`)
+- [ ] The free-number check printed nothing
 - [ ] Name is 3-5 words (excluding number)
 - [ ] Verb is appropriate for the work type
 - [ ] Subject is specific to your codebase
