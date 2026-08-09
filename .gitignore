@@ -8,3 +8,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Dev-only working notes (not shipped to consumers)
+context/
