@@ -5,6 +5,105 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-08-08
+
+Breaking release. Six skills were removed and the setup surface collapsed to two
+commands. Nothing in `.context/` changes format, so existing projects keep working —
+only the commands you type change.
+
+### Removed
+
+- **`investigate`** — a third planning path that duplicated `epic` in everything but its
+  filename prefix (`inv-` vs `epic-`) and its own status lifecycle. Bugs and defects now
+  go through `create-task` (small, cause already understood) or `epic` (large, cause
+  unclear). The epic template already had every section a bug write-up needs — `## Why`,
+  `## Scope`, `## Technical Considerations`, `## Risks & Warnings` — so the investigation
+  template was pure duplication. See `shared/workflows/bug-flow.md`.
+  - `.context/investigations/` is no longer created or scanned. **Migration:** if you
+    have investigation files, move them to `.context/plans/` and rename `inv-<name>.md`
+    to `epic-<name>.md`. `/ctx:breakdown` then treats them like any other epic.
+- **The execution-logging subsystem**, and the `recap` skill that read it. Logging never
+  actually ran: the write step lived in a skill nothing invoked, so every consumer's log
+  directory was empty and `recap` had nothing to report on. Removed rather than repaired.
+  **Migration:** delete `~/.claude/plugins/data/<marketplace>/ctx-logs` by hand if it
+  exists; the plugin no longer touches it.
+- **`vision`, `architecture`, `techstack`, `context-init` as skills.** They are now
+  **procedures** — plain markdown in `shared/procedures/`, read and followed by `start`
+  and `onboard`. Six setup commands where a user could only reasonably guess at two was
+  a discovery problem, not a capability the removal takes away: every question they asked
+  is still asked, by the two commands that remain.
+  **Migration:** `/ctx:vision` → `/ctx:start` (it detects existing files and enters
+  update mode for just the parts you pick). Same for `/ctx:architecture`,
+  `/ctx:techstack`, `/ctx:context-init`.
+- **`ctx-config.json` and the config layer** (`config-convention.md`,
+  `modes-convention.md`). Nine documented settings, exactly one of which any skill ever
+  read. **Migration:** `verification.carefulMode` is now the `/ctx:task --careful` flag.
+  `freezeMode` has no replacement. Delete the file; nothing reads it.
+
+### Fixed
+
+- **The context bank was never created by either orchestrator.** `start` and `onboard`
+  both ran the context-bank step *last* and guarded it on "if `.context/` doesn't
+  exist" — but the vision step had already written `.context/vision.md` several steps
+  earlier, so the guard always saw a folder and always skipped. Consequence:
+  `progress.md`, `decisions.md`, `tasks/`, `tasks-done/`, `plans-done/`, and the
+  `## Project Context` block in `CLAUDE.md` were silently never created, and the first
+  `/ctx:breakdown` had nowhere to write. The context bank is now **step 1, unconditional**
+  in both skills, and idempotent so re-running is safe.
+- **Skill discovery could not see plugin skills.** `/ctx:breakdown` enumerated candidate
+  skills by globbing `.claude/skills/*/` and `~/.claude/skills/*/`. Every skill shipped
+  by a plugin lives under `~/.claude/plugins/` and matched neither glob, so plugin skills
+  were invisible to task planning. Adding a third glob is a trap — the plugin cache holds
+  several versions of the same plugin under two different directory layouts, so a glob
+  can resolve to a stale version. Discovery now reads the skill list already present in
+  the agent's context, which Claude Code populates with project, user, **and** plugin
+  skills.
+- **Tasks recorded a skill's file path instead of its name.** A path goes stale the
+  moment a plugin updates or a skill moves between project and user scope; v2.0.6 added
+  self-healing re-discovery to work around it. `/ctx:breakdown` now writes the skill
+  **name** on the `**Specialized Skill:**` line and `/ctx:task` invokes it by name
+  through the Skill tool. Old task files with paths still work.
+- **`.project-init.md` had two documented locations** — `file-contracts.md` said
+  `.context/.project-init.md`, everything else said the repo root. Repo root is correct.
+- **`status-lifecycle.md` still documented formats no skill reads.** Its "Status
+  Metadata" section offered YAML frontmatter and a `**Status:**` bold line as equally
+  valid, and the `pending` / `in-progress` / `blocked` examples used both — while every
+  skill reads a `## Status` heading and nothing else. All examples now match the real
+  task and epic templates, and `/ctx:list` (a command that does not exist) is gone.
+- **Epics had a fifth status nothing could write.** `status-lifecycle.md` listed
+  `broken-down → in-progress → completed`, but `/ctx:sync` only ever transitions
+  `broken-down → completed`, and `file-contracts.md` listed four statuses, not five. An
+  epic now stays `broken-down` for the whole time its tasks are worked on; per-task state
+  already lives in the task files and `progress.md`. `epic-template.md` offered a fourth
+  contradictory set (`draft | ready | in-progress | done`) and now matches.
+
+### Changed
+
+- **`/ctx:task --careful`** replaces the `carefulMode` config key. It forces `full`
+  verification regardless of the task's `## Verification` level. Default behavior is
+  unchanged: the level in the task file governs.
+- **Subagent delegation is now specified, not implied.** `task` gained `Task` and `Skill`
+  in `allowed-tools`; `breakdown`, `create-task`, `epic`, `start`, and `onboard` gained
+  concrete guidance on what to send to an Explore agent and when. `onboard` fans out
+  parallel Explore agents for structure, stack, and patterns instead of reading the
+  repo serially. `domain` gained `Task` — it documented Explore delegation for extract
+  mode without the grant to do it. `shared/subagents.md` was rewritten and the
+  non-existent `package-installer` agent removed from it.
+- **`/ctx:start` gained a mode check.** It now detects an existing codebase and redirects
+  to `/ctx:onboard`, and detects partial setup and offers to fill in only what's missing.
+
+### Documentation
+
+- `references/diagrams/workflow-diagram.md` and `skill-relationships.md` redrawn around
+  the ten-skill model.
+- `README.md` rewritten: two setup commands, no `investigate`, no `--metrics`, accurate
+  skill counts.
+- Deleted three orphaned reference documents that nothing linked to and that taught the
+  removed four-command setup model: `references/examples/new-project-example.md`,
+  `shared/workflows/new-project-flow.md`, `shared/workflows/onboarding-flow.md`.
+
+---
+
 ## [2.2.0] - 2026-07-28
 
 ### Fixed
