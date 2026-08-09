@@ -3,7 +3,7 @@
 ## Create Mode
 
 ```
-User: /ctx:architecture
+Reached the architecture step of /ctx:start
 
 Assistant asks about backend style, frontend style, domain approach, etc.
 
@@ -15,7 +15,7 @@ Creates .context/patterns-architecture.md with these decisions.
 ## Update Mode
 
 ```
-User: /ctx:architecture
+Reached the architecture step of /ctx:start
 
 Assistant detects existing patterns-architecture.md, shows current architecture.
 
@@ -29,7 +29,7 @@ Assistant updates patterns-architecture.md, adds changelog, triggers /ctx:log-de
 ## Add Module
 
 ```
-User: /ctx:architecture --add-module payments
+Invoked with: --add-module payments
 
 Assistant asks: Responsibility? Layer? Dependencies?
 
@@ -41,7 +41,7 @@ Assistant adds payments module to Modules section in patterns-architecture.md.
 ## Add Domain
 
 ```
-User: /ctx:architecture --add-domain billing
+Invoked with: --add-domain billing
 
 Assistant asks: Boundaries? Entities? Events?
 
@@ -53,7 +53,7 @@ Assistant adds billing domain to Domains section in patterns-architecture.md.
 ## Extract Mode
 
 ```
-User: /ctx:architecture --extract
+Invoked in extract mode (from /ctx:onboard)
 
 [Explore] Analyzes folder structure, file naming, imports
 [Findings] Hexagonal backend (src/domain/, src/application/, src/infrastructure/)

@@ -1,272 +1,145 @@
-# Context Workflow Skills - Complete Flow Diagram
+# CTX Workflow Diagram
 
-## Architecture Overview
+What a user actually runs, in order. For which skill reads and writes which file, see
+`skill-relationships.md`.
+
+## The Whole Picture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PROJECT INITIALIZATION                        │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-           ┌──────────────────┴──────────────────┐
-           │                                     │
-    ┌──────▼──────┐                    ┌────────▼────────┐
-    │ NEW PROJECT │                    │ EXISTING PROJECT │
-    └──────┬──────┘                    └────────┬─────────┘
-           │                                     │
-    ┌──────▼──────┐                    ┌────────▼─────────┐
-    │  /vision    │◄───────────────────┤ /onboard-project │
-    │  (create)   │                    │  (orchestrator)  │
-    └──────┬──────┘                    └────────┬─────────┘
-           │                                     │
-    ┌──────▼──────────┐                         │
-    │ /architecture   │◄────────────────────────┤
-    │    (create)     │                         │
-    └──────┬──────────┘                         │
-           │                                     │
-    ┌──────▼──────┐                             │
-    │ /techstack  │◄────────────────────────────┘
-    │  (create)   │
-    └──────┬──────┘
-           │
-    ┌──────▼──────┐
-    │/init-context│
-    │  (utility)  │
-    └──────┬──────┘
-           │
-           └──────────────────┐
-                              │
-┌─────────────────────────────▼───────────────────────────────────┐
-│                      FEATURE PLANNING                            │
-└──────────────────────────────────────────────────────────────────┘
-                              │
-           ┌──────────────────┴──────────────────┐
-           │                                     │
-    ┌──────▼──────┐                    ┌────────▼─────────┐
-    │   /epic     │                    │  /investigate    │
-    │ (feature)   │                    │ (bugs/refactor)  │
-    └──────┬──────┘                    └────────┬─────────┘
-           │                                     │
-           │   Calls /log-decision               │
-           │   Domain Impact Protocol            │
-           ├──────────┬──────────────────────────┤
-           │          │                          │
-           │   ┌──────▼──────┐                   │
-           │   │  /domain    │                   │
-           │   │(biz logic)  │                   │
-           │   └──────┬──────┘                   │
-           │          │                          │
-           └──────────┴──────────┬───────────────┘
-                                 │
-                      ┌──────────▼────────┐
-                      │    /breakdown     │
-                      │   (decomposer)    │
-                      └──────────┬────────┘
-                              │
-┌─────────────────────────────▼───────────────────────────────────┐
-│                      TASK EXECUTION                              │
-└──────────────────────────────────────────────────────────────────┘
-                              │
-           ┌──────────────────┴──────────────────┐
-           │                                     │
-    ┌──────▼──────────────┐           ┌─────────▼──────────┐
-    │ /create-standalone- │           │   From /breakdown  │
-    │      task           │           │    (epic/invest)   │
-    │  (direct create)    │           └─────────┬──────────┘
-    └──────┬──────────────┘                     │
-           │                                     │
-           └──────────────────┬──────────────────┘
-                              │
-                     ┌────────▼─────────┐
-                     │ Tasks created in │
-                     │ .context/tasks/  │
-                     └────────┬─────────┘
-                              │
-                      ┌───────▼──────┐
-                      │  /progress   │
-                      │   (viewer)   │
-                      │              │
-                      │ User reviews │
-                      │ pending task │
-                      │    list      │
-                      └───────┬──────┘
-                              │
-                    User chooses task
-                              │
-                      ┌───────▼──────┐
-                      │  /task [num] │
-                      │ (load task)  │
-                      └───────┬──────┘
-                              │
-                      [Work on task]
-                              │
-┌─────────────────────────────▼───────────────────────────────────┐
-│                    PROGRESS TRACKING                             │
-└──────────────────────────────────────────────────────────────────┘
-                              │
-           ┌──────────────────┴──────────────────┐
-           │                                     │
-    ┌──────▼──────┐                    ┌────────▼─────────┐
-    │  /progress  │                    │     /sync        │
-    │  (viewer)   │                    │   (reconciler)   │
-    └─────────────┘                    └────────┬─────────┘
-                                                 │
-                                        Archives completed
-                                        tasks to tasks-done/<epic>/
+                          SETUP  (once per project)
+        ┌──────────────────────────────────────────────────┐
+        │                                                  │
+   empty repo                                     repo with code
+        │                                                  │
+   ┌────▼─────┐                                      ┌─────▼──────┐
+   │ /ctx:    │                                      │ /ctx:      │
+   │  start   │                                      │  onboard   │
+   └────┬─────┘                                      └─────┬──────┘
+        │  interviews you                                  │  reads the code
+        │                                                  │
+        └───────────────────┬──────────────────────────────┘
+                            │
+              both run the same 4 procedures
+              (shared/procedures/ — not slash commands)
+                            │
+        ┌───────────────────┼───────────────────┬───────────────────┐
+        ▼                   ▼                   ▼                   ▼
+   context-bank         vision            architecture         techstack
+   .context/         vision.md      patterns-architecture   .project-init.md
+   structure                               .md
+
+                          PLANNING  (per feature or defect)
+                            │
+        ┌───────────────────┴───────────────────┐
+        │                                       │
+   ┌────▼─────┐                          ┌──────▼────────┐
+   │ /ctx:epic│                          │ /ctx:         │
+   │          │                          │  create-task  │
+   └────┬─────┘                          └──────┬────────┘
+        │  plans/epic-<name>.md                 │  tasks/NNN-<name>.md
+        │                                       │
+   ┌────▼──────────┐                            │
+   │ /ctx:breakdown│                            │
+   └────┬──────────┘                            │
+        │  tasks/NNN-<name>.md × N              │
+        └───────────────────┬───────────────────┘
+                            │
+                          DOING
+                            │
+                     ┌──────▼───────┐
+                     │/ctx:progress │  what's pending, blocked, in flight
+                     └──────┬───────┘
+                            │  you pick a number
+                     ┌──────▼───────┐
+                     │ /ctx:task NNN│  briefs you, then implements
+                     └──────┬───────┘
+                            │  ACs checked, status → done
+                     ┌──────▼───────┐
+                     │  /ctx:sync   │  reconcile + archive
+                     └──────────────┘
+
+                          ALONGSIDE  (any time)
+              /ctx:domain         business logic, flows, rules
+              /ctx:log-decision   record an architecture decision
 ```
 
-## Skill Roles & Relationships
+## Skills, by When You Reach For Them
 
-### **Orchestrators** (Call other skills)
-- **`/onboard-project`** → Calls `/vision --extract`, `/architecture --extract`, `/techstack --extract`
-- **`/epic`** → Can call `/log-decision` when updated
-- **`/architecture`** → Can call `/log-decision` when updated
-- **`/vision`** → Can call `/log-decision` when updated
+### Setup — exactly two entry points
 
-### **Decomposers** (Create multiple outputs)
-- **`/breakdown`** → Takes epic/investigation → Creates multiple task files
-- **`/epic`** → Takes idea → Creates epic file (later broken down)
-- **`/investigate`** → Takes issue → Creates investigation file (later broken down)
+| Command | Use when | Produces |
+|---|---|---|
+| `/ctx:start` | New or empty project | Context bank + vision + architecture + techstack, optionally a first epic |
+| `/ctx:onboard` | Repo that already has code | The same files, extracted from the codebase and confirmed by you |
 
-### **Task Creators** (Write to `.context/tasks/`)
-- **`/breakdown`** → Primary task creator (from epics/investigations)
-- **`/create-standalone-task`** → Direct task creator (standalone)
+`vision`, `architecture`, `techstack`, and `context-bank` are **procedures**, not
+commands — they live in `shared/procedures/` and only `start` and `onboard` run them.
+Re-run `/ctx:start` any time to update one of them.
 
-### **Task Selection** (Manual, conscious choice)
-- **`/progress`** → View all pending tasks with their numbers
-- **`/task [num]`** → User explicitly chooses which task to work on
-- **No auto-selection** → User is always conscious about task choice
+### Planning
 
-### **Utilities** (Supporting roles)
-- **`/init-context`** → Creates folder structure
-- **`/sync`** → Reconciles progress.md with task files, archives completed tasks
-- **`/progress`** → Views current state, lists pending tasks by number
-- **`/log-decision`** → Records ADRs (called by other skills)
+| Command | Use when | Produces |
+|---|---|---|
+| `/ctx:epic "Feature"` | A feature, or a defect whose cause is not yet known | `plans/epic-<name>.md` |
+| `/ctx:breakdown epic-<name>` | An epic is `ready` | `tasks/NNN-*.md` × N |
+| `/ctx:create-task "…"` | One small piece of work, no epic needed | `tasks/NNN-*.md` |
+| `/ctx:domain` | The project has business rules worth writing down | `domain.md` |
+| `/ctx:log-decision "Topic"` | An architecture decision was made | entry in `decisions.md` |
 
-### **Domain Knowledge** (Business logic)
-- **`/domain`** → Business flows, rules, edge cases (standalone or via Domain Impact Protocol)
+### Doing
 
-### **Foundational** (Define project context)
-- **`/vision`** → Project goals/scope
-- **`/architecture`** → Patterns/boundaries
-- **`/techstack`** → Tools/technologies
+| Command | Use when | Effect |
+|---|---|---|
+| `/ctx:progress` | Choosing what to work on | Read-only status report |
+| `/ctx:task NNN` | You picked one | Briefs you, verifies the task's assumptions, implements, checks ACs |
+| `/ctx:task NNN --careful` | Critical code | Same, but always runs full verification |
+| `/ctx:sync` | After finishing work | Fixes stale statuses, archives done tasks and completed epics |
 
-## Typical Workflows
+## Common Paths
 
-### **New Feature Flow:**
+**New project, first feature:**
 ```
-/epic "User auth" → [domain impact check] → /breakdown epic-auth → /progress → /task 001 → [work] → /sync
-```
-
-### **Bug Fix Flow:**
-```
-/investigate "Login slow" → /breakdown inv-login-perf → /progress → /task 006 → [work] → /sync
+/ctx:start "Task management SaaS"
+  → /ctx:epic "User authentication"   (start offers this at the end)
+  → /ctx:breakdown epic-auth
+/ctx:progress
+/ctx:task 001
+/ctx:sync
 ```
 
-### **Standalone Task Flow:**
+**Joining an existing codebase:**
 ```
-/create-standalone-task "Fix dev server" → /progress → /task 065 → [work] → /sync
-```
-
-### **New Project Flow:**
-```
-/vision → /architecture → /techstack → /init-context → /domain (optional) → /epic → /breakdown → /progress → /task [num]
-```
-
-### **Existing Project Flow:**
-```
-/onboard-project → [auto-calls /vision --extract, /architecture --extract, /techstack --extract] → /init-context
+/ctx:onboard
+/ctx:epic "Payment integration"
+/ctx:breakdown epic-payment
+/ctx:task 001
+/ctx:sync
 ```
 
-## Key Data Flows
-
-| Source | Creates | Used By |
-|--------|---------|---------|
-| `/vision` | `vision.md` | `/architecture`, `/techstack`, `/epic` |
-| `/architecture` | `patterns-architecture.md` | `/epic`, `/breakdown`, `/task` |
-| `/domain` | `domain.md`, `domain/*.md` | `/epic`, `/breakdown`, `/task`, `/investigate` |
-| `/techstack` | `.project-init.md` | Reference for tooling |
-| `/epic` | `plans/epic-*.md` | `/breakdown` |
-| `/investigate` | `investigations/inv-*.md` | `/breakdown` |
-| `/breakdown` | `tasks/NNN-*.md` | `/progress`, `/task` |
-| `/create-standalone-task` | `tasks/NNN-*.md` | `/progress`, `/task` |
-| All task creators | Update `progress.md` | `/progress`, `/sync` |
-| `/sync` | Moves to `tasks-done/` | Archives completed work |
-
-## Task Selection Philosophy
-
-**Conscious Choice Over Automation:**
-- No `/next` skill - user must explicitly choose tasks
-- `/progress` lists all pending tasks with numbers
-- User reviews list and consciously picks: `/task [number]`
-- Promotes intentional work and better context switching
-- User maintains awareness of project priorities
-
-**Workflow:**
-1. Run `/progress` to see all pending tasks
-2. Review the list and choose based on:
-   - Priority
-   - Dependencies
-   - Current context/focus
-   - Blockers status
-3. Run `/task [number]` to start chosen task
-4. Complete work
-5. Run `/sync` to archive completed tasks
-6. Repeat from step 1
-
-## Session Flow Examples
-
-### **Focused Session:**
-```bash
-# 1. Review what's available
-/progress
-
-# 2. Choose a specific task consciously
-/task 042
-
-# 3. Work on it
-[complete acceptance criteria]
-
-# 4. Sync when done
-/sync
+**Small bug:**
+```
+/ctx:create-task "Checkout 500s when the payment key is missing"
+/ctx:task 042
+/ctx:sync
 ```
 
-### **New Work Session:**
-```bash
-# 1. Check progress
-/progress
-
-# 2. See no tasks ready, create new work
-/epic "Payment integration"
-
-# 3. Break it down
-/breakdown epic-payment
-
-# 4. Review what was created
-/progress
-
-# 5. Choose first task
-/task 066
+**Large defect, cause unknown:**
 ```
-
-### **Bug Fix Session:**
-```bash
-# 1. Investigate issue
-/investigate "Checkout 500 error"
-
-# 2. Create tasks from investigation
-/breakdown inv-checkout-500
-
-# 3. See what needs to be done
-/progress
-
-# 4. Start with root cause fix
-/task 067
+/ctx:epic "Payment gateway configuration"     ← the epic holds the investigation
+/ctx:breakdown epic-payment-gateway-config
+/ctx:task 043
+/ctx:sync
 ```
+See `../../shared/workflows/bug-flow.md` for how to fill a bug epic in.
 
-## Benefits of Manual Task Selection
+## Rules the Flow Depends On
 
-1. **Awareness** - Always know what you're working on
-2. **Prioritization** - Choose based on current needs
-3. **Context** - Pick tasks that fit your current mental context
-4. **Flexibility** - Skip around based on blockers or dependencies
-5. **Intentionality** - No automatic decisions, user stays in control
+**You choose the task, always.** No skill auto-selects one. `/ctx:progress` shows the
+list; you name the number.
+
+**`done` is gated on the checkboxes.** A task reaches `done` only when every acceptance
+criterion is `[x]`. Caveats go in `## Progress Log`, never on the status line.
+
+**`/ctx:sync` after finishing, not during.** It reconciles `progress.md` against the
+files, archives what is genuinely complete, and reports contradictions without
+auto-fixing them.

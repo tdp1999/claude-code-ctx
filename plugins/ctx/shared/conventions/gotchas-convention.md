@@ -25,16 +25,16 @@ Place `## Gotchas` as the **last section** before the end of the skill file, aft
 2. Lead with WHAT goes wrong, follow with WHAT to do instead
 3. Keep each entry to 1-2 sentences
 4. Minimum 2 gotchas per skill, maximum 8 — if more, the skill may be too complex
-5. Source gotchas from: error handling sections, user corrections, execution log failures
+5. Source gotchas from: error handling sections and user corrections
 
 ## Maintenance
 
-Gotchas are living documents. They grow via the **Gotchas Auto-Maintenance Protocol** (see `gotchas-maintenance.md`):
+Gotchas are living documents, maintained by hand:
 
-1. Skills log failures to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-2. `/ctx:sync` scans for repeated failures (>= 2 of same type per skill)
-3. Sync proposes new gotcha → user confirms → appended to skill's Gotchas section
-4. Manually review and prune gotchas that no longer apply after skill updates
+1. When a skill produces wrong output and the user corrects it, add the failure as a gotcha in the same change
+2. Add a gotcha only after the failure has happened at least twice, or once with real cost — a single fluke is not a pattern
+3. Prune gotchas that no longer apply after a skill is rewritten
+4. If a gotcha keeps recurring, that is a signal to fix the skill's instructions, not to reword the gotcha
 
 ## Anti-Patterns
 

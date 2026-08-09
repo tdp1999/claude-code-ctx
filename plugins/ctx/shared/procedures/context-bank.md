@@ -1,25 +1,22 @@
----
-name: context-init
-description: Initialize or check the .context/ folder structure for task tracking. Triggers on "init context", "setup context", "create .context", "initialize project tracking". Use when .context/ folder is missing or needs verification. For full project setup, use /ctx:start instead.
-allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion
----
+# Procedure: Context Bank
 
-# Initialize Project Context Bank
+Create the `.context/` folder structure that every other ctx skill reads and writes.
 
-Check if this project has a context bank (`.context/` folder structure for task tracking and project context). If not, offer to create one.
+**Not a slash command.** `/ctx:start` and `/ctx:onboard` both run this as their FIRST
+step, before anything writes a file into `.context/`. It is idempotent — running it
+on an existing context bank reports what is there and creates only what is missing.
 
 ## Step 1: Check Current State
 
 Check for the existence of these paths:
 
 - `.context/plans/` folder (for epic files)
-- `.context/investigations/` folder (for investigation files)
 - `.context/tasks/` folder (for active task files)
 - `.context/tasks-done/` folder (for archived completed tasks)
-- `.context/plans-done/` folder (for archived completed epics and investigations)
+- `.context/plans-done/` folder (for archived completed epics)
 - `.context/progress.md`
-- `.context/patterns-architecture.md` (NOTE: created by `/ctx:architecture`, not this skill)
-- `.context/domain.md` (NOTE: created by `/ctx:domain`, not this skill)
+- `.context/patterns-architecture.md` (NOTE: created by the architecture procedure, not this one)
+- `.context/domain.md` (NOTE: created by `/ctx:domain`, not this procedure)
 - `.context/decisions.md`
 
 Also check if `CLAUDE.md` exists at the project root.
@@ -47,18 +44,17 @@ Create the following structure:
 ```
 .context/
 ├── plans/                  # Epic files go here
-├── investigations/         # Investigation files go here
 ├── tasks/                  # Active task files (pending, in-progress, blocked)
 ├── tasks-done/             # Archived completed tasks, organized by epic subfolder (created by /sync)
-├── plans-done/              # Archived completed epics & investigations (created by /sync)
+├── plans-done/             # Archived completed epics (created by /sync)
 ├── progress.md            # Progress tracker
 └── decisions.md           # Architecture Decision Records
 ```
 
-**IMPORTANT:** Do NOT create `patterns-architecture.md` - this is created by `/ctx:architecture` skill.
-If `patterns-architecture.md` already exists (created by `/ctx:architecture`), leave it as-is.
+**IMPORTANT:** Do NOT create `patterns-architecture.md` - the architecture procedure owns it.
+If it already exists, leave it as-is.
 
-**IMPORTANT:** Do NOT create `domain.md` - this is created by `/ctx:domain` skill.
+**IMPORTANT:** Do NOT create `domain.md` - `/ctx:domain` owns it.
 If `domain.md` already exists, leave it as-is.
 
 ### progress.md template:
@@ -83,8 +79,8 @@ If `domain.md` already exists, leave it as-is.
 <!-- Done tasks - move here when finished -->
 ```
 
-**IMPORTANT:** Do NOT create `patterns-architecture.md` - this file is created by `/ctx:architecture` skill.
-The `/ctx:architecture` skill creates `patterns-architecture.md` with both architecture decisions and code patterns.
+**IMPORTANT:** Do NOT create `patterns-architecture.md` here.
+The architecture procedure writes it, with both architecture decisions and code patterns.
 
 ### decisions.md template:
 
@@ -118,12 +114,11 @@ If not, add a section pointing to the context files:
 ## Project Context
 
 - `.context/plans/` - Epic files (feature planning)
-- `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
-- `.context/plans-done/` - Archived completed epics and investigations
+- `.context/plans-done/` - Archived completed epics
 - `.context/progress.md` - Current progress and blockers
-- `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
+- `.context/patterns-architecture.md` - Architecture and code patterns
 - `.context/domain.md` - Business logic, flows, and rules (from /ctx:domain)
 - `.context/decisions.md` - Architecture decisions
 ```
@@ -149,39 +144,16 @@ If CLAUDE.md doesn't exist, create a minimal one:
 ## Project Context
 
 - `.context/plans/` - Epic files (feature planning)
-- `.context/investigations/` - Investigation files (bugs, refactors)
 - `.context/tasks/` - Active task files
 - `.context/tasks-done/` - Archived completed tasks
-- `.context/plans-done/` - Archived completed epics and investigations
+- `.context/plans-done/` - Archived completed epics
 - `.context/progress.md` - Current progress and blockers
-- `.context/patterns-architecture.md` - Architecture and code patterns (from /ctx:architecture)
+- `.context/patterns-architecture.md` - Architecture and code patterns
 - `.context/domain.md` - Business logic, flows, and rules (from /ctx:domain)
 - `.context/decisions.md` - Architecture decisions
 ````
 
-## Step 5: Offer Project Config (Optional)
-
-After creating the folder structure, ask:
-
-"Create project config (`.context/ctx-config.json`) with defaults? This controls verification behavior, logging, and naming conventions. (yes/no)"
-
-If yes, create `.context/ctx-config.json` with the minimal template from `config-convention.md`:
-
-```json
-{
-  "verification": {
-    "onTaskComplete": "ask",
-    "carefulMode": false
-  },
-  "logging": {
-    "enabled": true
-  }
-}
-```
-
-If no, skip. Config is optional — all skills use defaults when no config exists.
-
-## Step 6: Summary
+## Step 5: Summary
 
 After completion, summarize:
 
@@ -192,15 +164,7 @@ After completion, summarize:
 
 ## Gotchas
 
-- **Do NOT create patterns-architecture.md or domain.md**: Those are owned by `/ctx:architecture` and `/ctx:domain` respectively. This skill only creates the folder structure and boilerplate files (progress.md, decisions.md).
+- **Do NOT create patterns-architecture.md or domain.md**: the architecture procedure and `/ctx:domain` own those. This procedure only creates the folder structure and the boilerplate files (progress.md, decisions.md).
 - **Idempotent**: Running twice must not overwrite existing files. Check what exists, report it, create only what's missing.
 - **Do NOT create CLAUDE.md if one already exists**: Only offer to create it if the project has no CLAUDE.md at all.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

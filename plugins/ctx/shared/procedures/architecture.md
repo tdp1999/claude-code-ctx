@@ -1,29 +1,29 @@
----
-name: architecture
-description: Define or update architectural patterns, boundaries, and layers. Triggers on "architecture", "patterns", "layers", "hexagonal", "clean architecture", "module boundaries", "API design", "system design". Use when discussing code organization or technical structure. For technology choices, use /ctx:techstack instead.
-argument-hint: "[optional: --add-module <name> | --add-domain <name> | --extract]"
-allowed-tools: Read, Write, Edit, AskUserQuestion, Skill, Glob, Task
----
-
-# Architecture
+# Procedure: Architecture
 
 Define or update the project's architectural patterns, boundaries, and layers.
 
+**Not a slash command.** `/ctx:start` runs this on a new project and `/ctx:onboard`
+runs it in extract mode on an existing one. Read it when you reach the architecture step.
+
+**Reads:** `.context/vision.md` — **Writes:** `.context/patterns-architecture.md`
+
 ## Subagent Usage
 
-See `../../shared/subagents.md` for available subagents.
+See `../subagents.md` for available subagents.
 
-This skill uses:
-- **Explore** (built-in) - For extract mode (analyzing folder structure, detecting patterns)
+Delegate to **Explore** (built-in, read-only) for extract mode — mapping the folder
+structure and detecting layering patterns across the repo. Send one Explore per
+question (backend shape, frontend shape, module boundaries) rather than walking the
+tree yourself.
 
 ## Error Handling
 
-See `../../shared/conventions/error-handling.md` for general error handling rules.
-See `../../shared/conventions/file-contracts.md` for required output sections.
+See `../conventions/error-handling.md` for general error handling rules.
+See `../conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **Missing `vision.md` (create mode)**: Warn that architecture choices won't be informed by project context. Suggest `/ctx:vision` first, but allow proceeding.
-- **`--add-module` or `--add-domain` but no `patterns-architecture.md`**: Cannot add to non-existent file. Suggest running `/ctx:architecture` (create mode) first.
+- **Missing `vision.md` (create mode)**: Warn that architecture choices won't be informed by project context. Run the vision procedure (`vision.md`) first, but allow proceeding without it.
+- **`--add-module` or `--add-domain` but no `patterns-architecture.md`**: Cannot add to a non-existent file. Run this procedure in create mode first.
 
 ## Input
 
@@ -316,7 +316,7 @@ Is this correct? What should I adjust?
 
 ## Examples
 
-For complete examples of Create, Update, Add Module, Add Domain, and Extract modes, read `references/examples.md`.
+For complete examples of Create, Update, Add Module, Add Domain, and Extract modes, read `references/architecture-examples.md`.
 
 ---
 
@@ -327,20 +327,13 @@ For complete examples of Create, Update, Add Module, Add Domain, and Extract mod
 - In update mode, always ask "why" for decision logging
 - Module and domain modes are additive - they append, not replace
 - Architectural changes should trigger code refactoring tasks
+- Keep patterns-architecture.md as the single source of truth for both architecture and code patterns
 
 ---
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:architecture"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema
-- Keep patterns-architecture.md as the single source of truth for both architecture and code patterns
 
 ## Gotchas
 
 - **Module/domain modes append, never replace**: `--add-module` and `--add-domain` add new sections. They must not overwrite existing modules or domains.
 - **Cannot add module/domain without existing file**: If patterns-architecture.md doesn't exist, suggest create mode first — do not silently create a partial file.
 - **Extract mode detects patterns, not prescribes them**: Report what the codebase actually uses (even if inconsistent), not what it should use. Flag inconsistencies for user decision.
-- **Vision.md should exist first**: Architecture builds on vision. If vision.md is missing, warn the user and suggest `/ctx:vision` before proceeding.
+- **Vision.md should exist first**: Architecture builds on vision. If vision.md is missing, warn the user and run the vision procedure (`vision.md`) before proceeding.

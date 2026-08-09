@@ -271,12 +271,14 @@ Standard guidelines for estimating and assigning task complexity in the CTX plug
 - S with unknowns → M
 - M with unknowns → L
 
-**Many unknowns:** Create investigation first
+**Many unknowns:** Do the digging as its own task first
 ```markdown
 ❌ 046-fix-weird-memory-issue.md (???)
 ✅ 046-investigate-memory-issue.md (S/M)
-   → Then create fix tasks based on findings
+   → Then create fix tasks based on what it finds
 ```
+If the digging is likely to produce several fix tasks across different areas,
+make it an epic instead — see `../workflows/bug-flow.md`.
 
 ## When to Split Tasks
 

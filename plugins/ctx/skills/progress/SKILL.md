@@ -1,6 +1,6 @@
 ---
 name: progress
-description: Show project progress — pending, in-progress, blocked, and done tasks with domain coverage. Triggers on "progress", "status", "what's pending", "what's next", "show tasks", "how far along", "what needs to be done", "pick next task". Use --metrics for velocity and trend data.
+description: Show project progress — pending, in-progress, blocked, and done tasks with domain coverage. Triggers on "progress", "status", "what's pending", "what's next", "show tasks", "how far along", "what needs to be done", "pick next task".
 allowed-tools: Read, Glob
 ---
 
@@ -12,7 +12,7 @@ Display project progress from `.context/`.
 
 - `.context/tasks/` - Active tasks (pending, in-progress, blocked)
 - `.context/tasks-done/` - Archived completed tasks (organized by epic subfolder)
-- `.context/plans-done/` - Archived completed epics and investigations
+- `.context/plans-done/` - Archived completed epics
 
 ## Steps
 
@@ -21,7 +21,7 @@ Display project progress from `.context/`.
 2. **Scan task files:**
    - `.context/tasks/` for active tasks (pending, in-progress, blocked)
    - `.context/tasks-done/**/*.md` for completed task count (includes epic subfolders)
-   - `.context/plans-done/` for completed epic/investigation count
+   - `.context/plans-done/` for completed epic count
    - List any blocked tasks with reasons
 
 3. **Display summary:**
@@ -59,35 +59,9 @@ Total: X tasks
    - Blockers to resolve
    - Available pending tasks (list by number for easy selection)
 
-6. **Metrics mode** (when `--metrics` argument is passed or user asks about velocity/metrics):
-
-   If `${CLAUDE_PLUGIN_DATA}/ctx-logs/` exists:
-   - Read `sync-history.jsonl` for historical data
-   - Read `execution.jsonl` for skill usage patterns
-   - Display after the progress summary:
-
-   ```
-   ## Metrics
-
-   Velocity: X tasks/week (last 4 weeks)
-   Trend: [improving / stable / declining]
-   Top failing skills: [skill] (N failures)
-   Most used skills: [skill] (N invocations)
-   ```
-
-   If log files don't exist → show: "No metrics available. Enable logging in ctx-config.json and use /ctx:sync to build history."
-
 ## Gotchas
 
 - **Read-only skill**: This skill displays information. It does NOT modify progress.md, task files, or any other file. If state is stale, suggest `/ctx:sync`.
 - **Scan tasks-done/ for accurate counts**: Completed task count must include archived tasks in tasks-done/ subfolders, not just progress.md entries.
 - **Domain coverage can be misleading**: "Partial coverage" means some entities aren't in the glossary — it doesn't mean domain.md is wrong. Don't alarm the user unnecessarily.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

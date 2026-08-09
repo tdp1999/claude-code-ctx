@@ -1,12 +1,12 @@
 ---
 name: sync
 description: Reconcile progress.md with actual task files, archive done tasks, update epic statuses, check domain freshness. Triggers on "sync", "reconcile", "clean up tasks", "archive done", "update progress". Use after completing tasks or when progress.md seems stale.
-allowed-tools: Read, Write, Edit, Glob
+allowed-tools: Read, Write, Edit, Glob, Bash
 ---
 
 # Sync Progress
 
-Update progress.md to match actual task file statuses, archive done tasks, and update epic/investigation statuses based on task completion.
+Update progress.md to match actual task file statuses, archive done tasks, and update epic statuses based on task completion.
 
 ## Folder Structure
 
@@ -15,8 +15,7 @@ Update progress.md to match actual task file statuses, archive done tasks, and u
 ├── tasks/              # Active tasks (pending, in-progress, blocked)
 ├── tasks-done/         # Archived done tasks (organized by epic subfolder)
 ├── plans/              # Epics
-├── investigations/     # Investigation files
-├── plans-done/          # Archived done epics & investigations
+├── plans-done/         # Archived done epics
 └── progress.md         # Progress tracker
 ```
 
@@ -25,11 +24,11 @@ Update progress.md to match actual task file statuses, archive done tasks, and u
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 
 Skill-specific errors:
-- **`.context/tasks/` doesn't exist**: Report no context bank found, suggest `/ctx:context-init`
+- **`.context/tasks/` doesn't exist**: Report no context bank found, suggest `/ctx:start` (new project) or `/ctx:onboard` (existing project)
 - **Task file missing `## Status`**: Report malformed file, treat as `pending`, include in sync report
 - **Task file missing `## Acceptance Criteria`**: Cannot count AC progress — report as "ACs unknown"
 - **progress.md doesn't exist**: Create it from template (this is a recovery action)
-- **Epic/investigation referenced by task but file missing**: Report orphaned reference in sync report
+- **Epic referenced by task but file missing**: Report orphaned reference in sync report
 
 ## Steps
 
@@ -42,7 +41,7 @@ Skill-specific errors:
 2. **Extract from each:**
    - Task number and name
    - Current status — the token on the `## Status:` line, read **exactly**
-   - Source epic/investigation (from "from:" note or context)
+   - Source epic (from "from:" note or context)
    - Any blockers noted
    - Acceptance criteria completion (count `- [x]` vs `- [ ]`)
 
@@ -97,7 +96,7 @@ Skill-specific errors:
      `done` (no qualifier), and every AC is `[x]`. Anything flagged in step 2.5b
      stays in `tasks/` until the user resolves it — archiving is one-way in
      practice, so a premature move buries unfinished work in the archive.
-   - Determine the source epic/investigation name for each done task
+   - Determine the source epic name for each done task
    - Create `.context/tasks-done/<epic-name>/` subfolder if it doesn't exist (e.g., `tasks-done/epic-auth-frontend/`)
    - If task has no associated epic, use `tasks-done/other/`
    - Move the qualifying tasks from `tasks/` to the appropriate subfolder
@@ -114,10 +113,9 @@ Skill-specific errors:
    - Remove orphaned entries
    - Done tasks remain in "Done" section (reference tasks-done/)
 
-7. **Update epic/investigation statuses:**
+7. **Update epic statuses:**
    - Check `.context/plans/` for epics with status "broken-down"
-   - Check `.context/investigations/` for investigations with status "broken-down"
-   - For each broken-down epic/investigation:
+   - For each broken-down epic:
      - Find all tasks that belong to it (check both tasks/ and tasks-done/)
      - If ALL tasks are done → update status to "completed" and move the file to `.context/plans-done/` (create folder if needed, preserve original filename)
      - Keep as "broken-down" if any tasks are pending/in-progress
@@ -146,26 +144,7 @@ Skill-specific errors:
    - If user confirms → proceed with archive
    - If user wants updates → apply changes to domain.md → then archive
 
-9. **Failure Pattern Analysis (Self-Learning):**
-
-   If `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl` exists and logging is enabled:
-   - Scan for failure entries since the last sync (check `ts` field)
-   - Group failures by `skill` + `failure_type`
-   - If any skill has >= 2 failures of the same type:
-     - Draft a proposed gotcha based on the failure pattern
-     - Present to user: "Detected repeated failure in [skill]: [pattern]. Proposed gotcha: [text]. Add to skill's Gotchas section? (yes/no)"
-     - If confirmed → append to the skill's `## Gotchas` section
-     - Mark processed failures with `"gotcha_proposed": true`
-   - If no patterns found → skip silently
-
-10. **Write sync summary:**
-
-   If logging is enabled, append one line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/sync-history.jsonl`:
-   ```json
-   {"ts": "ISO-8601", "project": "name", "tasks_done": N, "tasks_pending": N, "tasks_blocked": N, "epics_completed": ["epic-name"]}
-   ```
-
-11. **Report:**
+9. **Report:**
 
 ```
 Sync complete.
@@ -191,7 +170,7 @@ Task Changes:
 - [task] added (was missing)
 - [task] removed (no file)
 
-Epic/Investigation Updates:
+Epic Updates:
 - [epic-name] status changed to "completed" (all 5 tasks done) — archived to plans-done/
 
 Current state:
@@ -203,7 +182,7 @@ Current state:
 
 ## Status Lifecycle
 
-**Epics/Investigations:**
+**Epics:**
 - `draft` → Being written
 - `ready` → Ready to break down
 - `broken-down` → Has tasks, work in progress
@@ -218,7 +197,7 @@ Current state:
 ## Notes
 
 - Done tasks are archived to keep `tasks/` folder focused on active work
-- Completed epics and investigations are archived to `plans-done/` to keep `plans/` and `investigations/` focused on active work
+- Completed epics are archived to `plans-done/` to keep `plans/` focused on active work
 - Archived files retain their original naming for traceability
 - Use `tasks-done/` and `plans-done/` to review past work or reference implementations
 - The `/ctx:task` skill should only look in `tasks/` for active work

@@ -27,9 +27,9 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:vision` first, but allow proceeding if user confirms.
-- **Missing `patterns-architecture.md`**: Warn that Technical Considerations section will be generic. Suggest running `/ctx:architecture` first.
-- **`.context/plans/` doesn't exist**: Suggest running `/ctx:context-init` first
+- **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:start` first, but allow proceeding if user confirms.
+- **Missing `patterns-architecture.md`**: Warn that Technical Considerations section will be generic. Suggest running `/ctx:start` first.
+- **`.context/plans/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic file already exists with same name**: Ask user — update existing or create with different name?
 
 ## Input
@@ -167,7 +167,7 @@ Use when creating a new epic from an idea.
 **Reasoning:** [Why this complexity estimate]
 
 ## Status
-draft | ready | broken-down | in-progress | completed
+draft | ready | broken-down | completed
 
 ## Created
 [YYYY-MM-DD]
@@ -303,14 +303,6 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 
 - **Domain Impact Protocol requires user confirmation**: When detecting new entities/flows/rules, you MUST show proposed changes and wait for explicit approval before writing to domain.md. Never auto-update.
 - **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
-- **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:context-init` if the folder structure doesn't exist.
+- **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:start` or `/ctx:onboard` if the folder structure doesn't exist.
 - **XL epics should be split**: If you estimate >10 tasks, propose splitting into 2-3 smaller epics before the user commits to one large one.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

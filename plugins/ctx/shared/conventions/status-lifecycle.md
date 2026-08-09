@@ -23,7 +23,7 @@ nothing: the task is neither archived nor flagged, and it quietly drops out of
 every count until a human opens the file. If there is something to say about the
 status, `## Progress Log` is where it goes.
 
-Tasks use `done`. (`completed` is the *epic* and *investigation* vocabulary —
+Tasks use `done`. (`completed` is the *epic* vocabulary —
 they are different lifecycles, see below.)
 
 ### Available Statuses
@@ -65,22 +65,24 @@ which is exactly what you want from something unfinished.
 - Task unblocked but not actively working yet
 - Waiting for dependencies to complete
 
-**Example:**
-```yaml
-status: pending
-```
-
 **Typical in file:**
 ```markdown
-# Add User Dashboard Component
+# Task: Add User Dashboard Component
 
-**Status:** pending
-**Complexity:** M
-**Blocked by:** 042-add-user-service
+## Status: pending
 
-## Description
-Create dashboard component to display user stats.
-Requires user service from task 042.
+## Goal
+Display user stats on a dashboard component.
+
+## Acceptance Criteria
+- [ ] Component scaffold created
+- [ ] User service injected
+- [ ] Unit tests added
+
+## Complexity: M
+
+## Dependencies
+042-add-user-service
 ```
 
 #### in-progress
@@ -90,27 +92,20 @@ Requires user service from task 042.
 - Code changes in progress
 - Tests being written
 
-**Example:**
-```yaml
-status: in-progress
-```
-
 **Typical in file:**
 ```markdown
-# Add User Dashboard Component
+# Task: Add User Dashboard Component
 
-**Status:** in-progress
-**Complexity:** M
-**Started:** 2026-02-11
+## Status: in-progress
 
-## Description
-Create dashboard component to display user stats.
+## Acceptance Criteria
+- [x] Component scaffold created
+- [x] User service injected
+- [ ] Template implemented
+- [ ] Unit tests added
 
-## Progress
-- [x] Create component scaffold
-- [x] Add service injection
-- [ ] Implement template
-- [ ] Add unit tests
+## Progress Log
+- [2026-02-11] Started. Scaffold and service injection done.
 ```
 
 #### blocked
@@ -121,36 +116,26 @@ Create dashboard component to display user stats.
 - Dependency task not complete
 - Technical blocker discovered
 
-**Example:**
-```yaml
-status: blocked
-blocking_reason: Waiting for API schema from backend team
-```
-
 **Typical in file:**
 ```markdown
-# Add User Dashboard Component
+# Task: Add User Dashboard Component
 
-**Status:** blocked
-**Complexity:** M
-**Blocked by:** Backend API schema needed
+## Status: blocked
 
-## Description
-Create dashboard component to display user stats.
+## Acceptance Criteria
+- [x] Component scaffold created
+- [ ] API integration implemented
+- [ ] Error handling added
+- [ ] Unit tests added
 
-## Blocker
-Cannot implement API integration until backend team provides
-OpenAPI schema for new endpoints. Estimated unblock: Feb 15.
-
-## Completed
-- [x] Create component scaffold
-- [x] Design mockup
-
-## Pending Unblock
-- [ ] Implement API integration
-- [ ] Add error handling
-- [ ] Add unit tests
+## Progress Log
+- [2026-02-11] Scaffold done.
+- [2026-02-12] Blocked: the API integration needs the OpenAPI schema for the new
+  endpoints, which the backend team has not published. Estimated unblock Feb 15.
 ```
+
+The blocker goes in `## Progress Log` with what is being waited on and who owns it.
+A blocked task with no stated blocker cannot be triaged by anyone but its author.
 
 **Unblocking:**
 - Update status back to `in-progress` or `pending`
@@ -210,9 +195,8 @@ vanishes from every count. Leave it `in-progress` and say why in the log.
 |--------|---------|----------|-------------|
 | `draft` | Initial planning | `plans/` | Complete details → `ready` |
 | `ready` | Planned, not started | `plans/` | Break down → `broken-down` |
-| `broken-down` | Tasks created | `plans/` | Work on tasks → `in-progress` |
-| `in-progress` | Tasks underway | `plans/` | Complete all tasks → `completed` |
-| `completed` | All done | `plans-done/` | Archive |
+| `broken-down` | Tasks created, work under way | `plans/` | All tasks done → `completed` |
+| `completed` | All tasks done | `plans-done/` | Archived by `/ctx:sync` |
 
 ### Status Flow
 
@@ -222,8 +206,6 @@ draft
 ready
    ↓
 broken-down
-   ↓
-in-progress
    ↓
 completed → [archived to plans-done/]
 ```
@@ -239,8 +221,9 @@ completed → [archived to plans-done/]
 - Stakeholders reviewing
 
 **Example:**
-```yaml
-status: draft
+```markdown
+## Status
+draft
 ```
 
 #### ready
@@ -252,37 +235,26 @@ status: draft
 - Stakeholders approved
 
 **Example:**
-```yaml
-status: ready
-estimated_tasks: 8-12
+```markdown
+## Status
+ready
 ```
 
 #### broken-down
 
 **When to use:**
-- Tasks created from epic
-- Task list complete
-- Tasks ready to work
-- No active work yet
+- Tasks created from the epic
+- Work on those tasks has started, or has not started yet
+
+An epic stays `broken-down` for the whole time its tasks are being worked on. There is
+no separate epic-level `in-progress`: per-task state already lives in the task files and
+in `progress.md`, and a second place to track the same thing is a second place to get it
+wrong. `/ctx:sync` moves the epic to `completed` when every one of its tasks is done.
 
 **Example:**
-```yaml
-status: broken-down
-total_tasks: 10
-```
-
-#### in-progress
-
-**When to use:**
-- One or more tasks in progress
-- Active development happening
-- Not all tasks complete
-
-**Example:**
-```yaml
-status: in-progress
-completed_tasks: 4
-total_tasks: 10
+```markdown
+## Status
+broken-down
 ```
 
 #### completed
@@ -294,93 +266,10 @@ total_tasks: 10
 - Ready to archive
 
 **Example:**
-```yaml
-status: completed
-completed_date: 2026-02-11
-completed_tasks: 10
-total_tasks: 10
+```markdown
+## Status
+completed
 ```
-
-## Investigation Status Lifecycle
-
-### Available Statuses
-
-| Status | Meaning | Location | Next Action |
-|--------|---------|----------|-------------|
-| `draft` | Initial notes | `investigations/` | Gather info → `ready` |
-| `ready` | Info gathered | `investigations/` | Analyze → `analyzed` |
-| `analyzed` | Root cause found | `investigations/` | Create tasks → `broken-down` |
-| `broken-down` | Fix tasks created | `investigations/` | Work on fixes → `in-progress` |
-| `in-progress` | Fixes underway | `investigations/` | Complete fixes → `completed` |
-| `blocked` | Need more info | `investigations/` | Get info → `ready` |
-| `completed` | Issue resolved | `plans-done/` | Archive |
-
-### Status Flow
-
-```
-draft
-   ↓
-ready ←→ blocked
-   ↓
-analyzed
-   ↓
-broken-down
-   ↓
-in-progress
-   ↓
-completed → [archived to plans-done/]
-```
-
-### Status Details
-
-#### draft (investigation)
-
-**When to use:**
-- Initial bug report received
-- Gathering reproduction steps
-- Collecting error messages
-
-#### ready (investigation)
-
-**When to use:**
-- All information collected
-- Can reproduce issue
-- Ready to analyze root cause
-
-#### analyzed
-
-**When to use:**
-- Root cause identified
-- Solution approach determined
-- Ready to create fix tasks
-
-#### broken-down (investigation)
-
-**When to use:**
-- Fix tasks created
-- Fix plan documented
-- Ready to implement
-
-#### in-progress (investigation)
-
-**When to use:**
-- Fix tasks underway
-- Implementing solution
-- Not all fixes complete
-
-#### blocked (investigation)
-
-**When to use:**
-- Cannot reproduce issue
-- Need more information
-- Waiting for environment/access
-
-#### completed (investigation)
-
-**When to use:**
-- All fix tasks complete
-- Issue resolved
-- Verified in production
 
 ## Valid Status Transitions
 
@@ -404,23 +293,10 @@ completed → [archived to plans-done/]
 |------|-----|--------|-------|
 | `draft` | `ready` | ✅ | Planning complete |
 | `ready` | `broken-down` | ✅ | Tasks created |
-| `broken-down` | `in-progress` | ✅ | Start working tasks |
-| `in-progress` | `completed` | ✅ | All tasks done |
-| `ready` | `in-progress` | ❌ | Must break down first |
+| `broken-down` | `completed` | ✅ | Every task done — applied by `/ctx:sync`, which also archives the file |
+| `ready` | `completed` | ❌ | Must break down first |
 | `draft` | `broken-down` | ❌ | Must go through ready |
-
-### Investigations
-
-| From | To | Valid? | Notes |
-|------|-----|--------|-------|
-| `draft` | `ready` | ✅ | Info gathered |
-| `ready` | `analyzed` | ✅ | Root cause found |
-| `analyzed` | `broken-down` | ✅ | Fix tasks created |
-| `broken-down` | `in-progress` | ✅ | Start fixes |
-| `in-progress` | `completed` | ✅ | All fixes done |
-| `ready` | `blocked` | ✅ | Cannot proceed |
-| `blocked` | `ready` | ✅ | Info received |
-| `draft` | `completed` | ❌ | Must analyze first |
+| any | `in-progress` | ❌ | Not an epic status. Epics stay `broken-down` while their tasks are worked on |
 
 ## Archive Policy
 
@@ -438,12 +314,6 @@ completed → [archived to plans-done/]
 - Epic goals achieved
 - Retrospective done (optional)
 
-**Investigations:**
-- Status is `completed`
-- All fix tasks completed
-- Issue verified resolved
-- No related issues pending
-
 ### How to Archive
 
 **Automatic (recommended):**
@@ -458,9 +328,6 @@ mv .context/tasks/042-fix-login.md .context/tasks-done/epic-auth/
 
 # Move completed epic
 mv .context/plans/001-auth-system.md .context/plans-done/
-
-# Move completed investigation
-mv .context/investigations/003-memory-leak.md .context/plans-done/
 ```
 
 ### Archive Structure
@@ -473,8 +340,7 @@ mv .context/investigations/003-memory-leak.md .context/plans-done/
 │   ├── epic-payments/  # Tasks from payments epic
 │   └── other/          # Standalone tasks (no epic)
 ├── plans/              # Active epics
-├── investigations/     # Active investigations
-└── plans-done/          # Completed epics & investigations
+└── plans-done/         # Completed epics
 ```
 
 **Benefits:**
@@ -493,66 +359,47 @@ mv .context/investigations/003-memory-leak.md .context/plans-done/
 
 **Disk space:** Markdown files are tiny, archive cost is negligible.
 
-## Status Metadata
+## Where the Status Lives
 
-### In YAML Frontmatter
+One format, in both tasks and epics: a `## Status` markdown heading. There is no YAML
+frontmatter and no `**Status:**` bold line — every skill in this plugin reads the
+heading, so anything else is invisible to `/ctx:progress` and `/ctx:sync`.
 
-```yaml
----
-status: in-progress
-started: 2026-02-10
-updated: 2026-02-11
-blocked_by: []
-blocks: []
----
-```
-
-### In Markdown Headers
-
+**Task file:**
 ```markdown
-# Task Title
+# Task: Add auth middleware
 
-**Status:** in-progress
-**Started:** 2026-02-10
-**Updated:** 2026-02-11
+## Status: in-progress
 ```
 
-**Both formats valid:** Use what works for your tooling.
+**Epic file:**
+```markdown
+# Epic: Authentication
+
+## Status
+broken-down
+```
+
+Dates, blockers, and history go in `## Progress Log`, never on the status line. See
+"A `## Status:` line holds one token" above.
 
 ## Checking Status
 
-### View All Task Statuses
+### View all task statuses
 
 ```bash
-# Using grep
-grep -h "^**Status:" .context/tasks/*.md
-
-# Using /ctx:list
-/ctx:list
+grep -H "^## Status" .context/tasks/*.md
 ```
 
-### View Epic Progress
+### View the full picture
 
-```bash
-# Check epic file
-cat .context/plans/001-auth-system.md
-
-# Look for progress section
-## Progress
-- Completed: 6 / 10 tasks
-- Status: in-progress
+```
+/ctx:progress
 ```
 
-### View Investigation Status
-
-```bash
-# Check investigation file
-cat .context/investigations/003-memory-leak.md
-
-# Look for status
-**Status:** analyzed
-**Fix Tasks:** 2 created, 0 complete
-```
+It counts tasks by status, shows what is blocked and why, and reports domain coverage.
+`/ctx:sync` is the write-side equivalent: it reconciles `progress.md` against the files
+and flags contradictions.
 
 ## Best Practices
 
@@ -560,18 +407,20 @@ cat .context/investigations/003-memory-leak.md
 
 - Mark `in-progress` when you start
 - Mark `blocked` as soon as you hit blocker
-- Mark a task `done` (an epic/investigation `completed`) only when truly finished —
+- Mark a task `done` (an epic `completed`) only when truly finished —
   tests passing, merged, every AC checked
 
 ### Document Status Changes
 
+Status history goes in the task's `## Progress Log`, dated, one line per change:
+
 ```markdown
-## Status History
-- 2026-02-10: Created (pending)
-- 2026-02-11: Started work (in-progress)
-- 2026-02-11: Blocked on API schema
-- 2026-02-12: Unblocked, resumed work
-- 2026-02-13: Completed
+## Progress Log
+- 2026-02-10: Created
+- 2026-02-11: Started work
+- 2026-02-11: Blocked on the API schema — waiting on the payments team
+- 2026-02-12: Unblocked, resumed
+- 2026-02-13: All ACs checked, marked done
 ```
 
 ### Don't Skip Statuses

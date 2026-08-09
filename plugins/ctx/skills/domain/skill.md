@@ -2,7 +2,7 @@
 name: domain
 description: Capture and maintain business logic, domain knowledge, flows, rules, and edge cases in plain text. Use when the project has business rules, user flows, domain concepts, or invariants that code alone cannot convey. Triggers on "domain", "business logic", "business rules", "flows", "domain model", or when discussing how a system behaves from a business perspective.
 argument-hint: "[optional: --module <name> | --split]"
-allowed-tools: Read, Write, Edit, Glob, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, AskUserQuestion, Task
 ---
 
 # Domain
@@ -32,9 +32,9 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **Missing `vision.md`**: Warn that domain model will lack project context. Suggest `/ctx:vision` first, but allow proceeding.
-- **Missing `patterns-architecture.md`**: Warn that domain won't be linked to architecture. Suggest `/ctx:architecture` first.
-- **`.context/` doesn't exist**: Suggest running `/ctx:context-init` first.
+- **Missing `vision.md`**: Warn that domain model will lack project context. Suggest `/ctx:start` first, but allow proceeding.
+- **Missing `patterns-architecture.md`**: Warn that domain won't be linked to architecture. Suggest `/ctx:start` first.
+- **`.context/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first.
 - **`domain.md` already exists (create mode)**: Ask — update existing or start fresh?
 
 ## Input
@@ -315,11 +315,3 @@ For complete examples of Create, Update, and Split modes, read `references/examp
 - **Code vs domain conflict = STOP**: If code behavior contradicts a domain rule, stop immediately. Report the conflict and wait for user decision — do not silently pick one.
 - **Split mode is irreversible**: Once domain.md is split into per-module files, merging back requires manual effort. Confirm with user before splitting.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

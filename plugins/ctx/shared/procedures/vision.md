@@ -1,36 +1,35 @@
----
-name: vision
-description: Define or update project vision and scope. Triggers on "vision", "project idea", "what are we building", "scope", "goals", "target users", starting a new project, or pivoting strategy. Supports extract mode for existing codebases. For architecture patterns, use /ctx:architecture instead.
-allowed-tools: Read, Write, Edit, AskUserQuestion, Skill, Task, Glob
----
-
-# Vision
+# Procedure: Vision
 
 Capture or update the project's vision, scope, and goals.
 
+**Not a slash command.** `/ctx:start` runs this on a new project and `/ctx:onboard`
+runs it in extract mode on an existing one. Read it when you reach the vision step.
+
+**Writes:** `.context/vision.md`
+
 ## Subagent Usage
 
-See `../../shared/subagents.md` for available subagents.
+See `../subagents.md` for available subagents.
 
-This skill uses:
-- **Explore** (built-in) - For extract mode (scanning README, docs, package.json)
+Delegate to **Explore** (built-in, read-only) for extract mode — scanning README,
+docs, and package.json to infer what the project is. One Explore beats ten Reads.
 
 ## Error Handling
 
-See `../../shared/conventions/error-handling.md` for general error handling rules.
-See `../../shared/conventions/file-contracts.md` for required output sections.
+See `../conventions/error-handling.md` for general error handling rules.
+See `../conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **`.context/` doesn't exist (create mode)**: Proceed — vision.md can be created before init. Suggest running `/ctx:context-init` after.
+- **`.context/` doesn't exist (create mode)**: Proceed — vision.md can be created before init. Suggest running `the context-bank procedure` after.
 - **vision.md exists but missing required sections (update mode)**: Show which sections are missing, offer to add them during the update.
 
 ## Input
 
 `$ARGUMENTS` can be:
-- A project idea: `/ctx:vision "E-commerce platform for artisans"`
+- A project idea: "E-commerce platform for artisans"
 - `--extract`: Extract vision from existing project
 - Empty: Ask user for their project idea
-- Path to existing vision.md: `/ctx:vision .context/vision.md` (triggers update mode)
+- A path to an existing `.context/vision.md` (triggers update mode)
 
 ## Step 1: Detect Mode
 
@@ -135,7 +134,7 @@ Use when vision.md already exists (mid-project change).
 6. **Suggest follow-up actions:**
    - List affected epics that may need updating
    - List affected tasks that may need review
-   - Suggest running `/ctx:architecture` if vision changes affect architecture
+   - Run the architecture procedure (`architecture.md`) next if the vision change affects architecture
 
 ---
 
@@ -203,7 +202,7 @@ Is this correct? What would you adjust?
 ### Create Mode Example
 
 ```
-User: /ctx:vision "Task management app for remote teams"
+User: /ctx:start "Task management app for remote teams"
 
 Assistant asks: Who is it for? What scale? Timeline? MVP features?
 
@@ -213,7 +212,7 @@ Creates .context/vision.md with all answers.
 ### Update Mode Example
 
 ```
-User: /ctx:vision
+User: /ctx:start (vision step, existing vision.md)
 
 Assistant detects existing vision.md, shows current state.
 
@@ -226,7 +225,7 @@ Assistant updates vision.md with changelog, triggers /ctx:log-decision, identifi
 ### Extract Mode Example
 
 ```
-User: /ctx:vision --extract
+User: /ctx:onboard (vision step, extract mode)
 
 [Explore] Scans README.md, package.json, docs/
 [Findings] Project is "Task Manager Pro - collaboration tool for remote teams"
@@ -249,13 +248,5 @@ Creates .context/vision.md with extracted + confirmed data.
 - **Never update vision.md without asking why**: The reason drives the decision log entry. Skipping "why" produces meaningless changelog entries.
 - **Extract mode reads code, it doesn't invent**: In `--extract` mode, document only what you can verify from README, package.json, and docs. Do not guess project goals.
 - **Impact analysis is not optional on updates**: Changing vision affects architecture, epics, and tasks downstream. Always run impact analysis before confirming an update.
-- **Missing .context/ folder**: Do not create it manually — suggest `/ctx:context-init` instead.
+- **Missing .context/ folder**: Do not create it manually — suggest `the context-bank procedure` instead.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

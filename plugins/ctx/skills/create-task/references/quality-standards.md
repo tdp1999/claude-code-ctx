@@ -101,6 +101,5 @@ Before finalizing task creation:
 |-------|--------------|
 | `/ctx:epic` | Use epic for multiple related tasks, create-task for single tasks |
 | `/ctx:breakdown` | Use breakdown for decomposing epics, create-task for direct task creation |
-| `/ctx:investigate` | Investigation creates analysis, then use breakdown or create-task for remediation |
 | `/ctx:task` | After creating task with this skill, use `/ctx:task [NNN]` to work on it |
 | `/ctx:progress` | Created task tracked in progress.md, view pending tasks |

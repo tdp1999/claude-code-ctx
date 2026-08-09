@@ -1,213 +1,239 @@
 ---
 name: start
-description: Full project setup wizard — vision, architecture, techstack, epic, breakdown in one guided flow. Triggers on "start project", "new project", "bootstrap", "init everything", "set up from scratch". For existing projects, use /ctx:onboard instead.
+description: Set up a new project's context bank end to end — context folders, vision, architecture, techstack, and optionally a first epic broken into tasks. Triggers on "start project", "new project", "bootstrap", "init everything", "set up from scratch", "ctx setup". For a project that already has code, use /ctx:onboard instead.
 argument-hint: "[optional: project idea]"
-allowed-tools: Skill, AskUserQuestion
+allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion, Skill, Task
 ---
 
 # Start Project
 
-Master orchestrator that guides you through the complete project initialization workflow.
+The single entry point for setting up a new project. It creates the `.context/` folder
+structure and walks through vision, architecture, and techstack, then optionally plans
+the first feature.
+
+The setup steps live in `../../shared/procedures/`. They are procedures, not slash
+commands — the user never invokes them directly. Read each one when you reach its step
+and follow it.
+
+| Step | Procedure file | Writes |
+|---|---|---|
+| 1 | `../../shared/procedures/context-bank.md` | `.context/` structure, `progress.md`, `decisions.md` |
+| 2 | `../../shared/procedures/vision.md` | `.context/vision.md` |
+| 3 | `../../shared/procedures/architecture.md` | `.context/patterns-architecture.md` |
+| 4 | `../../shared/procedures/techstack.md` | `.project-init.md` |
 
 ## Input
 
 `$ARGUMENTS` can be:
-
 - A project idea: `/ctx:start "E-commerce platform"`
-- Empty: Will ask for the idea during the flow
+- Empty: the vision step will ask
 
-## Important Notes
+## Step 0: Pick the Mode
 
-- This skill is for **new projects only**
-- Each sub-skill (`/ctx:vision`, `/ctx:architecture`, etc.) can be used independently for updates
-- The flow is sequential - each step builds on the previous
-- You can stop at any point and resume later using individual skills
+Before anything else, check what already exists:
+
+- `.context/vision.md`
+- `.context/patterns-architecture.md`
+- `.project-init.md`
+- Any source files at all (is this an empty repo or a real codebase?)
+
+**If the repo has substantial existing code but no `.context/`** → stop and redirect:
+"This project already has code. `/ctx:onboard` reads it and fills the context bank from
+what is there, instead of asking you to describe it from scratch. Run that instead?"
+
+**If none of the three files exist** → **full setup mode**. Run every step in order.
+
+**If some exist** → **update mode**. Report what is already there, then ask which parts
+to work on:
+
+```
+Your context bank already has:
+  ✓ vision.md            (last updated <date>)
+  ✓ patterns-architecture.md
+  ✗ .project-init.md     (missing)
+
+What would you like to do?
+  1. Fill in what is missing (techstack)
+  2. Update vision
+  3. Update architecture
+  4. Plan a feature instead — /ctx:epic
+```
+
+Run only the steps the user picks. Every procedure detects an existing file and enters
+its own update mode, so re-running one is safe.
+
+## Subagent Usage
+
+See `../../shared/subagents.md` for available subagents.
+
+`/ctx:start` is a conversation with the user, so most of it stays in the main thread.
+Delegate to **Explore** only when a procedure's extract mode needs a codebase sweep, or
+when the user's answer needs checking against what is actually in the repo.
 
 ---
 
-## Workflow Steps
+## Step 1: Context Bank (always, first, unconditional)
 
-### Step 1: Vision
+Read `../../shared/procedures/context-bank.md` and follow it.
 
-Run `/ctx:vision` skill:
+This runs **before** the vision step, not after. Every later step writes into
+`.context/`, and if the folder is created afterwards the boilerplate files
+(`progress.md`, `decisions.md`, `tasks/`, `tasks-done/`, `plans-done/`, and the
+`## Project Context` section in `CLAUDE.md`) never get created at all.
 
-- If user provided idea in `$ARGUMENTS`, pass it to vision
-- Otherwise, vision will ask
+The procedure is idempotent. On a repo that already has a partial `.context/` it
+creates only what is missing and reports the rest.
+
+**Output:** `.context/` structure
+
+---
+
+## Step 2: Vision
+
+Read `../../shared/procedures/vision.md` and follow it.
+
+- If the user gave an idea in `$ARGUMENTS`, use it as the starting point
+- Otherwise the procedure asks
 
 **Output:** `.context/vision.md`
 
-After vision is created, summarize the vision briefly and confirm before proceeding.
+Summarize the vision in two or three sentences and confirm before moving on.
 
 ---
 
-### Step 2: Architecture
+## Step 3: Architecture
 
-Run `/ctx:architecture` skill:
+Read `../../shared/procedures/architecture.md` and follow it.
 
-- Architecture reads vision.md for context
-- Asks about backend/frontend patterns, domain approach, API style, etc.
+It reads `vision.md` for context, then asks about backend and frontend patterns, the
+domain approach, and API style.
 
 **Output:** `.context/patterns-architecture.md`
 
-After architecture is created, summarize the architectural decisions and confirm before proceeding.
+Summarize the architectural decisions and confirm before moving on.
 
 ---
 
-### Step 3: Techstack
+## Step 4: Techstack
 
-Run `/ctx:techstack` skill:
+Read `../../shared/procedures/techstack.md` and follow it.
 
-- Techstack reads vision.md and patterns-architecture.md for smart defaults
-- Asks about monorepo structure, package manager, language, frameworks, etc.
+It reads `vision.md` and `patterns-architecture.md` for smart defaults, then asks about
+repo layout, package manager, language, frameworks, and database.
 
 **Output:** `.project-init.md`
 
-After techstack is created, summarize the tool selections and confirm before proceeding.
+Summarize the tool selections and confirm before moving on.
 
 ---
 
-### Step 4: Domain Model (Optional)
+## Step 5: Domain Model (optional)
 
-Ask user:
+Ask:
 
 ```
 Does this project have business logic — flows, rules, or domain concepts?
-(e.g., checkout flow, payment rules, user permissions)
+(for example: a checkout flow, payment rules, permission tiers)
 
-Options:
-1. Yes - let's document the domain model now
-2. Later - I'll run /ctx:domain when ready
-3. No - this project doesn't need domain documentation (e.g., portfolio, CLI tool)
+  1. Yes — let's document the domain model now
+  2. Later — I'll run /ctx:domain when ready
+  3. No — this project doesn't need it (portfolio, CLI tool, static site)
 ```
 
-If yes:
-- Run `/ctx:domain` skill
-- It will interview the user about entities, flows, rules, edge cases
-- **Output:** `.context/domain.md`
+If yes, invoke the `domain` skill. It interviews the user about entities, flows, rules,
+and edge cases.
 
-If later or no:
-- Continue to next step
+**Output:** `.context/domain.md`
 
 ---
 
-### Step 5: First Epic
+## Step 6: First Epic (optional)
 
-Ask user:
+Ask:
 
 ```
 What's the first major feature you'd like to plan?
-(e.g., "User authentication", "Dashboard", "Payment processing")
+(for example: "User authentication", "Dashboard", "Payment processing")
 
-Or type "skip" to finish here and create epics later.
+Or say "skip" to finish here — /ctx:epic works any time.
 ```
 
-If user provides a feature:
+If the user names a feature, invoke the `epic` skill with it.
 
-- Run `/ctx:epic` skill with the feature idea
-- **Output:** `.context/plans/epic-<name>.md`
-
-If user skips:
-
-- Note that they can create epics anytime with `/ctx:epic`
-- Skip to Step 6 (init-context)
+**Output:** `.context/plans/epic-<name>.md`
 
 ---
 
-### Step 6: Breakdown (Optional)
+## Step 7: Breakdown (optional)
 
-After epic is created, ask:
+Only if an epic was created. Ask:
 
 ```
-Would you like to break this epic down into tasks now?
-(yes/no - you can always do this later with /ctx:breakdown)
+Break this epic down into tasks now? (yes/no — /ctx:breakdown works any time)
 ```
 
-If yes:
+If yes, invoke the `breakdown` skill with the epic file.
 
-- Run `/ctx:breakdown` skill with the epic file
-- **Output:** `.context/tasks/*.md`
-
-If no:
-
-- Note that they can break down anytime with `/ctx:breakdown`
-- Continue to next step
+**Output:** `.context/tasks/*.md`
 
 ---
 
-### Step 7: Initialize Context
-
-Check if `.context/` folder exists:
-
-- If not: Run `/ctx:context-init` skill automatically (no prompt)
-- If exists: Skip this step
-
-**Output:** `.context/` folder structure (if created)
-
----
-
-### Step 8: Summary & Next Steps
-
-Provide a complete summary:
+## Step 8: Summary & Next Steps
 
 ```markdown
-## Project Initialized! 🎉
+## Project Initialized 🎉
 
-### Files Created
+### Created
 
-- `.context/vision.md` - Project vision and scope
-- `.context/patterns-architecture.md` - Architecture patterns and conventions
-- `.context/domain.md` - Business logic and domain model [if created]
-- `.project-init.md` - Technology stack
-- `.context/plans/epic-<name>.md` - [if epic was created]
-- `.context/tasks/001-*.md, 002-*.md, ...` - [if breakdown was done]
-- `.context/` folder structure - [if created]
+- `.context/` — plans/, tasks/, tasks-done/, plans-done/, progress.md, decisions.md
+- `.context/vision.md` — project vision and scope
+- `.context/patterns-architecture.md` — architecture patterns and conventions
+- `.project-init.md` — technology stack
+- `.context/domain.md` — business logic [if created]
+- `.context/plans/epic-<name>.md` [if created]
+- `.context/tasks/001-*.md …` [if broken down]
 
 ### What You Have
 
-- **Vision:** [one sentence summary]
+- **Vision:** [one sentence]
 - **Architecture:** [backend + frontend style]
 - **Stack:** [main technologies]
-- **First Epic:** [epic name if created]
-- **Tasks:** [X tasks ready if broken down]
+- **First epic:** [name, if created]
+- **Tasks ready:** [count, if broken down]
 
-### Next Steps
+### What To Do Next
 
-1. Review the files created
-2. Create more epics with `/ctx:epic "<feature idea>"`
-3. Break down epics with `/ctx:breakdown <epic-name>`
-4. Start working on tasks with `/ctx:task <number>`
-5. Begin scaffolding your project structure
+1. Review the files above — they are yours to edit by hand any time
+2. `/ctx:epic "<feature>"` to plan a feature
+3. `/ctx:breakdown <epic-name>` to turn it into tasks
+4. `/ctx:progress` to see what is pending
+5. `/ctx:task <number>` to start working
 
-### Quick Reference
+### The Commands You'll Actually Use
 
-- `/ctx:domain` - Document business logic
-- `/ctx:epic` - Create new feature epic
-- `/ctx:breakdown` - Break epic into tasks
-- `/ctx:task <num>` - Work on a task
-- `/ctx:next` - Start next available task
-- `/ctx:vision` - Update project vision
-- `/ctx:architecture` - Update architecture patterns
-- `/ctx:techstack` - Add new tools
+- `/ctx:epic` — plan a feature, or a defect whose cause is not yet known
+- `/ctx:breakdown` — turn an epic into tasks
+- `/ctx:create-task` — one small task, no epic needed
+- `/ctx:progress` — what's pending, in progress, blocked
+- `/ctx:task <num>` — work on a task
+- `/ctx:sync` — reconcile progress.md and archive finished work
+- `/ctx:domain` — document business logic
+- `/ctx:log-decision` — record an architecture decision
+
+Run `/ctx:start` again any time to update vision, architecture, or techstack.
 ```
 
 ---
 
 ## Error Handling
 
-**If user stops mid-flow:**
+**If the user stops mid-flow:** nothing is lost. Re-run `/ctx:start` — Step 0 detects
+what exists and offers to continue from there.
 
-- All individual skills can be run independently
-- They can resume where they left off:
-    - If vision exists but no architecture: run `/ctx:architecture`
-    - If architecture exists but no techstack: run `/ctx:techstack`
-    - If techstack exists but no epics: run `/ctx:epic`
-    - If epics exist but not broken down: run `/ctx:breakdown`
+**If files already exist:** each procedure enters its own update mode rather than
+overwriting. Tell the user which files went to update mode instead of create.
 
-**If files already exist:**
-
-- Vision, architecture, techstack will enter "update mode" instead of create
-- This is fine - they can update and continue
-- Orchestrator should detect this and inform user
+**If this is an existing codebase:** redirect to `/ctx:onboard`. See Step 0.
 
 ---
 
@@ -216,71 +242,60 @@ Provide a complete summary:
 ```
 User: /ctx:start "Task management SaaS"
 
-[Step 1: Vision]
-Assistant runs /ctx:vision with "Task management SaaS"
-Asks: Who is it for? Scale? Timeline? MVP features?
-Creates .context/vision.md
+[Step 0] No .context/, no source files → full setup mode
 
-[Step 2: Architecture]
-Assistant runs /ctx:architecture
-Asks: Backend style? Frontend style? Domain approach?
-Creates .context/patterns-architecture.md
+[Step 1] Follows context-bank.md
+         Creates .context/ with plans/, tasks/, tasks-done/, plans-done/,
+         progress.md, decisions.md
 
-[Step 3: Techstack]
-Assistant runs /ctx:techstack
-Asks: Monorepo? Package manager? Framework? Database?
-Creates .project-init.md
+[Step 2] Follows vision.md with "Task management SaaS"
+         Asks: who is it for? scale? timeline? MVP features?
+         Writes .context/vision.md
 
-[Step 4: Domain Model]
-Assistant asks: Does this project have business logic?
-User: "Yes"
-Runs /ctx:domain — asks about entities, flows, rules
-Creates .context/domain.md
+[Step 3] Follows architecture.md
+         Asks: backend style? frontend style? domain approach?
+         Writes .context/patterns-architecture.md
 
-[Step 5: First Epic]
-Assistant asks: What's the first major feature?
-User: "User authentication"
-Runs /ctx:epic "User authentication"
-Creates .context/plans/epic-auth.md
+[Step 4] Follows techstack.md
+         Asks: monorepo? package manager? framework? database?
+         Writes .project-init.md
 
-[Step 6: Breakdown]
-Assistant asks: Break down now?
-User: yes
-Runs /ctx:breakdown epic-auth
-Creates .context/tasks/001-*.md through 005-*.md
+[Step 5] Asks about business logic → user says yes
+         Invokes the domain skill → .context/domain.md
 
-[Step 7: Init Context]
-Detects .context/ doesn't exist
-Runs /ctx:context-init automatically
-Creates .context/ folder structure
+[Step 6] Asks for the first feature → "User authentication"
+         Invokes the epic skill → .context/plans/epic-auth.md
 
-[Step 8: Summary]
-Shows complete summary with all files and next steps
+[Step 7] Asks to break down → yes
+         Invokes the breakdown skill → .context/tasks/001-*.md … 005-*.md
+
+[Step 8] Summary
 ```
 
 ---
 
 ## Tips
 
-- This is a guided wizard - walk through each step
-- Between steps, summarize what was captured
-- Give user chance to confirm before proceeding to next step
-- If user seems uncertain, offer to explain the step
-- Individual skills can be used later for updates/additions
-- This workflow is designed for new projects - for existing projects, use individual skills
+- This is a guided wizard. Summarize after each step and let the user confirm.
+- If the user seems unsure about a step, explain what the file is for before asking.
+- Read each procedure file when you reach its step, not all four upfront — they are
+  long, and loading them all at once wastes the context the interview needs.
 
 ## Gotchas
 
-- **Cannot resume mid-flow**: If the session breaks at step 4, the user must re-run `/ctx:start`. However, skills that already created files (vision, architecture) will detect existing files and enter update mode instead of create mode.
-- **Existing files trigger update mode**: If vision.md already exists, `/ctx:vision` (called by start) enters update mode. This is correct behavior, not a bug — but inform the user.
-- **For existing projects, use /ctx:onboard**: This skill is for new projects. If the user has an existing codebase, redirect to `/ctx:onboard` instead.
-- **Domain step is optional**: Not every project needs domain.md. Skip if user says no business logic (e.g., CLI tools, libraries, static sites).
-
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema
+- **Context bank comes FIRST**: Step 1 is unconditional and runs before anything writes
+  into `.context/`. Guarding it on "if `.context/` doesn't exist" and putting it last is
+  the bug this ordering exists to prevent: the vision step creates `.context/vision.md`,
+  the guard then sees a `.context/` folder and skips, and `progress.md`, `decisions.md`,
+  `tasks/`, and the archive folders are silently never created.
+- **The procedures are not slash commands**: `vision`, `architecture`, `techstack`, and
+  `context-bank` are markdown procedures under `shared/procedures/`. Read them, do not
+  try to invoke them. The consumer-facing surface for setup is `/ctx:start` and
+  `/ctx:onboard`, nothing else.
+- **Existing code means onboard, not start**: `/ctx:start` interviews the user from
+  scratch. On a repo that already has code, `/ctx:onboard` reads the answers out of the
+  codebase instead. Check in Step 0.
+- **Re-running is safe**: every procedure detects its own output file and enters update
+  mode. Say which files are being updated rather than created.
+- **The domain step is optional**: not every project needs `domain.md`. Skip it for CLI
+  tools, libraries, and static sites.

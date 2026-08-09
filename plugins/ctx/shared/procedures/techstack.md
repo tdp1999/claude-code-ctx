@@ -1,27 +1,25 @@
----
-name: techstack
-description: Select or update concrete tools and technologies. Triggers on "techstack", "what tools", "which framework", "database choice", "add package/tool", "technology selection", "stack". Reads vision.md and patterns.md for smart defaults. For how tools are organized, use /ctx:architecture instead.
-argument-hint: '[optional: --add <tool> | --extract]'
----
+# Procedure: Techstack
 
-# Techstack Selection
+Select concrete tools and technologies for the project. Smart defaults come from the
+vision and the architecture.
 
-Select concrete tools and technologies for your project. Provides smart defaults based on vision and architecture.
+**Not a slash command.** `/ctx:start` runs this on a new project and `/ctx:onboard`
+runs it in extract mode on an existing one. Read it when you reach the techstack step.
+
+**Reads:** `.context/vision.md`, `.context/patterns-architecture.md` — **Writes:** `.project-init.md`
 
 ## Subagent Usage
 
-See `../../shared/subagents.md` for available subagents.
+See `../subagents.md` for available subagents.
 
-This skill uses:
-
-- **Explore** (built-in) - For extract mode (scanning config files, dependencies)
-- **package-installer** (built-in) - When user wants to add new packages
+Delegate to **Explore** (built-in, read-only) for extract mode — reading lockfiles,
+config files, and dependency manifests to work out what is already installed.
 
 ## Reference Files
 
-- `references/questions.md` - Complete question framework for all stages
-- `references/smart-defaults.md` - Smart default logic based on project type
-- `assets/output-template.md` - Template for the output file
+- `references/techstack-questions.md` - Complete question framework for all stages
+- `references/techstack-smart-defaults.md` - Smart default logic based on project type
+- `assets/project-init-template.md` - Template for the output file
 
 ## Input
 
@@ -38,7 +36,7 @@ Before starting, read these files if they exist:
 - `.context/vision.md` - For project type, scale, timeline
 - `.context/patterns-architecture.md` - For architecture style (hexagonal, microservices, etc.)
 
-Use these to provide smart defaults (see `references/smart-defaults.md`).
+Use these to provide smart defaults (see `references/techstack-smart-defaults.md`).
 
 ## Step 2: Detect Mode
 
@@ -86,7 +84,7 @@ If yes, list them now. If no, we'll explore options together.
 
 ### Starting the Wizard
 
-Introduce the wizard (note: Vision & Scope is now handled by `/ctx:vision`):
+Introduce the wizard (Vision & Scope is already handled by the vision procedure):
 
 ```
 I'll guide you through selecting tools and technologies:
@@ -103,10 +101,10 @@ You can say "default" to accept suggestions, "skip" to move on, or "back" to rev
 
 For each stage:
 
-1. Read the questions from `references/questions.md`
+1. Read the questions from `references/techstack-questions.md`
 2. **Filter out pre-answered questions** from the user's initial tech decisions
 3. Present remaining questions in the section at once
-4. Apply smart defaults from `references/smart-defaults.md` based on earlier answers
+4. Apply smart defaults from `references/techstack-smart-defaults.md` based on earlier answers
 5. After answers, summarize what was captured (including pre-answered items)
 6. Move to next stage
 
@@ -136,12 +134,12 @@ After all stages:
 
 1. Display complete summary as formatted tables
 2. Ask: "Does this look correct? Any changes?"
-3. If confirmed, create `.project-init.md` using template from `assets/output-template.md`
+3. If confirmed, create `.project-init.md` using template from `assets/project-init-template.md`
 4. Fill in all [PLACEHOLDERS] with actual answers
 
 ### Smart Defaults Logic
 
-Reference `references/smart-defaults.md` for default recommendations based on:
+Reference `references/techstack-smart-defaults.md` for default recommendations based on:
 
 - Project type (prototype vs production)
 - Scale (personal vs enterprise)
@@ -292,13 +290,14 @@ Is this correct? Anything missing or incorrect?
 ```
 
 3. **Create .project-init.md with confirmed data:**
-    - Use existing `assets/output-template.md` format
+    - Use existing `assets/project-init-template.md` format
     - Fill in detected values
     - Mark extracted items
     - Add note: "Extracted from existing project on [date]"
 
 4. **Suggest package installation if needed:**
-    - If user mentions missing tools, offer to use `package-installer` agent (built-in)
+    - If the user names a tool that is not installed, record it in `.project-init.md`
+      and note the install command. Do not install anything without being asked.
 
 ---
 
@@ -363,11 +362,3 @@ User wants to review or make general updates:
 - **Smart defaults require vision.md**: Without vision context, defaults are generic and often wrong. If vision.md is missing, say so and ask more questions instead of guessing.
 - **Extract mode reads config files, not code**: Detect tools from package.json, Cargo.toml, go.mod, etc. — do not scan source code for import statements.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

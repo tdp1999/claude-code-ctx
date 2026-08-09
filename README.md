@@ -24,7 +24,7 @@ Complete workflow management for task-driven development with `.context/` folder
 
 **Features:**
 - 🎯 Project setup (vision, architecture, techstack)
-- 📋 Planning tools (epic creation, investigation)
+- 📋 Planning tools (epics, task breakdown)
 - 🔨 Task breakdown utilities
 - 📊 Progress tracking with TDD support
 - 🔄 Workflow automation

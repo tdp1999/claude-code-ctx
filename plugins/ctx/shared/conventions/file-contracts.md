@@ -11,8 +11,8 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/vision.md` |
-| **Written by** | `/ctx:vision`, `/ctx:start`, `/ctx:onboard` |
-| **Read by** | `/ctx:architecture`, `/ctx:techstack`, `/ctx:epic` |
+| **Written by** | `/ctx:start`, `/ctx:onboard` (via the vision procedure) |
+| **Read by** | `/ctx:epic`, and the architecture + techstack procedures |
 
 **Required sections:**
 - `## Summary` — one sentence project description
@@ -32,8 +32,8 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/patterns-architecture.md` |
-| **Written by** | `/ctx:architecture`, `/ctx:onboard` |
-| **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:task`, `/ctx:techstack` |
+| **Written by** | `/ctx:start`, `/ctx:onboard` (via the architecture procedure) |
+| **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:task`, and the techstack procedure |
 
 **Required sections:**
 - `## Architecture` with at least one of:
@@ -52,8 +52,8 @@ When modifying a file's format, check the **Read by** column to understand which
 
 | | |
 |---|---|
-| **Location** | `.context/.project-init.md` |
-| **Written by** | `/ctx:techstack`, `/ctx:onboard` |
+| **Location** | `.project-init.md` (repo root — the one ctx file that lives outside `.context/`) |
+| **Written by** | `/ctx:start`, `/ctx:onboard` (via the techstack procedure) |
 | **Read by** | (reference only — not consumed by other skills programmatically) |
 
 **Required sections:**
@@ -67,7 +67,7 @@ When modifying a file's format, check the **Read by** column to understand which
 |---|---|
 | **Location** | `.context/domain.md` and optionally `.context/domain/*.md` |
 | **Written by** | `/ctx:domain`, and via Domain Impact Protocol from `/ctx:epic`, `/ctx:breakdown`, `/ctx:task` (all require user confirmation) |
-| **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:task`, `/ctx:investigate` |
+| **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:task` |
 
 **Required sections:**
 - `## Glossary` — table with Term, Definition, Type (Aggregate / Entity / Value Object / Domain Event)
@@ -113,31 +113,6 @@ When modifying a file's format, check the **Read by** column to understand which
 
 ---
 
-## Investigation files
-
-| | |
-|---|---|
-| **Location** | `.context/investigations/inv-<name>.md` |
-| **Written by** | `/ctx:investigate` |
-| **Read by** | `/ctx:breakdown` |
-
-**Archive location:** `.context/plans-done/` (moved by `/ctx:sync` when all tasks are done)
-
-**Required sections:**
-- `# Investigation: [Title]`
-- `## Type` — one of: `bug`, `performance`, `refactor`, `tech-debt`, `security`
-- `## Summary` — one paragraph
-- `## Findings` with `### Root Cause / Current State`
-- `## Proposed Approach` — at least one option
-- `## Status` — one of: `investigating`, `ready`, `broken-down`, `done`
-
-**Optional but recommended:**
-- `## Issue Description` (Expected/Actual/Severity)
-- `## Affected Files`, `## Reproduction Steps`
-- `## Test Strategy`, `## Estimated Complexity`
-
----
-
 ## Task files
 
 | | |
@@ -159,7 +134,7 @@ When modifying a file's format, check the **Read by** column to understand which
 - `test` — logic changes in 1-2 files, no API changes. Suggest running test-runner agent (if available).
 - `full` — API changes, shared types, infrastructure, complexity L/XL. Suggest test-runner + build-validator (if available).
 - Set by `/ctx:breakdown` and `/ctx:create-task` based on task scope. Read by `/ctx:task` on completion.
-- When `config.verification.carefulMode` is true, all tasks are treated as `full` regardless of this field.
+- `/ctx:task --careful` treats every task as `full` regardless of this field.
 
 **Optional but recommended:**
 - `## Context`, `## Technical Notes`, `## Files to Touch`
@@ -177,7 +152,7 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/progress.md` |
-| **Written by** | `/ctx:context-init`, `/ctx:breakdown`, `/ctx:create-task`, `/ctx:sync` |
+| **Written by** | the context-bank procedure, `/ctx:breakdown`, `/ctx:create-task`, `/ctx:sync` |
 | **Read by** | `/ctx:progress`, `/ctx:sync`, `/ctx:create-task` |
 
 **Required sections:**
@@ -193,36 +168,12 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/decisions.md` |
-| **Written by** | `/ctx:log-decision`, `/ctx:context-init` |
-| **Read by** | `/ctx:breakdown`, `/ctx:architecture` |
+| **Written by** | `/ctx:log-decision`, the context-bank procedure |
+| **Read by** | `/ctx:breakdown`, the architecture procedure |
 
 **Required format per entry:**
 - `### [Date] Decision Title`
 - `**Context:**`, `**Decision:**`, `**Rationale:**`, `**Consequences:**`
-
----
-
-## ctx-config.json
-
-| | |
-|---|---|
-| **Location** | `.context/ctx-config.json` (project-level) and `${CLAUDE_PLUGIN_DATA}/ctx-config.json` (user-level) |
-| **Written by** | `/ctx:context-init` (project-level, optional), user manually |
-| **Read by** | All skills (preamble step) |
-
-See `config-convention.md` for schema and merge rules.
-
----
-
-## Execution Logs
-
-| | |
-|---|---|
-| **Location** | `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`, `sync-history.jsonl`, `recaps.log` |
-| **Written by** | All skills (`execution.jsonl`), `/ctx:sync` (`sync-history.jsonl`), `/ctx:recap` (`recaps.log`) |
-| **Read by** | `/ctx:sync` (failure analysis), `/ctx:progress --metrics`, `/ctx:recap` |
-
-See `logging-convention.md` for schema and protocols.
 
 ---
 

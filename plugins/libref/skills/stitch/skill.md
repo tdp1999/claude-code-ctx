@@ -163,7 +163,3 @@ Follow `shared/conventions/error-handling.md`. Additionally:
 - **"Invalid argument" errors**: Usually means required field missing or ID includes prefix (e.g., `projects/`).
 - **Timeout on generation**: Do NOT retry. Inform user and suggest checking back with `get_screen`/`list_screens`.
 - **Empty/missing screens after generation**: The process may still be running. Wait and retry `list_screens`.
-
-## Logging
-
-Follow `shared/conventions/logging-convention.md` with skill name `libref:stitch`.

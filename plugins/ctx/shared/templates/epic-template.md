@@ -82,7 +82,7 @@ This template is used for creating epic files in `.context/plans/`. Epics are hi
 **Reasoning:** [Why this complexity estimate]
 
 ## Status
-draft | ready | in-progress | done
+draft | ready | broken-down | completed
 
 ## Created
 [YYYY-MM-DD]

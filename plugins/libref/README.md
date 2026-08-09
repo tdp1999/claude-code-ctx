@@ -27,7 +27,7 @@ libref/
 ├── .claude-plugin/plugin.json
 ├── skills/              # One folder per skill
 ├── shared/
-│   └── conventions/     # Error handling, logging
+│   └── conventions/     # Error handling
 ├── CHANGELOG.md
 └── README.md
 ```
@@ -35,4 +35,3 @@ libref/
 ## Conventions
 
 - **Error handling**: See `shared/conventions/error-handling.md`
-- **Logging**: See `shared/conventions/logging-convention.md` — logs to `${CLAUDE_PLUGIN_DATA}/libref-logs/`

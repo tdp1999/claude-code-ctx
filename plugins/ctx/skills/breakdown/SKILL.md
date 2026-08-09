@@ -1,48 +1,49 @@
 ---
 name: breakdown
-description: Decompose an epic or investigation into actionable task files in .context/tasks/. Triggers on "break down", "decompose", "create tasks from", "split into tasks", "breakdown". Use when an epic or investigation is ready and needs concrete work items. For standalone tasks without an epic, use /ctx:create-task.
-argument-hint: "[epic/investigation name or file path]"
+description: Decompose an epic into actionable task files in .context/tasks/. Triggers on "break down", "decompose", "create tasks from", "split into tasks", "breakdown". Use when an epic is ready and needs concrete work items. For standalone tasks without an epic, use /ctx:create-task.
+argument-hint: "[epic name or file path]"
 allowed-tools: Read, Write, Edit, Glob, Bash, AskUserQuestion, Task
 ---
 
 # Task Breakdown
 
-Break down an epic, investigation, feature, plan, PRD, or idea into actionable task files following the project's context bank structure.
+Break down an epic, feature, plan, PRD, or idea into actionable task files following the project's context bank structure.
 
 ## Subagent Usage
 
 See `../../shared/subagents.md` for available subagents.
 
-This skill uses:
-- **Explore** (built-in) - For finding related code when creating tasks
+Delegate to **Explore** (built-in, read-only) rather than reading the codebase yourself
+whenever the answer needs a sweep instead of a single known file:
 
-**When to use Explore:**
-- When tasks need specific file paths
-- When understanding existing code to create better tasks
-- When need to identify affected areas for refactor tasks
+- Finding the files each task will touch, so `## Files to Touch` is real and not a guess
+- Mapping the blast radius of a refactor across modules
+- Checking whether something in the epic already exists in the codebase
+
+Send one Explore per independent question and let them run together — a breakdown that
+needs file paths for six tasks should not read fifty files in the main thread.
+
+Do NOT delegate: writing the task files, the domain impact check, or anything that
+needs the user's answer.
 
 ## Input
 
 `$ARGUMENTS` can be:
 - Epic name: `/ctx:breakdown epic-auth` or `/ctx:breakdown auth`
 - Epic file path: `/ctx:breakdown .context/plans/epic-auth.md`
-- Investigation name: `/ctx:breakdown inv-checkout-bug` or `/ctx:breakdown checkout-bug`
-- Investigation file path: `/ctx:breakdown .context/investigations/inv-checkout-bug.md`
 - Feature description: `/ctx:breakdown Add user authentication` (ad-hoc, not from epic)
 - Other file path: `/ctx:breakdown .context/portfolio-v1-plan.md`
-- Empty: List available epics and investigations, ask which to break down
+- Empty: List available epics, ask which to break down
 
 ## Step 1: Analyze Input
 
 **If empty (no arguments):**
 1. Check for epic files in `.context/plans/`
-2. Check for investigation files in `.context/investigations/`
-3. If epics or investigations exist:
+2. If epics exist:
    - List all epics with their status
-   - List all investigations with their status
    - Show which have been broken down already
-   - Ask: "Which epic or investigation would you like to break down?"
-4. If none exist:
+   - Ask: "Which epic would you like to break down?"
+3. If none exist:
    - Ask: "What would you like me to break down? (describe a feature or provide a file path)"
 
 **If epic name or path provided:**
@@ -50,12 +51,6 @@ This skill uses:
 - Read the epic file
 - Extract: Summary, Requirements, Technical Considerations, Risks
 - Use epic content as detailed context for breakdown
-
-**If investigation name or path provided:**
-- Look for matching investigation file in `.context/investigations/`
-- Read the investigation file
-- Extract: Root Cause, Affected Files, Proposed Approach, Test Strategy
-- Use investigation content as detailed context for breakdown
 
 **If other file path provided:**
 - Read the file
@@ -74,8 +69,7 @@ See `../../shared/conventions/file-contracts.md` for required file sections.
 
 Skill-specific errors:
 - **Epic missing `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
-- **Investigation missing `## Proposed Approach`**: Cannot create fix tasks — inform user, suggest updating investigation
-- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:context-init` first
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic status is `broken-down`**: Warn user this epic was already decomposed. Ask if they want to add more tasks (continue numbering) or re-breakdown (will not delete existing tasks)
 
 ## Step 2: Check Context Bank
@@ -90,7 +84,7 @@ Check if `.context/tasks/` exists:
   ```
   A breakdown mints a whole block of numbers, so a wrong starting point duplicates
   every one of them. See `../../shared/conventions/task-naming.md`.
-- If no, suggest running `/ctx:context-init` first
+- If no, suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 
 Read `.context/patterns-architecture.md`, `.context/decisions.md`, and `.context/domain.md` (if exists) for project context. When domain.md exists, use domain rule IDs in acceptance criteria for traceability (e.g., "Validate ORD-001: Order must contain at least one Line Item").
 
@@ -105,17 +99,31 @@ If `.context/domain.md` exists:
     📋 Flows — updating: ...
     📏 Rules — adding: ...
     ```
-  - Present to user: "Before breaking down, this epic/investigation references domain concepts not yet documented:"
+  - Present to user: "Before breaking down, this epic references domain concepts not yet documented:"
   - **Wait for user confirmation** → update domain.md → then proceed with breakdown
   - This ensures tasks get accurate domain-aware acceptance criteria
 
 ## Step 2.7: Skill Discovery
 
-Scan for specialized skills that may be relevant to the tasks being created. This is a one-time scan per breakdown — results are written into task files so `/ctx:task` doesn't need to re-scan.
+Find the specialized skills already installed in this session that the upcoming tasks
+should use. This is a one-time pass per breakdown — the result is written into the task
+files so `/ctx:task` never has to repeat it.
 
-### When to scan
+### Where the list comes from
 
-Only scan when the source document (epic/investigation) mentions work that may benefit from specialized skills:
+**Start from the skills already listed in your context.** Claude Code puts every
+available skill — project, user, and plugin — in front of you with its name and
+description before this skill ever runs. That list is the authority. Reading it costs
+nothing and it is the only source that sees plugin skills at all.
+
+Do NOT try to enumerate skills by globbing the filesystem. `.claude/skills/*/` and
+`~/.claude/skills/*/` miss every plugin skill, and the plugin cache holds several
+versions of the same plugin in two different directory layouts — a glob there will
+match stale copies.
+
+### When to match
+
+Only when the epic mentions work a specialized skill would cover:
 - E2E tests, spec files, Playwright, Cypress
 - Database migrations, schema changes, Prisma, TypeORM
 - Style review, CSS audit, UI review
@@ -123,31 +131,26 @@ Only scan when the source document (epic/investigation) mentions work that may b
 - Performance audit, security scan
 - Any domain-specific tooling
 
-If the epic is purely about implementing business logic, CRUD, or standard code — skip this step entirely.
+If the epic is purely business logic, CRUD, or standard code — skip this step entirely.
 
-### How to scan
+### How to match
 
-1. **Glob for available skills** — scan these locations for SKILL.md or skill.md files:
-   - `.claude/skills/*/` (project-level skills)
-   - `~/.claude/skills/*/` (user-level skills)
-   - Any installed plugin skill directories
+1. **Compare each available skill's description against the epic's requirements:**
+   - Does the skill's trigger match a file type in the epic? (`*.spec.ts`, `*.prisma`)
+   - Does its description cover a kind of work this epic contains?
 
-2. **Read only the frontmatter** (name + description) of each skill found — not the full file. This costs ~50 tokens per skill.
-
-3. **Match skills to requirements** — compare each skill's description against the epic's requirements:
-   - Does the skill's activation pattern match any AC? (e.g., `*.spec.ts`, `*.prisma`)
-   - Does the skill's description cover a type of work in this epic?
-
-4. **If matches found**, add to the epic file:
+2. **If matches found**, add to the epic file:
 
 ```markdown
 ## Specialized Skills
 - **[skill-name]** — [one-line what it does] → tasks [NNN, NNN, NNN]
 ```
 
-5. **Write skill references into individual task files** (see Step 4 template below) — this is how `/ctx:task` knows which skill to follow without re-scanning.
+3. **Write the skill name into the matching task files** (see the Step 4 template) — by
+   name only. `/ctx:task` invokes it by name; a path recorded today goes stale the next
+   time the skill moves or the plugin updates.
 
-### If no skills found
+### If no skills match
 
 Skip silently. Tasks proceed with standard `patterns-architecture.md` guidance.
 
@@ -196,12 +199,9 @@ Implementation hints, patterns to follow, edge cases.
 Reference `.context/patterns-architecture.md` if relevant.
 
 <!-- If a specialized skill was matched in Step 2.7, add the two lines below.
-     PATH: record the SKILL.md location exactly where the Step 2.7 glob found it —
-     a project-level `.claude/skills/<name>/SKILL.md` takes precedence over a
-     user-level `~/.claude/skills/<name>/SKILL.md`. Do NOT assume the home (`~`) path.
-     Use forward slashes + `~` (home); Claude Code resolves these on macOS, Linux,
-     and Windows alike — never write OS-specific separators or absolute paths. -->
-**Specialized Skill:** [skill-name] — read `[path/to/skill/SKILL.md]` for guidelines.
+     Record the skill NAME only — the name is how /ctx:task invokes it, and it stays
+     correct when the skill moves or its plugin updates. Never record a file path. -->
+**Specialized Skill:** [skill-name] — [one line on what it covers for this task]
 **Key sections to read:** [§Section1, §Section2] (only the sections relevant to this task)
 
 ## Files to Touch
@@ -234,10 +234,6 @@ Reference `.context/patterns-architecture.md` if relevant.
 - Update epic status from "draft" or "ready" to "broken-down"
 - Add note in epic: "Broken down into tasks 001-005 on [date]"
 
-**If from investigation:**
-- Update investigation status from "investigating" or "ready" to "broken-down"
-- Add note in investigation: "Broken down into tasks 001-003 on [date]"
-
 **Status Lifecycle** (see `shared/conventions/status-lifecycle.md` for full reference):
 - `draft` → Being written
 - `ready` → Ready to be broken down
@@ -253,10 +249,10 @@ Add all new tasks to `.context/progress.md`:
 ## Pending
 - [ ] 001-task-name - Brief description (from: epic-auth)
 - [ ] 002-another-task - Brief description (from: epic-auth)
-- [ ] 006-fix-bug - Brief description (from: inv-checkout-bug)
+- [ ] 006-fix-bug - Brief description (from: epic-checkout-500)
 ```
 
-Note which epic or investigation each task came from for traceability.
+Note which epic each task came from for traceability.
 
 ## Step 7: Generate Summary
 
@@ -275,7 +271,6 @@ After creating tasks, provide:
 
 **Source:**
 - If from epic: Note which epic file this breakdown came from
-- If from investigation: Note which investigation file this breakdown came from
 
 **Recommended First Task:**
 Recommend which task to start first based on:
@@ -296,29 +291,22 @@ Key points:
 
 ---
 
-## Tips (Updated)
+## Tips
 
-- **Prefer epic or investigation-based breakdown** - they provide richer context
-- When listing epics/investigations, show status to help user choose
-- Update source file status when breaking down
-- Link tasks to their source (epic or investigation) for traceability
+- **Prefer epic-based breakdown** - an epic provides far richer context than a one-line description
+- When listing epics, show status to help the user choose
+- Update the epic's status when breaking it down
+- Link tasks to their epic for traceability
 - Ad-hoc breakdowns are fine for small additions
-- If user provides vague description, suggest creating an epic or investigation first
-- Use Explore subagent when tasks need specific file paths
+- If the user provides a vague description, suggest creating an epic first
+- Delegate to Explore when tasks need specific file paths
 
 ## Gotchas
 
 - **Domain Impact Check BEFORE breaking down**: If epic references entities/flows/rules not in domain.md, propose domain updates first. Do not create tasks that reference undocumented domain concepts.
 - **Never `ls` tasks-done/ to find the highest number**: it is nested by epic, so a flat listing returns folder names and every archived task goes unseen. Use the `find … | sort -n` scan from Step 2. A breakdown assigns a block of numbers at once, so one bad starting point duplicates the entire block.
 - **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
-- **Skill Discovery scans ONCE per breakdown**: Do not re-scan for each task. Scan all installed skills once, match to requirements, write references into individual task files.
+- **Skill Discovery matches ONCE per breakdown**: Do not repeat it per task. Match against the available-skills list once, then write the skill names into the task files.
+- **Record skill names, never skill paths**: a path goes stale when the skill moves or its plugin updates; the name is what `/ctx:task` invokes.
 - **Epic must have High-Level Requirements**: Cannot break down an epic in "draft" status. It needs at least "ready" with requirements defined.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

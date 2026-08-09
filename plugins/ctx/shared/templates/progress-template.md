@@ -29,7 +29,7 @@ This template is used for creating the progress tracker at `.context/progress.md
 **Task Entry Format:**
 ```markdown
 - [ ] 001-task-name - Brief description (from: epic-auth)
-- [ ] 002-another-task - Brief description (from: inv-checkout-bug)
+- [ ] 002-another-task - Brief description (from: epic-auth)
 ```
 
 **Status Sections:**
@@ -44,10 +44,9 @@ This template is used for creating the progress tracker at `.context/progress.md
 - `[x]` - Completed
 
 **Source Attribution:**
-Always note which epic or investigation each task came from:
+Always note which epic each task came from:
 - `(from: epic-auth)` - Task came from epic-auth.md
-- `(from: inv-checkout-bug)` - Task came from investigation
-- `(ad-hoc)` - Task created without epic/investigation
+- `(ad-hoc)` - Task created with `/ctx:create-task`, no epic
 
 **Syncing:**
 Use `/ctx:sync` to synchronize progress.md with actual task files:
@@ -65,7 +64,7 @@ Use `/ctx:sync` to synchronize progress.md with actual task files:
 ## Pending
 - [ ] 001-setup-user-model - Create user entity and repository (from: epic-auth)
 - [ ] 002-implement-registration - Add registration endpoint (from: epic-auth)
-- [ ] 006-fix-checkout-bug - Add null check in payment service (from: inv-checkout-500)
+- [ ] 006-fix-checkout-bug - Add null check in payment service (from: epic-checkout-500)
 
 ## Blocked
 - [ ] 005-jwt-refresh-tokens - Waiting on 003-implement-login (from: epic-auth)

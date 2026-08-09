@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion, Task
 
 # Create Standalone Task
 
-Generate a standalone task file from brief user input. Unlike `/ctx:breakdown` which decomposes epics or investigations, this skill creates **individual tasks directly** without requiring an epic or investigation.
+Generate a standalone task file from brief user input. Unlike `/ctx:breakdown` which decomposes an epic, this skill creates **individual tasks directly** without requiring an epic.
 
 **Scope:** This skill strictly focuses on **scoping and planning**. Task creation only—implementation happens when user explicitly requests "Work on this task" or uses `/ctx:task [NNN]`.
 
@@ -41,7 +41,7 @@ See `../../shared/conventions/error-handling.md` for general error handling rule
 See `../../shared/conventions/file-contracts.md` for required output sections.
 
 Skill-specific errors:
-- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:context-init` first
+- **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **`progress.md` doesn't exist**: Create it from template after task creation
 - **Task numbering conflict**: Always check both `tasks/` and `tasks-done/` for highest number
 
@@ -52,13 +52,13 @@ Skill-specific errors:
 **Use this skill when:**
 - User wants to create a single task quickly without an epic
 - Task is not part of a larger feature/epic
-- Task is a bug fix, investigation, or small enhancement
+- Task is a bug fix, a small enhancement, or a piece of digging with a known scope
 - User provides brief description that needs expansion
 
 **Do NOT use this skill when:**
 - User wants to break down an epic (use `/ctx:breakdown` instead)
-- User wants to break down an investigation (use `/ctx:breakdown` instead)
 - Multiple related tasks need to be created (use `/ctx:epic` then `/ctx:breakdown` instead)
+- The bug's cause is unknown and the fix may span several places (use `/ctx:epic` — see `../../shared/workflows/bug-flow.md`)
 
 ---
 
@@ -335,11 +335,3 @@ Key points:
 - **User must approve before file creation**: Always show the draft task and get explicit confirmation. Do not create the file silently.
 - **Standalone tasks are marked differently in progress.md**: Use "(standalone)" label so they're distinguishable from epic-sourced tasks.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

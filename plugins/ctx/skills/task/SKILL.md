@@ -1,8 +1,8 @@
 ---
 name: task
 description: Load a task file from .context/tasks/ and work on it, following acceptance criteria and patterns. Triggers on "work on task", "start task", "continue task", "task NNN", "pick up where I left off", "next task". Use when user wants to implement a specific task.
-argument-hint: "[task number or name]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+argument-hint: "[task number or name] [--careful]"
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, Skill
 ---
 
 # Continue Task
@@ -13,6 +13,20 @@ Load and work on a specific task from `.context/tasks/` (active tasks only).
 
 - `.context/tasks/` - Active tasks (pending, in-progress, blocked)
 - `.context/tasks-done/` - Archived done tasks (read-only reference)
+
+## Subagent Usage
+
+See `../../shared/subagents.md` for available subagents.
+
+- **Explore** (built-in, read-only) — for the Step 5b verification sweep when the task
+  names an area rather than exact files, or when you need to find every call site
+  before changing a signature. Do not read twenty files in the main thread to answer
+  "where is this used".
+- **test-runner** (project-defined, if present) — Step 9, `test` and `full`
+- **build-validator** (project-defined, if present) — Step 9, `full`
+
+Never delegate the writing of the code, the AC checkboxes, or the status line. Those
+stay in the main thread where the user can see them.
 
 ## Error Handling
 
@@ -30,6 +44,9 @@ Skill-specific errors:
 `$ARGUMENTS` - Task number or name (e.g., "002" or "bento-grid")
 
 If empty, ask user which task to work on.
+
+**Flag:** `--careful` forces the task's verification level to `full` regardless of what
+the task file says. Use it on critical code. See Step 9.
 
 ## Steps
 
@@ -51,28 +68,25 @@ If empty, ask user which task to work on.
    Check `## Technical Notes` for a `**Specialized Skill:**` line.
 
    **If found:**
-   - Read ONLY the sections listed in `**Key sections to read:**` from the referenced SKILL.md
-   - Do NOT read the entire skill file — only the relevant sections, to keep context lean
-   - **If the referenced path does not resolve** (e.g., an older task hardcoded
-     `~/.claude/skills/<name>/SKILL.md` but the skill lives project-level — or vice
-     versa), re-discover by globbing `.claude/skills/<name>/SKILL.md` then
-     `~/.claude/skills/<name>/SKILL.md` and read whichever exists (project-level
-     wins). Do not abort on a stale path. These globs use forward slashes + `~`,
-     which Claude Code resolves on macOS, Linux, and Windows alike.
+   - Invoke it by name with the Skill tool. The skill's own instructions load into this
+     turn — that is the whole point of naming it.
+   - If it is a reference-style skill you only need to consult, read ONLY the sections
+     listed in `**Key sections to read:**`. Never read a whole skill file to use one rule.
+   - **If the named skill is not available in this session** (uninstalled, renamed, or
+     from another machine), say so plainly and continue with
+     `patterns-architecture.md` guidance. Do not abort the task over a missing skill,
+     and do not go hunting the filesystem for it.
    - Follow the skill's guidelines for the ACs in this task alongside patterns-architecture.md
    - Note in progress log: `- [date] Using [skill-name] for [what]`
 
    **If not found:**
-   - Proceed normally with patterns-architecture.md guidance only
-
-   **Fallback discovery** (only if no skill reference in task, AND AC clearly needs specialized work):
-   - If an AC mentions writing spec/test files, migrations, or other specialized artifacts
-     but no skill was referenced (e.g., task was created by `/ctx:create-task`, not breakdown):
-   - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md`
-   - Read frontmatter only (name + description) — match against AC
-   - If match found, ask user: "Found skill [name] for this work. Use it? (yes/no)"
-   - If yes: read relevant sections, add `**Specialized Skill:**` to Technical Notes for future reference
-   - If no: proceed normally
+   - Check the available-skills list already in your context — it names every project,
+     user, and plugin skill in this session, with descriptions. If one of them clearly
+     covers work in this task's ACs (spec files, migrations, deploys, style review),
+     ask: "Found skill [name] for this work. Use it? (yes/no)"
+   - If yes: invoke it, and add `**Specialized Skill:** [name]` to `## Technical Notes`
+     so the next session does not have to re-derive it. Record the name, never a path.
+   - If no match, or the user declines: proceed with patterns-architecture.md guidance only.
 
 4. **Verify ready:**
    - Status should be `pending` or `in-progress`
@@ -84,10 +98,10 @@ If empty, ask user which task to work on.
    Do NOT jump straight into implementation. First produce a briefing with two parts and show it to the user.
 
    **5a. Explain what the task is and its context:**
-   - Assume the user has NO knowledge of this specific task or the epic/investigation it belongs to — but DOES have a general understanding of the overall system. Write for that reader.
+   - Assume the user has NO knowledge of this specific task or the epic it belongs to — but DOES have a general understanding of the overall system. Write for that reader.
    - In plain language (avoid internal jargon and bare rule IDs — expand them), explain:
      - **What this task accomplishes** and the concrete problem/need it addresses
-     - **Why it exists** — the parent epic (`.context/plans/epic-*.md`) or investigation it came from, and how this task fits into that larger goal
+     - **Why it exists** — the parent epic (`.context/plans/epic-*.md`) it came from, and how this task fits into that larger goal
      - **Where it sits in the bigger picture** — what depends on it, what it unblocks, what part of the system it touches
    - Keep it tight but genuinely explanatory — enough that someone seeing the task cold understands the "why" before the "how".
 
@@ -136,22 +150,27 @@ If empty, ask user which task to work on.
 
 9. **Verification on completion:**
    Read the task's `## Verification:` field (none / test / full).
-   If config `verification.carefulMode` is true → treat as `full` regardless.
+   If the user passed `--careful` → treat as `full` regardless of the field.
 
    - **none**: Skip verification entirely.
-   - **test**: Check if a test-runner agent exists (glob `.claude/agents/test-runner*` then `~/.claude/agents/test-runner*` — project-level wins).
-     - If found → suggest: "Run tests for affected code? (yes/no)"
-     - If not found → suggest: "Consider running tests manually before marking complete."
-   - **full**: Check for both test-runner and build-validator agents.
-     - If found → suggest: "Run tests and build validation? (yes/no)"
-     - If not found → suggest: "Consider running tests and build manually."
-   - NEVER auto-run — always ask user first.
+   - **test**: If a `test-runner` agent is available in this session, ask:
+     "Run tests for affected code? (yes/no)" — on yes, spawn it with the Task tool,
+     telling it which files the task touched.
+     If there is no `test-runner`, suggest: "Consider running tests manually before
+     marking complete."
+   - **full**: Same for `test-runner` and `build-validator` together. Ask once:
+     "Run tests and build validation? (yes/no)" — on yes, spawn both.
+     If neither exists, suggest running tests and build manually.
+   - NEVER auto-run — always ask the user first.
+   - Report what the agents found. A failing test means the task is not done: leave the
+     failing AC unchecked and write the failure into `## Progress Log`.
 
-10. **Suggest commit (discovery-based):**
-    After task completion, if a commit-related skill is available:
-    - Quick glob: `.claude/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md` — scan frontmatter for "commit" or "push" in description
-    - If found → suggest: "Task complete. Use [skill-name] to commit with task ID in scope? e.g., `feat(task-NNN): [goal]`"
-    - If not found → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
+10. **Suggest commit:**
+    After task completion, check the available-skills list in your context for a skill
+    whose description covers committing or pushing.
+    - If one exists → suggest: "Task complete. Use [skill-name] to commit with the task ID in scope? e.g., `feat(task-NNN): [goal]`"
+    - If not → suggest: "Task complete. Consider committing with task reference: `feat(task-NNN): [goal]`"
+    - Never commit without the user asking.
 
 11. **Domain check on completion:**
     If the task references domain rule IDs (e.g., ORD-001, PAY-002) in its acceptance criteria:
@@ -180,13 +199,6 @@ Confirm task loaded and show:
 - **Never qualify the status line**: `## Status: done (pending X)` parses as neither `done` nor anything else, so sync skips the task entirely and it silently leaves every count. Caveats go in `## Progress Log`; the status stays a bare token.
 - **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.
 - **Blocked tasks need a reason**: If a task cannot proceed, update status to `blocked` and document why. Do not silently skip to another task.
-- **Verification field controls post-completion behavior**: Check the task's `Verification:` field. Only suggest test/build runs when the level warrants it (see config-convention).
+- **Verification field controls post-completion behavior**: Check the task's `Verification:` field. Only suggest test/build runs when the level warrants it, or when the user passed `--careful`.
+- **Invoke skills by name, don't hunt for their files**: the available-skills list in your context already names every skill in this session, including plugin skills a filesystem glob would never see. A recorded path is stale the moment the skill moves.
 
----
-
-## Final Step — Execution Log
-
-If `${CLAUDE_PLUGIN_DATA}` is set and config `logging.enabled` is true:
-- Append one JSONL line to `${CLAUDE_PLUGIN_DATA}/ctx-logs/execution.jsonl`
-- Fields: `ts` (ISO-8601), `skill` ("ctx:<name>"), `project` (cwd basename), `args`, `outcome` ("success"|"failure"|"partial"|"corrected"), `failure_type`, `failure_detail`
-- See `shared/conventions/logging-convention.md` for schema

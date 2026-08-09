@@ -9,7 +9,7 @@ Standard error handling behavior for all ctx skills.
 When a required context file doesn't exist:
 
 1. **Tell the user** which file is missing and why it's needed
-2. **Suggest the skill** that creates it (e.g., "Run `/ctx:vision` first to create vision.md")
+2. **Suggest the skill** that creates it (e.g., "Run `/ctx:start` first to create vision.md")
 3. **DO NOT** create placeholder files silently
 4. **DO NOT** proceed with assumptions — missing context leads to low-quality output
 
@@ -18,7 +18,7 @@ When a required context file doesn't exist:
 Cannot proceed: `.context/vision.md` not found.
 This file provides project context needed for architecture decisions.
 
-To create it, run: /ctx:vision
+To create it, run: /ctx:start
 ```
 
 ---
@@ -66,7 +66,7 @@ This looks like a stale status. Run /ctx:sync to reconcile, or I can fix it now.
 When `.context/` directory doesn't exist:
 
 1. **Inform** the user the context bank is not initialized
-2. **Suggest** `/ctx:context-init` (for existing structure) or `/ctx:start` (for new projects)
+2. **Suggest** `/ctx:start` (new project) or `/ctx:onboard` (existing codebase)
 3. **DO NOT** create the folder structure from non-init skills
 
 ---

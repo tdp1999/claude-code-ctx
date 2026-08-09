@@ -1,26 +1,23 @@
 # Breakdown Skill Examples
 
-## Empty Argument (List Epics and Investigations)
+## Empty Argument (List Epics)
 
 ```
 User: /ctx:breakdown
 
-Assistant checks .context/plans/ and .context/investigations/
+Assistant checks .context/plans/
 
 Found:
 - epic-auth.md (status: ready)
 - epic-payment.md (status: draft)
-- inv-checkout-bug.md (status: ready)
+- epic-checkout-500.md (status: ready)
 
 Assistant shows:
 "Available to break down:
 
-Epics:
 1. epic-auth.md (ready) - User authentication
 2. epic-payment.md (draft) - Payment processing
-
-Investigations:
-3. inv-checkout-bug.md (ready) - Checkout 500 error
+3. epic-checkout-500.md (ready) - Checkout 500 error
 
 Which would you like to break down?"
 ```
