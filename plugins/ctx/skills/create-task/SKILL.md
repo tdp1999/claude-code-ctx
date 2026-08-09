@@ -39,6 +39,7 @@ This skill uses:
 
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required output sections.
+See `../../shared/conventions/spec-quality.md` for the acceptance-criteria scan.
 
 Skill-specific errors:
 - **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
@@ -198,6 +199,18 @@ None (or list specific task IDs if they exist)
 
 ---
 
+### Step 3.5: Spec Check
+
+Run the scan from `../../shared/conventions/spec-quality.md` over the **Acceptance
+Criteria** just drafted. Draft each criterion into an EARS pattern, and check that at
+least one covers a failure path.
+
+Findings are **warnings only**. Never withhold the draft, never demand a fix, never
+ask a separate approve-the-warnings question. Apply the obvious rewrites into the
+draft yourself, and carry the report block into Step 4 so the user sees what changed.
+
+---
+
 ### Step 4: Present Draft to User
 
 Show the task content to the user for review:
@@ -216,6 +229,8 @@ Show the task content to the user for review:
 - [ ] Criterion 1
 - [ ] Criterion 2
 - [ ] Criterion 3
+
+[Spec check block from Step 3.5 — one line if clean]
 
 ---
 

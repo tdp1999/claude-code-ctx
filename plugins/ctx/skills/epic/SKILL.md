@@ -25,6 +25,7 @@ This skill uses:
 
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required output sections.
+See `../../shared/conventions/spec-quality.md` for the requirement-wording scan.
 
 Skill-specific errors:
 - **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:start` first, but allow proceeding if user confirms.
@@ -89,6 +90,11 @@ Use when creating a new epic from an idea.
 5. **Generate epic file:**
    - Create descriptive filename: `epic-<kebab-case-name>.md`
    - Save to `.context/plans/`
+   - Before saving, run the spec-quality scan from
+     `../../shared/conventions/spec-quality.md` over **High-Level Requirements** and
+     **Success Criteria**. Draft each requirement into an EARS pattern, and check that
+     at least one covers a failure path. Findings are warnings — write the file
+     regardless, and report them in Step 7.
 
 ### Epic File Template
 
@@ -204,6 +210,7 @@ draft | ready | broken-down | completed
    - Key points of the epic
    - Main risks identified
    - Domain changes made (if any)
+   - The spec check block from Step 5 (one line if clean)
    - Suggested next steps (break down into tasks, address dependencies, etc.)
 
 ---

@@ -66,6 +66,7 @@ needs the user's answer.
 
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required file sections.
+See `../../shared/conventions/spec-quality.md` for the acceptance-criteria scan.
 
 Skill-specific errors:
 - **Epic missing `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
@@ -228,6 +229,17 @@ Reference `.context/patterns-architecture.md` if relevant.
 - Use lowercase with hyphens
 - Keep names short but descriptive (3-5 words)
 
+### Spec Check
+
+Before writing the files, run the scan from
+`../../shared/conventions/spec-quality.md` over every task's **Acceptance Criteria**.
+Draft each criterion into an EARS pattern, and check that each task has at least one
+covering a failure path.
+
+Findings are **warnings only** — write the task files regardless. Apply the obvious
+rewrites yourself, and report one consolidated block in Step 7 covering all tasks, not
+one block per task. Cap it at 5 findings across the whole breakdown.
+
 ## Step 5: Update Source Status
 
 **If from epic:**
@@ -237,8 +249,8 @@ Reference `.context/patterns-architecture.md` if relevant.
 **Status Lifecycle** (see `shared/conventions/status-lifecycle.md` for full reference):
 - `draft` → Being written
 - `ready` → Ready to be broken down
-- `broken-down` → Has been decomposed into tasks
-- `in-progress` → Tasks underway
+- `broken-down` → Has been decomposed into tasks, and stays here for the whole time
+  those tasks are being worked on. There is no epic-level `in-progress`.
 - `completed` → All tasks finished, archived to plans-done/ (set by /ctx:sync)
 
 ## Step 6: Update Progress Tracker
@@ -271,6 +283,9 @@ After creating tasks, provide:
 
 **Source:**
 - If from epic: Note which epic file this breakdown came from
+
+**Spec check:**
+- The consolidated block from Step 4 (one line if clean)
 
 **Recommended First Task:**
 Recommend which task to start first based on:
