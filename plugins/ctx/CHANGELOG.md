@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-08-09
+
+### Added
+
+- **Spec quality scan** — `epic`, `create-task`, and `breakdown` now check the wording
+  of requirements and acceptance criteria before showing you a draft. It flags the
+  sentence shapes that cannot be tested (vague quantifiers, subjective adjectives,
+  two requirements in one line, unverifiable verbs) and flags a task that has no
+  failure-path criterion at all. Every finding comes with the replacement sentence, so
+  acting on one costs a keystroke rather than a decision. New convention:
+  `shared/conventions/spec-quality.md`, which also carries the five EARS patterns.
+
+  **It warns, it never blocks.** No skill withholds a draft or refuses to write a file
+  because of a finding. A clean scan prints one line, and the report is capped at five
+  findings so it cannot turn into noise.
+
+### Fixed
+
+- `breakdown` still listed `in-progress` as an epic status. An epic stays
+  `broken-down` for the whole time its tasks are being worked on.
+
+---
+
 ## [3.0.0] - 2026-08-08
 
 Breaking release. Six skills were removed and the setup surface collapsed to two
