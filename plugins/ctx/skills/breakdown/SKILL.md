@@ -59,6 +59,10 @@ needs the user's answer.
 
 **If feature description provided (ad-hoc):**
 - Understand the scope
+- Run the **input pass** of the spec-quality scan
+  (`../../shared/conventions/spec-quality.md` → When it runs) over the description as
+  the user wrote it. Turn each smell into a clarifying question in the same turn — a
+  vague description breaks down into vague tasks, and nothing downstream recovers it
 - Ask clarifying questions if ambiguous
 - Note: This is ad-hoc breakdown without epic context
 
@@ -231,14 +235,18 @@ Reference `.context/patterns-architecture.md` if relevant.
 
 ### Spec Check
 
-Before writing the files, run the scan from
+Before writing the files, run the **draft pass** from
 `../../shared/conventions/spec-quality.md` over every task's **Acceptance Criteria**.
-Draft each criterion into an EARS pattern, and check that each task has at least one
-covering a failure path.
+Draft each criterion into an EARS pattern, then run both set-level checks from Part 2
+per task: a task whose goal is a measurable improvement needs at least one criterion
+stating the **target number** (not merely that a before-and-after will be recorded),
+and each task needs at least one criterion covering a failure path.
 
 Findings are **warnings only** — write the task files regardless. Apply the obvious
 rewrites yourself, and report one consolidated block in Step 7 covering all tasks, not
-one block per task. Cap it at 5 findings across the whole breakdown.
+one block per task. Cap it at 5 findings across the whole breakdown. Use the block
+format from Part 4 — prefix each location with the task number (`012 AC 3`, `012 set`)
+— never prose, and never a finding without a `→` replacement sentence.
 
 ## Step 5: Update Source Status
 

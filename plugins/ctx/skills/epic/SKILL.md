@@ -62,11 +62,18 @@ Use when creating a new epic from an idea.
 
 2. **Expand the idea (mini plan-mode):**
 
+   First run the **input pass** of the spec-quality scan
+   (`../../shared/conventions/spec-quality.md` → When it runs) over the user's own
+   wording of the idea. Every smell it finds becomes a clarifying question, asked in
+   the same turn as the ones below — never a separate turn, never a warning.
+
    Ask clarifying questions:
    - What problem does this solve?
    - Who benefits from this feature?
    - What's in scope? What's out of scope?
    - Any specific requirements or constraints?
+   - Anything the input pass surfaced (a comparative with no baseline becomes
+     "faster than what, measured how?")
 
 3. **Improve and foresee:**
 
@@ -90,11 +97,14 @@ Use when creating a new epic from an idea.
 5. **Generate epic file:**
    - Create descriptive filename: `epic-<kebab-case-name>.md`
    - Save to `.context/plans/`
-   - Before saving, run the spec-quality scan from
+   - Before saving, run the **draft pass** of the spec-quality scan from
      `../../shared/conventions/spec-quality.md` over **High-Level Requirements** and
-     **Success Criteria**. Draft each requirement into an EARS pattern, and check that
-     at least one covers a failure path. Findings are warnings — write the file
-     regardless, and report them in Step 7.
+     **Success Criteria**. Draft each requirement into an EARS pattern, then run both
+     set-level checks: if the epic's goal is a measurable improvement, at least one
+     Success Criterion must state the **target number** rather than only that it will
+     be measured, and at least one requirement must cover a failure path. Findings are
+     warnings — write the file regardless, and report them in Step 7 using the block
+     format from Part 4 of the convention, never as prose.
 
 ### Epic File Template
 

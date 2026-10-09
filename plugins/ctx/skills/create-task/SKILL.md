@@ -79,12 +79,23 @@ Examples:
 - "Update dependencies to latest versions"
 ```
 
+**Scan the description before doing anything else.** Run the **input pass** of the
+spec-quality scan (`../../shared/conventions/spec-quality.md` → When it runs) over the
+user's own words. This is where the smells actually are — by the time you have
+researched the code and drafted criteria, the ambiguity has been silently resolved
+into implementation steps and the draft pass will find nothing.
+
+Each smell becomes a clarifying question, not a warning. "Make the blog load faster"
+carries *comparative without baseline*, so the question is "faster than what number,
+and what would count as fast enough?" Ask it in the same turn as the questions below.
+
 **If description is too brief or ambiguous:**
 Use AskUserQuestion to clarify:
 - What is the expected outcome?
 - What files or components are affected?
 - Are there specific constraints or requirements?
 - What is the priority/urgency?
+- Whatever the input pass surfaced
 
 **Example clarification questions:**
 
@@ -201,13 +212,22 @@ None (or list specific task IDs if they exist)
 
 ### Step 3.5: Spec Check
 
-Run the scan from `../../shared/conventions/spec-quality.md` over the **Acceptance
-Criteria** just drafted. Draft each criterion into an EARS pattern, and check that at
-least one covers a failure path.
+Run the **draft pass** from `../../shared/conventions/spec-quality.md` over the
+**Acceptance Criteria** just drafted. Draft each criterion into an EARS pattern, then
+run both set-level checks from Part 2:
+
+- **Threshold** — if the Goal is a measurable improvement (faster, lighter, fewer
+  errors), at least one criterion must state the number to reach. A set where every
+  line is work to perform or a measurement to record passes completely while nothing
+  actually improves. This is invisible line by line, so check it against the set.
+- **Failure path** — at least one criterion covers what happens when something goes
+  wrong.
 
 Findings are **warnings only**. Never withhold the draft, never demand a fix, never
 ask a separate approve-the-warnings question. Apply the obvious rewrites into the
 draft yourself, and carry the report block into Step 4 so the user sees what changed.
+Use the block format from Part 4 — location, smell, `→` rewrite — never prose, and
+never a finding whose second line is advice instead of a replacement sentence.
 
 ---
 

@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **The spec scan now reads your request, not only its own draft.** `epic`,
+  `create-task`, and `breakdown` run the smell scan on the description you typed,
+  before any code research happens, and turn each hit into a clarifying question in the
+  same turn. The previous single pass ran after drafting, which meant the skill
+  researched the code, wrote clean criteria, then graded its own clean criteria and
+  found nothing — while the ambiguity you actually typed had been quietly absorbed into
+  implementation steps.
+
+- **Set-level checks.** Two checks now read the whole criteria set instead of one line
+  at a time, because a set can be entirely valid line by line and still fail to pin
+  down the goal:
+  - **Threshold** — if the goal is a measurable improvement, at least one criterion
+    must state the number to reach. A set where every line is work to perform
+    ("no longer fetches 200 posts", "reads only the needed columns") plus a
+    before-and-after measurement passes in full while the page stays exactly as slow.
+  - **Failure path** — promoted from a footnote under EARS to a named set-level check.
+
+### Changed
+
+- **The spec check report must use the block format.** Prose such as "criteria look
+  observable and two failure paths are present" is a summary of the scan, not its
+  output. Every finding now carries a location, the smell, and a `→` line holding the
+  replacement sentence; a finding whose second line is advice is unfinished and must
+  either be written properly or dropped.
+
+---
+
 ## [3.1.0] - 2026-08-09
 
 ### Added
