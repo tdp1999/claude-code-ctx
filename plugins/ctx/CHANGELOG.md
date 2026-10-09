@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.2.0] - 2026-10-09
 
 ### Added
 
@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   output. Every finding now carries a location, the smell, and a `→` line holding the
   replacement sentence; a finding whose second line is advice is unfinished and must
   either be written properly or dropped.
+
+- **Plain wording in `task` and `domain`.** The MANDATORY and NON-NEGOTIABLE markers
+  are gone; the steps they marked still apply exactly as before. Current models follow
+  plainly stated instructions closely, and capitalised pressure made them over-apply.
 
 ---
 

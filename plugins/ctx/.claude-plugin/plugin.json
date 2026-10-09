@@ -1,6 +1,6 @@
 {
 	"name": "ctx",
-	"version": "3.1.0",
+	"version": "3.2.0",
 	"description": "Complete task-driven development workflow for .context/ folder management. Two entry points (start for a new project, onboard for an existing one), then epics, task breakdown, and progress tracking with TDD support.",
 	"author": {
 		"name": "Phuong Tran",
