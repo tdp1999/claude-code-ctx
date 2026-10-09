@@ -93,7 +93,7 @@ the task file says. Use it on critical code. See Step 9.
    - Dependencies should be done
    - If blocked, report why
 
-5. **Brief the user & reconcile approach (MANDATORY — before beginning work):**
+5. **Brief the user & reconcile approach (before beginning work):**
 
    Do NOT jump straight into implementation. First produce a briefing with two parts and show it to the user.
 
@@ -121,9 +121,9 @@ the task file says. Use it on critical code. See Step 9.
    - If a specialized skill is loaded, follow its guidelines for relevant ACs
    - Update progress log with significant milestones
    - If blocked, update status and note blocker
-   - **AC tracking (MANDATORY):** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
+   - **AC tracking:** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
 
-8. **On completion (MANDATORY):**
+8. **On completion:**
 
    **Gate: `done` requires every AC checked `[x]`.** Before writing the status,
    re-read the `## Acceptance Criteria` block and count. If a single `- [ ]`
@@ -194,7 +194,7 @@ Confirm task loaded and show:
 - **Brief before building**: Always run step 5 (explain the task + reconcile the approach) before touching code. Skipping straight to implementation is wrong even when the task looks trivial — the explanation and the staleness check are the point.
 - **Trust the code over the task file**: Tasks can be written long before they're picked up. Verify the task's assumptions against the actual code, and flag mismatches instead of blindly following a stale plan.
 - **Only search tasks/, never tasks-done/**: Done tasks are archived and read-only. If user asks for a completed task, inform them it's in tasks-done/ but do not re-open it.
-- **AC checkbox updates are MANDATORY and immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
+- **AC checkbox updates are immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
 - **`done` is gated on the checkboxes, not on how finished it feels**: count the ACs before writing the status. One `- [ ]` left means `in-progress`.
 - **Never qualify the status line**: `## Status: done (pending X)` parses as neither `done` nor anything else, so sync skips the task entirely and it silently leaves every count. Caveats go in `## Progress Log`; the status stays a bare token.
 - **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.

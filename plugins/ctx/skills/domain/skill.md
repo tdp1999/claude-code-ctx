@@ -310,7 +310,7 @@ For complete examples of Create, Update, and Split modes, read `references/examp
 
 ## Gotchas
 
-- **User confirmation is NON-NEGOTIABLE**: Never write to domain.md without explicit user approval. This applies to all modes and all callers (epic, breakdown, task via Domain Impact Protocol).
+- **User confirmation is required**: Never write to domain.md without explicit user approval. This applies to all modes and all callers (epic, breakdown, task via Domain Impact Protocol).
 - **Business-level descriptions, not code-level**: Flow steps should survive a UI framework change. Write "User submits order" not "User clicks Submit button which dispatches ORDER_SUBMIT action".
 - **Code vs domain conflict = STOP**: If code behavior contradicts a domain rule, stop immediately. Report the conflict and wait for user decision — do not silently pick one.
 - **Split mode is irreversible**: Once domain.md is split into per-module files, merging back requires manual effort. Confirm with user before splitting.
