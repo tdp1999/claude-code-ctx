@@ -165,7 +165,7 @@ The plugin is then available in all sessions automatically.
 - **Workflows**: `shared/workflows/` — feature flow, bug flow
 - **Procedures**: `shared/procedures/` — the four setup steps run by start / onboard
 - **Templates**: `shared/templates/` — file formats
-- **Conventions**: `shared/conventions/` — file contracts, naming, status lifecycle, complexity
+- **Conventions**: `shared/conventions/` — file contracts, naming, status lifecycle, complexity, ownership (labels and gates), checklist binding
 - **Subagents**: `shared/subagents.md` — when to delegate and to which agent
 - **Examples**: `references/examples/` — a complete epic breakdown walkthrough
 - **Diagrams**: `references/diagrams/` — workflow map and skill relationships
@@ -180,7 +180,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 3.2.0
+Current version: 3.3.0
 
 ## Changelog
 

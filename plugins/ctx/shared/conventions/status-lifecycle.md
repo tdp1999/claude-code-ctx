@@ -56,6 +56,11 @@ restart, a release to land, a review to come back — is **not** `done`. It stay
 item named in the progress log. That way it keeps showing up in active counts,
 which is exactly what you want from something unfinished.
 
+When the task file has a **T5 · Test Results** section, `done` also needs a test
+result recorded by the Owner, and no `[Claude-proposed]` left in T1 or T2 (see
+`ownership.md` → Gates). Checked ACs mean the code meets the criteria as Claude read
+them; the Owner's result means someone who owns the logic has checked it.
+
 ### Status Details
 
 #### pending
@@ -193,7 +198,7 @@ vanishes from every count. Leave it `in-progress` and say why in the log.
 
 | Status | Meaning | Location | Next Action |
 |--------|---------|----------|-------------|
-| `draft` | Initial planning | `plans/` | Complete details → `ready` |
+| `draft` | Initial planning | `plans/` | Pass the ownership gate (`ownership.md` → Gates) → `ready` |
 | `ready` | Planned, not started | `plans/` | Break down → `broken-down` |
 | `broken-down` | Tasks created, work under way | `plans/` | All tasks done → `completed` |
 | `completed` | All tasks done | `plans-done/` | Archived by `/ctx:sync` |

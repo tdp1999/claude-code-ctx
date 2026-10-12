@@ -34,7 +34,7 @@ When a file exists but is missing required sections (see `file-contracts.md` for
 **Example:**
 ```
 Found `.context/plans/epic-auth.md` but it's missing required sections:
-- ## High-Level Requirements (needed for task breakdown)
+- ## E6 · Rules and examples (needed for task breakdown)
 - ## Scope (needed to define task boundaries)
 
 Options:

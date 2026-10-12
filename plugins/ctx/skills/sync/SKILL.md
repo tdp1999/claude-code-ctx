@@ -82,7 +82,10 @@ Skill-specific errors:
 
 3. **Fix stale task statuses:**
    For each task in `.context/tasks/`:
-   - If ALL ACs are `[x]` but status is NOT `done` → update status to `done`
+   - If ALL ACs are `[x]` but status is NOT `done` → update status to `done`, **unless**
+     the task has a `T5 · Test Results` section with no result recorded by the Owner
+     (see `../../shared/conventions/ownership.md` → Gates). Then leave the status as it
+     is and report "ACs done, waiting for the Owner's test result".
    - If SOME ACs are `[x]` and status is `pending` → update status to `in-progress`
    - If status is `done` but ANY AC is `[ ]` → **do not silently accept it**. This is
      the reverse of the correction above and it must never be auto-resolved in the
@@ -93,7 +96,8 @@ Skill-specific errors:
 
 4. **Archive done tasks:**
    - Archive a task only when **both** hold: the `## Status:` line is exactly
-     `done` (no qualifier), and every AC is `[x]`. Anything flagged in step 2.5b
+     `done` (no qualifier), and every AC is `[x]`. A `done` task whose T5 section has
+     no Owner result is reported as **contradictory** and stays in `tasks/`. Anything flagged in step 2.5b
      stays in `tasks/` until the user resolves it — archiving is one-way in
      practice, so a premature move buries unfinished work in the archive.
    - Determine the source epic name for each done task

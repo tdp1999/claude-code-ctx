@@ -1,88 +1,121 @@
 # Epic Template
 
-This template is used for creating epic files in `.context/plans/`. Epics are high-level feature plans that can be broken down into tasks.
+This template is used for creating epic files in `.context/plans/`. An epic is the
+memory of one size-L feature: the problem, the agreed answers, the design, and the
+rules every task and test traces back to.
+
+Labels (`[Owner]`, `[Q-n]`, `[Claude-proposed]`) and the size line follow
+`../conventions/ownership.md`. Logic sections are marked *(logic)*.
 
 ---
 
 # Epic: [Feature Name]
 
-## Summary
-[One paragraph describing the feature]
+Size: L · [one-line reason, naming the risk sign]
 
-## Why
-[Problem this solves, value it provides]
+## Status: draft
 
-## Target Users
-[Who will use this feature]
+## E1 · Problem *(logic)*
 
-## Scope
+**Problem:** [One sentence: who cannot do what, today] [Owner]
 
-### In Scope
-- [Specific feature/capability 1]
-- [Specific feature/capability 2]
-- [Specific feature/capability 3]
+**Evidence:** [ticket, numbers, a quote, a screenshot path] [Owner]
 
-### Out of Scope
-- [What's NOT included - save for future]
-- [Excluded to keep MVP focused]
+**Why now:** [what changes if this waits another quarter] [Owner]
 
-## High-Level Requirements
+**Users and context:** [who, where they are, what they hold in their hands] [Owner]
 
-1. [Requirement 1 - specific, testable]
-2. [Requirement 2]
-3. [Requirement 3]
-4. [etc.]
+**How they do it today:** [the workaround, step by step] [Owner]
 
-## Technical Considerations
+## E2 · Done and measure *(logic)*
 
-### Architecture
-- [How this fits into existing architecture from patterns-architecture.md]
-- [Modules/domains involved]
-- [Integration points]
+| Measure | Baseline (today) | Target | How it is read |
+|---|---|---|---|
+| [metric] | [number, date measured] | [number] | [query, dashboard, manual count] |
 
-### Dependencies
-- [Other features this depends on]
-- [External services needed]
-- [Infrastructure requirements]
+[One sentence: what a user can do when this is done] [Owner]
 
-### Data Model
-- [Key entities/tables needed]
-- [Relationships]
+## E3 · Scope *(logic)*
 
-## Risks & Warnings
+### In
+- [capability] [Owner]
 
-⚠️ **[Risk Category]**
-- [Specific risk or error-prone area]
-- [Mitigation or recommendation]
+### Out
+- [excluded, and why] [Owner]
 
-⚠️ **[Another Risk]**
-- [Description]
-- [How to avoid]
+### Situational edge cases
+| Edge case | Decision | Note |
+|---|---|---|
+| [what happens when …] | in / out / open (→ Q-n) | [Owner] |
 
-## Alternatives Considered
+**Affected indirectly:** [people or systems that never touch the feature but feel it] [Owner]
 
-### [Alternative Approach 1]
-- **Pros:** [benefits]
-- **Cons:** [drawbacks]
-- **Why not chosen:** [reasoning]
+## E4 · Questions
 
-## Success Criteria
+The oracle. Expected values in E6 and in tasks cite these answers as `[Q-n]`.
 
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
-- [ ] [Measurable outcome 3]
+| # | Question | Who answers | Answer | Date | Blocking |
+|---|---|---|---|---|---|
+| Q-1 | [question] | [Owner / name] | | | yes / no |
+
+## E5 · Design
+
+**Chosen option:** [name] [Owner]
+**Why (Owner's words):** [one sentence] [Owner]
+
+### Options considered
+| Option | Pros | Cons | Why not |
+|---|---|---|---|
+| [A] | | | |
+
+### Blast radius
+- **In code:** [modules, call sites, shared types, migrations]
+- **Outside code:** [other teams, reports, integrations, support scripts]
+
+### Migration
+[none / steps, reversible or not]
+
+### Rabbit holes and appetite
+- **Appetite:** [how much time this is worth] [Owner]
+- **Rabbit holes:** [where it could swallow time, incl. edge cases the option itself creates, and how they are capped]
+
+**Mockup:** [link, or "no UI"]
+
+## E6 · Rules and examples *(logic)*
+
+Each rule has an ID. Each example has concrete values and an expected result that says
+what the user sees and what they do next. Tasks reference these IDs; they never add
+rules of their own.
+
+### R1 · [rule in one sentence] [Owner]
+| Example | Given | When | Expected (incl. what the user sees next) | Source |
+|---|---|---|---|---|
+| R1.1 | [concrete data, names, numbers] | [action] | [result] | [Owner] / [Q-n] |
+
+### R2 · [rule] [Owner]
+| Example | Given | When | Expected | Source |
+|---|---|---|---|---|
+| R2.1 | | | ? | → Q-n |
+
+**Non-functional:** [only the ones this feature actually risks: performance, offline, permissions, audit] [Owner]
+
+## E7 · Outcome
+
+Filled after release.
+
+| Measure | Baseline | Target | Actual | Date read |
+|---|---|---|---|---|
+| | | | | |
+
+**Lesson (one line):** [what to keep or change next time]
 
 ## Specialized Skills
 <!-- Added by /ctx:breakdown when matching skills are found -->
-<!-- - **[skill-name]** — [description] → tasks [NNN, NNN] -->
 
 ## Estimated Complexity
 [S / M / L / XL]
 
-**Reasoning:** [Why this complexity estimate]
-
-## Status
-draft | ready | broken-down | completed
+**Reasoning:** [why]
 
 ## Created
 [YYYY-MM-DD]
@@ -91,23 +124,22 @@ draft | ready | broken-down | completed
 
 ## Usage Notes
 
-**File Naming Convention:**
-- `epic-<kebab-case-name>.md`
-- Example: `epic-user-authentication.md`
+**File naming:** `epic-<kebab-case-name>.md`
 
-**Status Lifecycle:**
-- `draft` - Epic being written
-- `ready` - Ready to be broken down into tasks
-- `broken-down` - Has been decomposed into tasks
-- `completed` - All tasks finished
+**Status lifecycle:** `draft` → `ready` → `broken-down` → `completed`
+- `draft` → `ready` is gated (see `ownership.md` → Gates): no `[Claude-proposed]` left in
+  E1, E2, E3, the chosen option, or E6; no `?` expected value; no unanswered blocking
+  question.
 
-**When updating:**
-Add a changelog entry:
+**Older epics** written with `## High-Level Requirements` remain valid. Skills read them
+as before; the new gates apply only to the sections that exist.
+
+**When updating:** add a changelog entry at the bottom:
 
 ```markdown
 ## Changelog
 
-### [YYYY-MM-DD] [Change Description]
-- Updated: [what changed]
+### [YYYY-MM-DD] [Change]
+- Updated: [what]
 - Reason: [why]
 ```

@@ -31,6 +31,8 @@ stay in the main thread where the user can see them.
 ## Error Handling
 
 See `../../shared/conventions/error-handling.md` for general error handling rules.
+See `../../shared/conventions/ownership.md` for labels and the `done` gate.
+See `../../shared/conventions/checklist-binding.md` for the optional checklist slice.
 
 Skill-specific errors:
 - **Task not found in `tasks/`**: Report not found, do NOT search `tasks-done/`. Suggest `/ctx:progress` to see available tasks.
@@ -59,9 +61,15 @@ the task file says. Use it on critical code. See Step 9.
 
 2. **Read context:**
    - Task file
+   - The parent epic, if the task names one: only the rules (E6) and answers (E4) its ACs
+     cite. These are the oracle for every expected value in this task.
    - `.context/patterns-architecture.md` (if exists)
    - `.context/domain.md` (if exists) — read domain rules referenced by task acceptance criteria
    - Check task status and dependencies
+   - **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
+     slice for `task` using the task's `Size:` line (see
+     `../../shared/conventions/checklist-binding.md`). Size L tasks without T6 skip the
+     release phase.
 
 3. **Load specialized skill (if referenced):**
 
@@ -90,6 +98,9 @@ the task file says. Use it on critical code. See Step 9.
 
 4. **Verify ready:**
    - Status should be `pending` or `in-progress`
+   - **Size M task:** the logic must be owned before code starts. If **Problem**, the
+     **Approach** choice, or **Rules and examples** still holds `[Claude-proposed]` or a
+     `?`, list them and ask the Owner first (`ownership.md` → Gates)
    - Dependencies should be done
    - If blocked, report why
 
@@ -109,12 +120,26 @@ the task file says. Use it on critical code. See Step 9.
    - First summarize the approach the **task file prescribes** (from its acceptance criteria and `## Technical Notes`).
    - Then **scan and verify the actual code** the task references (files, functions, APIs, current behavior). Tasks are often written well before they are picked up, so their assumptions can be stale — files moved or renamed, APIs changed, part of the work already done, or the described state no longer matching reality.
    - Present **your recommended approach** after that verification, and **explicitly flag any mismatch** between what the task assumes and the current state of the code. For each mismatch note: what the task assumed, what you actually found, and how it changes the plan.
-   - **If there is a significant mismatch** (stale assumptions, work already partially done, a materially better approach), pause and confirm the direction with the user before proceeding. If everything lines up, say so and continue.
+   - **If there is a significant technical mismatch** (stale assumptions, work already partially done, a materially better approach), pause and confirm the direction with the user before proceeding. If everything lines up, say so and continue.
+
+   **5c. Logic check (always stops):**
+   - List anything in the task that the Owner has not decided yet: an AC with
+     `expected: ?`, an item still `[Claude-proposed]`, an open question it cites.
+   - Any **logic mismatch** stops the work, however small: the code already behaves
+     differently from a cited rule, two cited rules contradict each other, an example's
+     expected value cannot be produced, or the work reveals a case no rule covers.
+   - On a logic mismatch: add a question to the epic's **E4 · Questions** (or the task's
+     **Questions** for a size M task), say what the rule says and what you found, and
+     wait for the Owner. Do not choose an answer, do not code around it, and do not
+     edit the rule or the expected value yourself.
+   - Work that does not depend on the open question may continue if the Owner says so.
 
 6. **Begin work:**
    - Update status to `in-progress` if pending
    - Add progress log entry: `- [date] Started`
    - Work through acceptance criteria in order
+   - Write the tests from **T3 · Test Design** with the expected values from their
+     cited source, never from what the code returns
 
 7. **During work:**
    - Follow patterns from patterns-architecture.md
@@ -122,6 +147,10 @@ the task file says. Use it on critical code. See Step 9.
    - Update progress log with significant milestones
    - If blocked, update status and note blocker
    - **AC tracking:** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
+   - **A test that looks wrong is a logic mismatch**, not a test to fix. Stop and ask
+     as in 5c; the Owner corrects the rule or example first.
+   - **T4 · Progress Log is the memory.** For a long task, log decisions, dead ends, and
+     the next step at each stopping point, so a fresh session can resume from the file.
 
 8. **On completion:**
 
@@ -129,7 +158,17 @@ the task file says. Use it on critical code. See Step 9.
    re-read the `## Acceptance Criteria` block and count. If a single `- [ ]`
    remains, the task is not done — no matter how finished the work feels.
 
-   When all ACs are `[x]`:
+   **Gate: `done` requires a test result from the Owner** (task files with a
+   **T5 · Test Results** section). Claude fills what it ran (automated tests, its own
+   diff read) and prepares the manual and exploratory checks against the examples. The
+   Owner records the result of those checks, or gives a verdict per line that Claude
+   writes down labeled `[Owner]`. An empty T5, or one with only Claude's lines, means
+   the status stays `in-progress`; say what the Owner still needs to check.
+   Also blocked: any `[Claude-proposed]` left in T1 or T2.
+
+   Older task files with no T5 section are gated on the ACs alone.
+
+   When all ACs are `[x]` and the T5 gate passes:
    - Change `## Status: in-progress` to `## Status: done` in the task file
    - Add progress log entry: `- [date] Done — all ACs satisfied`
    - Do NOT leave status as `in-progress` when all ACs are done
@@ -182,6 +221,10 @@ the task file says. Use it on critical code. See Step 9.
     - **STOP** — report the conflict: "[Rule ID] says X, but code does Y. Is this a bug or a stale rule?"
     - Wait for user decision before proceeding
 
+12. **Checklist report (binding on only):** end with the report from
+    `checklist-binding.md` for the phases this task covered: what Claude did, which
+    rows are the Owner's to do and tick, and what was skipped. Never tick a row.
+
 ## Output
 
 Confirm task loaded and show:
@@ -197,6 +240,9 @@ Confirm task loaded and show:
 - **AC checkbox updates are immediate**: Update `- [ ]` to `- [x]` the moment an acceptance criterion is satisfied. Do not batch updates at the end.
 - **`done` is gated on the checkboxes, not on how finished it feels**: count the ACs before writing the status. One `- [ ]` left means `in-progress`.
 - **Never qualify the status line**: `## Status: done (pending X)` parses as neither `done` nor anything else, so sync skips the task entirely and it silently leaves every count. Caveats go in `## Progress Log`; the status stays a bare token.
+- **Logic mismatch = STOP, always**: an expected value you cannot meet, a rule the code contradicts, a case no rule covers. Add a question and wait. Never pick the answer, and never change a test to match the code.
+- **`done` needs the Owner's test result**: all ACs checked is necessary, not sufficient, when the task has a T5 section.
+- **Never tick the checklist**: the binding is read-only.
 - **Code vs domain conflict = STOP**: If implementation contradicts a domain rule (referenced by Rule ID in ACs), stop work immediately. Report the conflict and wait for user decision.
 - **Blocked tasks need a reason**: If a task cannot proceed, update status to `blocked` and document why. Do not silently skip to another task.
 - **Verification field controls post-completion behavior**: Check the task's `Verification:` field. Only suggest test/build runs when the level warrants it, or when the user passed `--careful`.

@@ -49,40 +49,28 @@ Feature Complete ✅
 
 ### What Happens
 
-The epic skill will:
-1. **Ask clarifying questions**:
-   - What problem does this solve?
-   - Who benefits from this feature?
-   - What's in scope vs out of scope?
-   - Any specific requirements or constraints?
+The epic skill follows `../conventions/ownership.md`: **you write the logic, Claude
+structures it and asks.**
 
-2. **Suggest improvements**:
-   - Alternative approaches you might not have considered
-   - Related use cases to include
-   - Simpler MVP versions
+1. **Size**: Claude names the risk signs it sees; you pick S, M, or L. Only L becomes
+   an epic (M → `/ctx:create-task`, S → no file).
+2. **Problem, done, scope (E1–E3)**: you fill them in; Claude turns every gap it sees
+   into a question in **E4 · Questions** instead of answering it.
+3. **Design (E5)**: Claude lays out options, blast radius, and risks; you choose and
+   give one sentence of why.
+4. **Rules and examples (E6)**: you write rules and expected results; Claude adds
+   boundary examples and leaves `?` wherever no rule or answer fixes the value.
+5. **Gate**: the epic moves to `ready` only when nothing is left `[Claude-proposed]`,
+   no expected value is `?`, and no blocking question is open.
 
-3. **Warn about risks**:
-   - Common pitfalls in this type of feature
-   - Security/performance/scalability concerns
-   - Required dependencies or prerequisites
-   - Error-prone areas to watch out for
-
-4. **Identify technical considerations**:
-   - How it fits with your architecture
-   - Modules/domains involved
-   - Integration points
-   - Testing strategy
+If `.context/ctx-config.md` names a checklist folder, each skill also reads its slice
+of your phase checklist (`../conventions/checklist-binding.md`) and reports which rows
+were Claude's and which are yours to do and tick.
 
 ### Output
 
-Creates `.context/plans/epic-feature-name.md` with:
-- Summary and why it matters
-- In-scope and out-of-scope items
-- High-level requirements
-- Technical considerations
-- Risks and warnings
-- Success criteria
-- Complexity estimate
+Creates `.context/plans/epic-feature-name.md` with E1–E7 (see
+`../templates/epic-template.md`).
 
 ---
 
@@ -97,15 +85,11 @@ Creates `.context/plans/epic-feature-name.md` with:
 ### What Happens
 
 The breakdown skill will:
-1. Read your epic file
-2. Analyze requirements
+1. Read your epic's rules (E6), answers (E4), scope, and design
+2. Propose slices with their rule IDs, and wait for you to confirm them
 3. Identify implicit tasks (not stated but necessary)
-4. Create task files with:
-   - Clear acceptance criteria
-   - Technical notes
-   - Files to touch
-   - Dependencies
-   - Complexity estimate (S/M/L/XL)
+4. Create task files (T1–T6) where every AC cites a rule ID and an expected source;
+   a value with no source is `?` plus a new question in E4. Breakdown never adds rules.
 
 ### Output
 

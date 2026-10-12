@@ -29,7 +29,8 @@ Findings from the input pass become **clarifying questions**, not warnings. "Fas
 than what, by how much" is a question. Ask it alongside the other scoping questions
 in the same turn; never add a turn for it.
 
-Who runs both passes: `epic` (High-Level Requirements, Success Criteria),
+Who runs both passes: `epic` (E2 Done and measure, E6 rules; or High-Level
+Requirements and Success Criteria in older epics),
 `create-task` and `breakdown` (Acceptance Criteria).
 
 ---

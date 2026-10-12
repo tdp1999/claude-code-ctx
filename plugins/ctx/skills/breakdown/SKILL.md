@@ -49,8 +49,15 @@ needs the user's answer.
 **If epic name or path provided:**
 - Look for matching epic file in `.context/plans/`
 - Read the epic file
-- Extract: Summary, Requirements, Technical Considerations, Risks
-- Use epic content as detailed context for breakdown
+- **E1–E7 epic:** extract the rules and examples (E6), the answers (E4), scope (E3),
+  and the design (E5). E6 is what gets decomposed; E4 and E6 are the only sources for
+  expected values.
+- **Older epic** (`## High-Level Requirements`, no E6): extract Summary, Requirements,
+  Technical Considerations, Risks, as before. The no-new-rules rule in Step 3 still
+  applies, with requirement numbers in place of rule IDs.
+- **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
+  slice for `breakdown` (see `../../shared/conventions/checklist-binding.md`), using the
+  epic's `Size:` line.
 
 **If other file path provided:**
 - Read the file
@@ -71,9 +78,11 @@ needs the user's answer.
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required file sections.
 See `../../shared/conventions/spec-quality.md` for the acceptance-criteria scan.
+See `../../shared/conventions/ownership.md` for labels, citations, and gates.
 
 Skill-specific errors:
-- **Epic missing `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
+- **Epic has neither `E6 · Rules and examples` nor `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
+- **Epic status is `draft`**: The ownership gate has not passed. List what blocks it (`[Claude-proposed]` items, `?` values, open blocking questions) and suggest `/ctx:epic <path>`. Break down anyway only if the Owner says so, and say that the tasks will carry `?` where the epic does
 - **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic status is `broken-down`**: Warn user this epic was already decomposed. Ask if they want to add more tasks (continue numbering) or re-breakdown (will not delete existing tasks)
 
@@ -175,50 +184,52 @@ Break down the input into tasks following these principles:
 
 **Identify:**
 - Explicit requirements from the input
-- Implicit tasks not stated but necessary
+- Implicit tasks not stated but necessary (scaffolding, migration, wiring)
 - Dependencies between tasks
 - Logical groupings
 
+**Slicing is the Owner's call.** Propose the slices as a short list (title, rule IDs,
+why it is separate) and ask the Owner to confirm or reshape them before writing any
+file. Record each confirmed slice in **T1 · Slice** labeled `[Owner]`.
+
+**Breakdown never invents rules.** Everything a task asserts about behavior comes from
+the epic:
+
+- **Every AC references a rule ID** (`R3`), or a requirement number for an older epic.
+  Implicit technical tasks (scaffolding, a migration) reference the rule they enable.
+- **Every expected value cites its source**: an E6 example (`R3.2`), a rule ID, or an
+  answer `[Q-n]`. Copy it unchanged.
+- **No source → `?`.** Write `expected: ? → Q-n` in the AC and add the question to the
+  epic's **E4 · Questions** with the Owner as the one to answer. Never fill the value
+  with a plausible guess.
+- **A behavior the epic does not cover** (you found a case while slicing) is a new
+  question in E4, not a new rule and not a new AC.
+
 ## Step 4: Create Task Files
 
-For each task, create a file in `.context/tasks/` using this template:
+For each task, create a file in `.context/tasks/` using the **Size L task** shape from
+`../../shared/templates/task-template.md`: the `Size:` line (`Size: L · from
+epic-<name>`), `## Status: pending`, **T1 · Slice**, **T2 · Acceptance Criteria**,
+**T3 · Test Design**, Technical Notes, Files to Touch, Dependencies, Complexity,
+Verification, **T4 · Progress Log**, an empty **T5 · Test Results**, and **T6 ·
+Release** only on the task that releases the feature.
 
-```markdown
-# Task: [Clear, Actionable Title]
+What Claude fills, and what it leaves:
 
-## Status: pending
+| Part | Who | Notes |
+|---|---|---|
+| T1 Slice | Owner confirmed in Step 3 | Rule IDs from E6 |
+| T2 AC | Claude writes, from rules only | EARS wording is mechanics; each AC cites a rule ID and its expected source, or `?` |
+| T3 Test Design | Claude | Case · AC · level · technique · auto/manual · expected source. Expected source is always an E6 example, rule, or `[Q-n]`, never the code |
+| T4, T5 | empty | T5 is filled when the task is tested |
+| T6 | Claude drafts rollback and watch list from E5 | Only on the releasing task |
 
-## Goal
-One sentence describing the outcome.
-
-## Context
-Why this matters, background info, relation to other work.
-
-## Acceptance Criteria
-- [ ] Criterion 1 (specific, verifiable)
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## Technical Notes
-Implementation hints, patterns to follow, edge cases.
-Reference `.context/patterns-architecture.md` if relevant.
-
-<!-- If a specialized skill was matched in Step 2.7, add the two lines below.
+<!-- If a specialized skill was matched in Step 2.7, add to Technical Notes.
      Record the skill NAME only — the name is how /ctx:task invokes it, and it stays
      correct when the skill moves or its plugin updates. Never record a file path. -->
+```markdown
 **Specialized Skill:** [skill-name] — [one line on what it covers for this task]
 **Key sections to read:** [§Section1, §Section2] (only the sections relevant to this task)
-
-## Files to Touch
-- path/to/file1
-- path/to/file2
-
-## Dependencies
-- [Task ID] - Brief description (if any)
-
-## Complexity: S | M | L | XL
-
-## Progress Log
 ```
 
 **File Naming Convention:**
@@ -242,6 +253,10 @@ per task: a task whose goal is a measurable improvement needs at least one crite
 stating the **target number** (not merely that a before-and-after will be recorded),
 and each task needs at least one criterion covering a failure path.
 
+Then check **traceability** per task: every AC names a rule ID and an expected source
+(or `?`). An AC with neither is a finding, and its rewrite adds the citation or the
+`?`.
+
 Findings are **warnings only** — write the task files regardless. Apply the obvious
 rewrites yourself, and report one consolidated block in Step 7 covering all tasks, not
 one block per task. Cap it at 5 findings across the whole breakdown. Use the block
@@ -251,8 +266,9 @@ format from Part 4 — prefix each location with the task number (`012 AC 3`, `0
 ## Step 5: Update Source Status
 
 **If from epic:**
-- Update epic status from "draft" or "ready" to "broken-down"
+- Update epic status from "ready" (or "draft", when the Owner chose to proceed) to "broken-down"
 - Add note in epic: "Broken down into tasks 001-005 on [date]"
+- Add any new questions raised in Step 3 to the epic's **E4 · Questions**
 
 **Status Lifecycle** (see `shared/conventions/status-lifecycle.md` for full reference):
 - `draft` → Being written
@@ -295,6 +311,12 @@ After creating tasks, provide:
 **Spec check:**
 - The consolidated block from Step 4 (one line if clean)
 
+**Open for the Owner:**
+- Every `?` expected value, with its task, AC, and question number
+- New questions added to E4
+
+**Checklist (binding on only):** the end-of-phase report from `checklist-binding.md`.
+
 **Recommended First Task:**
 Recommend which task to start first based on:
 - No blockers
@@ -331,5 +353,9 @@ Key points:
 - **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
 - **Skill Discovery matches ONCE per breakdown**: Do not repeat it per task. Match against the available-skills list once, then write the skill names into the task files.
 - **Record skill names, never skill paths**: a path goes stale when the skill moves or its plugin updates; the name is what `/ctx:task` invokes.
-- **Epic must have High-Level Requirements**: Cannot break down an epic in "draft" status. It needs at least "ready" with requirements defined.
+- **No new rules in a breakdown**: a case the epic does not cover becomes a question in E4, never an AC. An AC without a rule ID is an invented rule.
+- **Expected values come from E4 or E6, never from the code or from what seems reasonable**: no source means `?`.
+- **The Owner confirms the slices before files are written**: slicing is logic.
+- **Never tick the checklist**: the binding is read-only.
+- **Epic must have rules or requirements**: An epic in "draft" has not passed the ownership gate; break it down only when the Owner says so.
 

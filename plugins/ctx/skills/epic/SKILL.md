@@ -1,13 +1,13 @@
 ---
 name: epic
-description: Plan a feature as an epic with requirements, risks, and scope. Triggers on "epic", "plan feature", "new feature", "feature idea", "I want to build", "let's plan". Use when user describes a feature to implement, even without saying "epic". For breaking into tasks, use /ctx:breakdown after.
+description: Plan a size-L feature as an epic (problem, questions, design, rules and examples) where the Owner writes the logic and Claude structures it and asks. Triggers on "epic", "plan feature", "new feature", "feature idea", "I want to build", "let's plan". Use when user describes a feature to implement, even without saying "epic". For breaking into tasks, use /ctx:breakdown after.
 argument-hint: "[feature idea or epic file path]"
 allowed-tools: Read, Write, Edit, Glob, AskUserQuestion, Task
 ---
 
 # Epic Generator
 
-Generate or update epic-style feature files with high-level requirements. Acts as a mini plan-mode to expand ideas and foresee problems.
+Generate or update epic files. Acts as a mini plan-mode: Claude structures the epic, foresees problems, and writes the mechanics; the Owner writes the problem, the choice, and the rules.
 
 ## Subagent Usage
 
@@ -26,10 +26,13 @@ This skill uses:
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required output sections.
 See `../../shared/conventions/spec-quality.md` for the requirement-wording scan.
+See `../../shared/conventions/ownership.md` for labels, Owner-first writing, and gates.
+See `../../shared/conventions/checklist-binding.md` for the optional checklist slice.
 
 Skill-specific errors:
 - **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:start` first, but allow proceeding if user confirms.
-- **Missing `patterns-architecture.md`**: Warn that Technical Considerations section will be generic. Suggest running `/ctx:start` first.
+- **Missing `patterns-architecture.md`**: Warn that the design section (E5) will be generic. Suggest running `/ctx:start` first.
+- **Checklist binding points to a missing folder or file**: Say which path is missing, then continue without the binding.
 - **`.context/plans/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic file already exists with same name**: Ask user — update existing or create with different name?
 
@@ -51,145 +54,75 @@ Skill-specific errors:
 
 Use when creating a new epic from an idea.
 
+The epic is the Owner's document. Claude structures it, finds the gaps, and writes the
+mechanics; the Owner writes the logic. Read `../../shared/conventions/ownership.md`
+before starting: it defines logic vs mechanics, the labels, and the gates used below.
+
 ### Process
 
 1. **Understand the idea:**
-   - Read `.context/vision.md` for project context
-   - Read `.context/patterns-architecture.md` for architecture constraints
-   - Read `.context/domain.md` for existing business logic, flows, and rules (if exists)
+   - Read `.context/vision.md`, `.context/patterns-architecture.md`, and
+     `.context/domain.md` (if it exists)
    - If user provided idea in `$ARGUMENTS`, use it
    - If empty, ask: "What feature would you like to plan?"
+   - **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, follow
+     `../../shared/conventions/checklist-binding.md` and read the slice for `epic`
+     (once the size is known, step 2). Use it as the list of what each step below must
+     cover and who does it. Without the line, skip this silently.
 
-2. **Expand the idea (mini plan-mode):**
+2. **Size the work (Owner decides):**
+   - Name the risk signs you see (`ownership.md` → Size) and ask the Owner for the size
+     and a one-line reason. Write it as the `Size:` line under the title.
+   - **Size M or S** → this is not an epic. Say so and suggest `/ctx:create-task` (M) or
+     just doing it (S). Continue only if the Owner insists.
 
-   First run the **input pass** of the spec-quality scan
-   (`../../shared/conventions/spec-quality.md` → When it runs) over the user's own
-   wording of the idea. Every smell it finds becomes a clarifying question, asked in
-   the same turn as the ones below — never a separate turn, never a warning.
+3. **Problem, done, scope: the Owner writes (E1–E3):**
 
-   Ask clarifying questions:
-   - What problem does this solve?
-   - Who benefits from this feature?
-   - What's in scope? What's out of scope?
-   - Any specific requirements or constraints?
-   - Anything the input pass surfaced (a comparative with no baseline becomes
-     "faster than what, measured how?")
+   Run the **input pass** of the spec-quality scan
+   (`../../shared/conventions/spec-quality.md` → When it runs) over the Owner's own
+   wording of the idea. Every smell becomes a question in this step's batch.
 
-3. **Improve and foresee:**
+   Show the empty E1–E3 skeleton and ask the Owner to fill it, in one batch:
+   - The problem in one sentence, the evidence, why now
+   - Who has it, where they are, how they cope today
+   - What done looks like, with today's number (baseline) and the target
+   - In, out, and the situational edge cases (each one: in, out, or open)
+   - Anything the input pass surfaced ("faster than what, measured how?")
 
-   **Suggest improvements:**
-   - "Have you considered [alternative approach]?"
-   - "This could also support [related use case]"
-   - "A simpler MVP version might be [suggestion]"
+   Write what the Owner says, labeled `[Owner]`. Then **review by asking**: every gap
+   you see (a missing edge case, a measure with no baseline, an affected group nobody
+   named) becomes a row in **E4 · Questions**, not a sentence in E1–E3.
 
-   **Warn about risks:**
-   - "This might conflict with [existing feature/architecture]"
-   - "Common pitfall: [error-prone area]"
-   - "Be careful with [security/performance/scalability concern]"
-   - "This will require [dependency/prerequisite]"
+4. **Design (E5): options from Claude, the choice from the Owner:**
+   - Lay out 2–3 options with pros, cons, blast radius in and out of code, migration,
+     and rabbit holes (including edge cases the option itself creates). This part is
+     mechanics; write it yourself, using Explore when the code needs a sweep.
+   - Warn about risks plainly ("webhooks will arrive twice", "this crosses the billing
+     module").
+   - Ask the Owner to choose and to give **one sentence of why in their own words**.
+     No sentence, no recorded choice. Ask for the appetite too.
 
-4. **Identify technical considerations:**
-   - Based on patterns-architecture.md architecture
-   - Integration points with existing features
-   - Required infrastructure or services
-   - Testing strategy
+5. **Rules and examples (E6): the Owner writes, Claude completes the mechanics:**
+   - Ask the Owner for the rules and, per rule, concrete examples with expected
+     results, including what the user sees and does next.
+   - Claude adds the mechanical examples (boundary values for ranges the Owner defined)
+     with the expected value left as `?` unless a rule or answer already fixes it.
+   - Every expected value cites `[Owner]`, a rule, or `[Q-n]`. Anything else is `?` plus
+     a question in E4.
+   - If the Owner asks Claude to draft rules, draft them and label each
+     `[Claude-proposed]`.
 
-5. **Generate epic file:**
-   - Create descriptive filename: `epic-<kebab-case-name>.md`
-   - Save to `.context/plans/`
-   - Before saving, run the **draft pass** of the spec-quality scan from
-     `../../shared/conventions/spec-quality.md` over **High-Level Requirements** and
-     **Success Criteria**. Draft each requirement into an EARS pattern, then run both
-     set-level checks: if the epic's goal is a measurable improvement, at least one
-     Success Criterion must state the **target number** rather than only that it will
-     be measured, and at least one requirement must cover a failure path. Findings are
-     warnings — write the file regardless, and report them in Step 7 using the block
-     format from Part 4 of the convention, never as prose.
+6. **Generate the epic file:**
+   - Use `../../shared/templates/epic-template.md`. Filename `epic-<kebab-case-name>.md`
+     in `.context/plans/`. Status `draft`.
+   - Before saving, run the **draft pass** of the spec-quality scan over **E2** and the
+     rules in **E6**. Draft each rule into an EARS pattern, then run both set-level
+     checks: if the goal is a measurable improvement, E2 must state the **target
+     number**, and at least one rule must cover a failure path. Findings are warnings —
+     write the file regardless, and report them in step 8 using the block format from
+     Part 4 of the convention, never as prose.
 
-### Epic File Template
-
-```markdown
-# Epic: [Feature Name]
-
-## Summary
-[One paragraph describing the feature]
-
-## Why
-[Problem this solves, value it provides]
-
-## Target Users
-[Who will use this feature]
-
-## Scope
-
-### In Scope
-- [Specific feature/capability 1]
-- [Specific feature/capability 2]
-- [Specific feature/capability 3]
-
-### Out of Scope
-- [What's NOT included - save for future]
-- [Excluded to keep MVP focused]
-
-## High-Level Requirements
-
-1. [Requirement 1 - specific, testable]
-2. [Requirement 2]
-3. [Requirement 3]
-4. [etc.]
-
-## Technical Considerations
-
-### Architecture
-- [How this fits into existing architecture from patterns-architecture.md]
-- [Modules/domains involved]
-- [Integration points]
-
-### Dependencies
-- [Other features this depends on]
-- [External services needed]
-- [Infrastructure requirements]
-
-### Data Model
-- [Key entities/tables needed]
-- [Relationships]
-
-## Risks & Warnings
-
-⚠️ **[Risk Category]**
-- [Specific risk or error-prone area]
-- [Mitigation or recommendation]
-
-⚠️ **[Another Risk]**
-- [Description]
-- [How to avoid]
-
-## Alternatives Considered
-
-### [Alternative Approach 1]
-- **Pros:** [benefits]
-- **Cons:** [drawbacks]
-- **Why not chosen:** [reasoning]
-
-## Success Criteria
-
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
-- [ ] [Measurable outcome 3]
-
-## Estimated Complexity
-[S / M / L / XL]
-
-**Reasoning:** [Why this complexity estimate]
-
-## Status
-draft | ready | broken-down | completed
-
-## Created
-[YYYY-MM-DD]
-```
-
-6. **Domain Impact Analysis:**
+7. **Domain Impact Analysis:**
 
    After generating the epic, check if this epic introduces or changes business logic:
    - New entities not in `domain.md` Glossary?
@@ -216,12 +149,16 @@ draft | ready | broken-down | completed
    **If no domain impact:**
    - Skip this step silently (do not add "Domain Impact: None" to the epic)
 
-7. **Summarize to user:**
-   - Key points of the epic
-   - Main risks identified
+8. **Summarize to user:**
+   - Key points of the epic and the main risks
    - Domain changes made (if any)
-   - The spec check block from Step 5 (one line if clean)
-   - Suggested next steps (break down into tasks, address dependencies, etc.)
+   - The spec check block from step 6 (one line if clean)
+   - **Ownership gate** (`ownership.md` → Gates): list every `[Claude-proposed]` item,
+     every `?` expected value, and every open blocking question. If the list is empty,
+     ask the Owner whether to move the epic to `ready`. If not, the epic stays `draft`.
+   - With the checklist binding on: the end-of-phase report from
+     `checklist-binding.md` (Claude did / Owner's rows / skipped).
+   - Suggested next step: answer the open questions, or `/ctx:breakdown` once `ready`.
 
 ---
 
@@ -237,10 +174,16 @@ Use when updating an existing epic file.
 2. **Ask what's changing:**
    - "What would you like to update?"
    - "Has the scope changed?"
-   - "New requirements or risks discovered?"
+   - "New rules, answers, or risks discovered?"
 
 3. **Update the file:**
-   - Modify relevant sections
+   - Modify relevant sections. The ownership rules apply to edits too: logic changes
+     come from the Owner, Claude's drafts are `[Claude-proposed]`, and gaps go to
+     **E4 · Questions**.
+   - When the Owner answers a question in E4, fill the answer and date, then replace
+     the matching `?` values with the answer and cite `[Q-n]`.
+   - Changing a rule in E6 after breakdown: list the tasks whose ACs cite that rule ID,
+     so the Owner can decide whether to update them.
    - Add changelog entry at bottom:
 
 ```markdown
@@ -252,9 +195,13 @@ Use when updating an existing epic file.
 ```
 
 4. **Re-evaluate:**
-   - Does complexity estimate still hold?
+   - Does the size still hold? Raise it if a new risk sign appeared; never lower it.
    - Any new risks or warnings?
    - Still aligned with vision and architecture?
+   - Run the ownership gate again and report what still blocks `ready`.
+
+**Older epics** (with `## High-Level Requirements` and no E-sections): update them in
+their own format. Offer once to convert to the E1–E7 layout; convert only on a yes.
 
 ---
 
@@ -263,26 +210,31 @@ Use when updating an existing epic file.
 ### Create Mode Example
 
 ```
-User: /ctx:epic "Payment processing"
+User: /ctx:epic "Technicians can split one job across two visits"
 
-Assistant reads vision.md and patterns-architecture.md for context.
+Claude reads vision.md, patterns-architecture.md, domain.md.
+Claude: "I see money (the invoice is per job) and data migration (one job → many
+visits). Which size, and why?"
+User: "L, because invoices change."
+→ Size: L · invoices change per visit
 
-Assistant asks:
-- What payment methods? (credit card, PayPal, etc.)
-- One-time or recurring payments?
-- What's in scope for MVP?
+Claude shows the empty E1–E3 skeleton and asks one batch:
+- The problem in one sentence, and the evidence?
+- What done looks like, today's number, the target?
+- Edge cases: a visit cancelled, a second technician, the job closed mid-visit:
+  in, out, or open?
+The Owner answers; Claude writes them labeled [Owner].
+Claude's review adds Q-1 "Is the invoice sent after each visit or after the last
+one?" to E4 instead of writing an answer.
 
-Assistant suggests:
-- "Consider using Stripe for PCI compliance"
-- "Webhook handling can be error-prone - plan for retries"
-- "You might want to separate one-time payments (MVP) from subscriptions (later)"
+Claude lays out two options with blast radius; the Owner picks B
+"because dispatch already thinks in visits". Recorded with that sentence.
 
-Assistant warns:
-- ⚠️ Payment webhooks need idempotency - duplicates will happen
-- ⚠️ Requires HTTPS and secure token storage
-- ⚠️ Refunds and disputes add complexity - out of scope for MVP?
+The Owner writes R1–R3 with examples. Claude adds boundary examples for "up to 5
+visits" with expected = ? → Q-2.
 
-Creates .context/plans/epic-payment-processing.md
+Summary: the epic stays draft. Blocking: Q-1, Q-2, and two [Claude-proposed] edge
+cases in E3.
 ```
 
 ### Update Mode Example
@@ -295,9 +247,9 @@ Assistant reads existing epic.
 User: "Add social login to scope"
 
 Assistant updates epic:
-- Moves "social login" from Out of Scope to In Scope
-- Increases complexity estimate from M to L
-- Adds new risk about OAuth callback security
+- Moves "social login" from Out to In (the Owner's own decision, labeled [Owner])
+- Adds Q-4 "Which providers?" to E4 instead of choosing them
+- Adds new risk about OAuth callback security to E5
 - Adds changelog entry
 
 Suggests: "This adds significant complexity - consider keeping as separate epic?"
@@ -307,9 +259,11 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 
 ## Tips
 
-- This is where you help users **think through** features before coding
-- Don't just record their idea - actively improve and challenge it
-- Foresee problems they might not see (security, scalability, edge cases)
+- This is where the Owner **thinks through** the feature before coding. Challenge it by
+  asking: a sharp question in E4 helps more than a well-written rule the Owner never
+  wrote
+- Foresee problems they might not see (security, scalability, edge cases), and turn
+  each one into a question or a risk, not a decision
 - Reference architecture from patterns-architecture.md - does feature fit the patterns?
 - An epic should be breakdownable into 3-10 tasks
 - If epic feels too big (>10 tasks), suggest splitting into multiple epics
@@ -321,5 +275,9 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 - **Domain Impact Protocol requires user confirmation**: When detecting new entities/flows/rules, you MUST show proposed changes and wait for explicit approval before writing to domain.md. Never auto-update.
 - **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
 - **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:start` or `/ctx:onboard` if the folder structure doesn't exist.
+- **Never write `[Owner]` on your own draft**: a blanket "looks good" converts nothing. List what is still `[Claude-proposed]` and ask about those items.
+- **Gaps become questions, not answers**: when reviewing the Owner's logic, add a row to E4. Writing the answer into E6 yourself is how a feature ends up with no owner.
+- **A choice without the Owner's reason is not recorded**: ask for the one sentence.
+- **Never tick the checklist**: with the binding on, the checklist is read-only. Report which rows were Claude's and which are the Owner's; the Owner ticks.
 - **XL epics should be split**: If you estimate >10 tasks, propose splitting into 2-3 smaller epics before the user commits to one large one.
 

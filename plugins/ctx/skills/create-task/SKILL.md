@@ -40,6 +40,7 @@ This skill uses:
 See `../../shared/conventions/error-handling.md` for general error handling rules.
 See `../../shared/conventions/file-contracts.md` for required output sections.
 See `../../shared/conventions/spec-quality.md` for the acceptance-criteria scan.
+See `../../shared/conventions/ownership.md` for size, labels, and Owner-first writing.
 
 Skill-specific errors:
 - **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
@@ -88,6 +89,14 @@ into implementation steps and the draft pass will find nothing.
 Each smell becomes a clarifying question, not a warning. "Make the blog load faster"
 carries *comparative without baseline*, so the question is "faster than what number,
 and what would count as fast enough?" Ask it in the same turn as the questions below.
+
+**Size the work (Owner decides).** Name the risk signs you see
+(`../../shared/conventions/ownership.md` → Size) and ask the Owner for the size and a
+one-line reason, in the same turn as the questions below.
+- **L** → suggest `/ctx:epic` instead; continue only if the Owner insists.
+- **M** → a standalone task with its own Problem, Questions, and Rules (Step 3).
+- **S** → no file is needed. Say so; create one only if the Owner asks, in the old
+  short shape (no Problem, Questions, Rules, T3, T5, T6).
 
 **If description is too brief or ambiguous:**
 Use AskUserQuestion to clarify:
@@ -156,48 +165,45 @@ Report: file paths and relevant configuration snippets
 
 ### Step 3: Draft Task Content
 
-Create a comprehensive task following the standard template:
+Use the **Size M task** shape from `../../shared/templates/task-template.md`. The
+logic parts come from the Owner, the mechanics from Claude:
+
+| Part | Who writes it |
+|---|---|
+| `Size:` line | Owner (Step 1) |
+| Problem, Done when | Owner. Ask for them; write them labeled `[Owner]` |
+| Questions | Claude adds every gap it sees as a question for the Owner, instead of an answer |
+| Approach | Claude lays out the options, blast radius, and rabbit holes; the Owner chooses and gives one sentence of why |
+| Rules and examples, expected values | Owner. Claude adds boundary examples with `?` unless a rule fixes the value. A draft written at the Owner's request is `[Claude-proposed]` |
+| T2 AC | Claude, in EARS, each citing a rule and its expected source, or `?` |
+| T3 Test Design, Technical Notes, Files, Complexity, Verification | Claude |
+| T4, T5 | empty |
+| T6 Release | Claude drafts rollback and the production smoke test |
+
+**Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
+slice for `epic` and `breakdown` against the size M checklist (see
+`../../shared/conventions/checklist-binding.md`): a size M task holds both.
+
+For **size S** (only when the Owner asked for a file), keep the short shape:
 
 ```markdown
 # Task: [Clear, Actionable Title]
+
+Size: S · [reason]
 
 ## Status: pending
 
 ## Goal
 One sentence describing the desired outcome.
 
-## Context
-Why this task matters, background information, how it relates to the project.
-Include any logs, error messages, or evidence if applicable.
-
 ## Acceptance Criteria
-- [ ] Specific, measurable criterion 1
-- [ ] Specific, measurable criterion 2
-- [ ] Specific, measurable criterion 3
-- [ ] Tests pass (if applicable)
-- [ ] Documentation updated (if applicable)
-
-## Technical Notes
-Implementation hints, patterns to follow, edge cases to consider.
-Reference patterns from `.context/patterns-architecture.md` or other context files.
-
-Include relevant context like:
-- Affected configuration files
-- Current behavior vs expected behavior
-- Potential approaches (high-level)
-- Patterns to follow from project standards
+- [ ] Specific, measurable criterion
 
 ## Files to Touch
-- path/to/file1.ts
-- path/to/file2.ts
-- path/to/config.json
 
-## Dependencies
-None (or list specific task IDs if they exist)
+## Complexity: S
 
-## Complexity: S | M | L | XL
-
-**Reasoning:** [Why this complexity estimate]
+## Verification: none | test | full
 
 ## Progress Log
 ```
@@ -222,6 +228,9 @@ run both set-level checks from Part 2:
   actually improves. This is invisible line by line, so check it against the set.
 - **Failure path** — at least one criterion covers what happens when something goes
   wrong.
+
+Also check **traceability**: every AC cites a rule (R1) and an expected source, or
+`?` with a question.
 
 Findings are **warnings only**. Never withhold the draft, never demand a fix, never
 ask a separate approve-the-warnings question. Apply the obvious rewrites into the
@@ -251,6 +260,9 @@ Show the task content to the user for review:
 - [ ] Criterion 3
 
 [Spec check block from Step 3.5 — one line if clean]
+
+### Open for the Owner
+- [Every `[Claude-proposed]` item, `?` value, and open question — or "none"]
 
 ---
 
@@ -367,6 +379,8 @@ Key points:
 
 - **Plan only, do not implement**: This skill creates the task file. It does NOT start working on the task. Suggest `/ctx:task NNN` after creation.
 - **Never `ls` tasks-done/ to find the highest number**: it is nested by epic, so a flat listing returns folder names and every archived task goes unseen — the exact way duplicate task IDs get minted. Use the `find … | sort -n` scan, and check the chosen number is free before writing.
+- **Logic is the Owner's**: problem, done, rules, and expected values come from the Owner. Gaps become questions in the task's Questions table, not answers. Never write `[Owner]` on your own draft.
+- **Size S needs no file**: say so before drafting one.
 - **User must approve before file creation**: Always show the draft task and get explicit confirmation. Do not create the file silently.
 - **Standalone tasks are marked differently in progress.md**: Use "(standalone)" label so they're distinguishable from epic-sourced tasks.
 

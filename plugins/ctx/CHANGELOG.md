@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-10-12
+
+### Added
+
+- **Ownership: the Owner writes the logic, Claude writes the mechanics.** A new
+  convention (`shared/conventions/ownership.md`) splits every epic and task into logic
+  (problem, done, scope, the chosen option, rules, expected values, slicing) and
+  mechanics (EARS wording, boundary points, blast radius, test design). `epic`,
+  `breakdown`, `create-task`, and `task` now ask the Owner to write the logic first,
+  review it by adding questions instead of answers, and record a design choice only
+  with one sentence of why in the Owner's words.
+
+- **Provenance labels.** Items in logic sections end with `[Owner]`, `[Q-n]` (copied
+  from an answered question), or `[Claude-proposed]`. Claude never labels its own draft
+  `[Owner]`, and a blanket "looks good" converts nothing.
+
+- **Gates.** An epic cannot move `draft → ready` while a logic section holds
+  `[Claude-proposed]`, an expected value is `?`, or a blocking question is open. A task
+  cannot become `done` without a test result recorded by the Owner in **T5 · Test
+  Results**; `sync` no longer auto-promotes such a task.
+
+- **Size line.** Epics and tasks start with `Size: <S|M|L> · <reason>`, chosen by risk
+  by the Owner. L is an epic plus tasks, M is one standalone task holding its own
+  problem, questions, and rules, S needs no file.
+
+- **New templates.** Epic parts E1 Problem, E2 Done and measure (with baseline), E3
+  Scope (with situational edge cases), E4 Questions (the test oracle), E5 Design, E6
+  Rules and examples, E7 Outcome. Task parts T1 Slice, T2 Acceptance Criteria, T3 Test
+  Design, T4 Progress Log, T5 Test Results, T6 Release, plus a compact size M shape.
+
+- **Traceability in breakdown.** Breakdown never adds rules. Every AC cites a rule ID
+  and every expected value cites its source; a value with no source is `?` plus a new
+  question in the epic's E4. The Owner confirms the slices before files are written.
+
+- **Logic mismatch always stops `task`.** A rule the code contradicts, an expected value
+  that cannot be met, a case no rule covers, or a test that looks wrong: Claude adds a
+  question and waits instead of choosing.
+
+- **Optional checklist binding** (`shared/conventions/checklist-binding.md`). A project
+  can name its own phase checklist folder in `.context/ctx-config.md`; the skills then
+  read only the phases they own for the current size, follow pointers lazily, never
+  tick a row, and end with a report of which rows Claude did and which are the
+  Owner's. Without the line nothing changes.
+
+### Compatibility
+
+- Older epics (`## High-Level Requirements`) and older task files (no part codes, no
+  T5) stay valid. Skills read them as before; the new gates apply only to sections that
+  exist.
+
 ## [3.2.0] - 2026-10-09
 
 ### Added
