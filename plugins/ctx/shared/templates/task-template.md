@@ -110,7 +110,13 @@ Size: M · [one-line reason]
 - **Other option considered:** [option, and why not]
 - **Blast radius:** in code [call sites]; outside code [clients, reports, integrations]
 - **Rabbit holes and appetite:** [where it could swallow time; how much time it is worth] [Owner]
-- **Mockup:** [link with empty, loading, error, offline, no-permission states, or "no UI"]
+- **Flows:** [F1 main steps, then branches per step; refactor: the current flow that must
+  not change; bug: the broken flow with the reproduction steps as one branch]
+- **Screens:** [S1 name · states that apply · rules R-n; or endpoints, events, messages
+  when no UI]
+- **Fields:** [new or changed fields: meaning, format, limits, label]
+- **Mockup:** [link with the states that apply (first use, empty, no results, loading,
+  partial, error, offline, no permission, success), or "no UI"]
 
 ## Rules and examples
 - **R1** · [rule] [Owner]

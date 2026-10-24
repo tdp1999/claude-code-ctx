@@ -105,7 +105,8 @@ When modifying a file's format, check the **Read by** column to understand which
 - `## Status` — one of: `draft`, `ready`, `broken-down`, `completed`
 - `## E1 · Problem`, `## E2 · Done and measure`, `## E3 · Scope`
 - `## E4 · Questions` — table: #, Question, Who answers, Answer, Date, Blocking
-- `## E5 · Design` — chosen option with the Owner's reason
+- `## E5 · Design` — chosen option with the Owner's reason; `### Flows and screens`
+  with flow IDs (`F1`…), screen IDs (`S1`…), and the data dictionary
 - `## E6 · Rules and examples` — rules with IDs (`R1`…), examples with IDs (`R1.1`…),
   each example's expected value citing its source or `?` (this is what breakdown decomposes)
 

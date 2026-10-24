@@ -40,8 +40,8 @@ things in it:
 # ctx map
 
 ## Phases
-- epic: 1, 2, 3 (rows about rules and examples), 4
-- breakdown: 2 (row about slicing), 3
+- epic: 1, 2, 3, 4 (rows about rules and examples)
+- breakdown: 2 (row about slicing), 4
 - task: 5, 6, 7 (only when the task releases itself)
 
 ## Columns

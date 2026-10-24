@@ -102,7 +102,25 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
    - Ask the Owner to choose and to give **one sentence of why in their own words**.
      No sentence, no recorded choice. Ask for the appetite too.
 
-5. **Rules and examples (E6): the Owner writes, Claude completes the mechanics:**
+5. **Flows and screens (E5): before any rule:**
+   - Draft each flow as numbered main steps, then the branches at each step (bad
+     input, server error, session expired, no permission, cancel, concurrent edit).
+     Label the draft `[Claude-proposed]`; the Owner confirms the steps.
+   - Fit the flows to the ticket type: a new feature gets new flows; an upgrade or
+     refactor gets the current flows that must not change; a bug fix gets the broken
+     flow with the reproduction steps as one branch.
+   - List every screen, dialog, error page, email, and notification with an ID and the
+     states that apply. A ticket with no UI lists endpoints, events, or messages.
+   - Write the data dictionary for new or changed fields. Ask the Owner for meanings
+     and labels; never guess a meaning.
+   - Add a permission matrix, state diagram, or call sequence only when the feature has
+     several roles, an entity lifecycle, or several systems. Every denied cell of the
+     matrix needs a rule and an example in E6.
+   - Branches that need a decision become questions in E4.
+
+6. **Rules and examples (E6): the Owner writes, Claude completes the mechanics:**
+   - Ask for the rules flow by flow and screen by screen. Each rule names the flow or
+     screen it belongs to.
    - Ask the Owner for the rules and, per rule, concrete examples with expected
      results, including what the user sees and does next.
    - Claude adds the mechanical examples (boundary values for ranges the Owner defined)
@@ -111,18 +129,21 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
      a question in E4.
    - If the Owner asks Claude to draft rules, draft them and label each
      `[Claude-proposed]`.
+   - Fill the **Covered by** column of E3 and the **Rules** column of the screen
+     table. Check each denied cell of the permission matrix too. An empty cell becomes a
+     new rule or a question in E4.
 
-6. **Generate the epic file:**
+7. **Generate the epic file:**
    - Use `../../shared/templates/epic-template.md`. Filename `epic-<kebab-case-name>.md`
      in `.context/plans/`. Status `draft`.
    - Before saving, run the **draft pass** of the spec-quality scan over **E2** and the
      rules in **E6**. Draft each rule into an EARS pattern, then run both set-level
      checks: if the goal is a measurable improvement, E2 must state the **target
      number**, and at least one rule must cover a failure path. Findings are warnings —
-     write the file regardless, and report them in step 8 using the block format from
+     write the file regardless, and report them in step 9 using the block format from
      Part 4 of the convention, never as prose.
 
-7. **Domain Impact Analysis:**
+8. **Domain Impact Analysis:**
 
    After generating the epic, check if this epic introduces or changes business logic:
    - New entities not in `domain.md` Glossary?
@@ -149,10 +170,10 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
    **If no domain impact:**
    - Skip this step silently (do not add "Domain Impact: None" to the epic)
 
-8. **Summarize to user:**
+9. **Summarize to user:**
    - Key points of the epic and the main risks
    - Domain changes made (if any)
-   - The spec check block from step 6 (one line if clean)
+   - The spec check block from step 7 (one line if clean)
    - **Ownership gate** (`ownership.md` → Gates): list every `[Claude-proposed]` item,
      every `?` expected value, and every open blocking question. If the list is empty,
      ask the Owner whether to move the epic to `ready`. If not, the epic stays `draft`.

@@ -58,10 +58,15 @@ structures it and asks.**
    into a question in **E4 · Questions** instead of answering it.
 3. **Design (E5)**: Claude lays out options, blast radius, and risks; you choose and
    give one sentence of why.
-4. **Rules and examples (E6)**: you write rules and expected results; Claude adds
-   boundary examples and leaves `?` wherever no rule or answer fixes the value.
-5. **Gate**: the epic moves to `ready` only when nothing is left `[Claude-proposed]`,
-   no expected value is `?`, and no blocking question is open.
+4. **Flows and screens (E5)**: before any rule, you write the flows (main steps and
+   branches), the screen list with the states each screen needs, and the data
+   dictionary; Claude scans for missing branches and screens.
+5. **Rules and examples (E6)**: you write rules per flow and screen, with expected
+   results; Claude adds boundary examples and leaves `?` wherever no rule or answer
+   fixes the value.
+6. **Gate**: the epic moves to `ready` only when nothing is left `[Claude-proposed]`,
+   no expected value is `?`, no blocking question is open, and every E3 **In** row,
+   every screen, and every denied cell of the permission matrix names a rule.
 
 If `.context/ctx-config.md` names a checklist folder, each skill also reads its slice
 of your phase checklist (`../conventions/checklist-binding.md`) and reports which rows

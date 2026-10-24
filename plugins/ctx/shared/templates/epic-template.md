@@ -38,7 +38,9 @@ Size: L · [one-line reason, naming the risk sign]
 ## E3 · Scope *(logic)*
 
 ### In
-- [capability] [Owner]
+| Capability | Covered by |
+|---|---|
+| [capability] [Owner] | [F-n, S-n, R-n; filled when flows and rules exist] |
 
 ### Out
 - [excluded, and why] [Owner]
@@ -79,7 +81,36 @@ The oracle. Expected values in E6 and in tasks cite these answers as `[Q-n]`.
 - **Appetite:** [how much time this is worth] [Owner]
 - **Rabbit holes:** [where it could swallow time, incl. edge cases the option itself creates, and how they are capped]
 
-**Mockup:** [link, or "no UI"]
+### Flows and screens
+
+Written before E6, so every rule can point at a flow or a screen. Every ticket type
+fills this part: a new feature writes new flows; an upgrade or refactor writes the
+current flows that must not change; a bug fix writes the broken flow, with the
+reproduction steps as one branch. A ticket with no UI lists endpoints, events, or
+messages instead of screens.
+
+**F1 · [one job the user or system finishes]**
+1. [user action or system response]
+2. …
+
+- 2a. [what goes wrong at step 2: bad input, server error, session expired, no
+  permission, cancel, concurrent edit] → [what the system does; what the user does next]
+
+| Screen | Name | App | Flows | States | Rules |
+|---|---|---|---|---|---|
+| S1 | [screen, dialog, error page, email, notification] | [app] | F1 | [first use, empty, no results, loading, partial, error, offline, no permission, success] | [R-n, filled in E6] |
+
+**Data dictionary** (new or changed fields only)
+| Field | Meaning | Type | Format, example | Required | Limits | Label |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+**Only when it applies:** a permission matrix (role × action, role × screen) for more
+than one role, where every denied cell becomes an example in E6; a state diagram for an entity with a lifecycle; a call sequence for more
+than one system (retry, duplicates, timeout); analytics events when E2 needs app data;
+audited actions when edits must be traceable.
+
+**Mockup:** [link, every screen above with its states, or "no UI"]
 
 ## E6 · Rules and examples *(logic)*
 
@@ -129,10 +160,13 @@ Filled after release.
 **Status lifecycle:** `draft` → `ready` → `broken-down` → `completed`
 - `draft` → `ready` is gated (see `ownership.md` → Gates): no `[Claude-proposed]` left in
   E1, E2, E3, the chosen option, or E6; no `?` expected value; no unanswered blocking
-  question.
+  question; every E3 **In** row, every screen, and every denied cell of the permission
+  matrix names at least one rule. Flows and screens are logic: their `[Claude-proposed]`
+  labels block the gate too.
 
 **Older epics** written with `## High-Level Requirements` remain valid. Skills read them
-as before; the new gates apply only to the sections that exist.
+as before; the new gates apply only to the sections that exist. An E3 **In** written
+as bullets is checked per bullet: each bullet must name a rule.
 
 **When updating:** add a changelog entry at the bottom:
 

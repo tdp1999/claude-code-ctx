@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Flows and screens before rules.** `epic` now drafts flows (numbered main steps plus
+  branches per step), a screen list with the states each screen needs, and a data
+  dictionary in E5, before the rules in E6. Every rule names its flow or screen. The
+  same part covers every ticket type: new flows for a feature, the unchanged current
+  flow for a refactor, the broken flow with reproduction steps for a bug. A permission
+  matrix, state diagram, or call sequence is added only when the feature needs one.
+  The size M task's **Approach** carries the same lines.
+
+### Changed
+
+- **Coverage gate.** E3 **In** is a table with a **Covered by** column. An epic cannot
+  move `draft → ready` while an In row or a screen names no rule.
+
 ## [3.3.0] - 2026-10-12
 
 ### Added
