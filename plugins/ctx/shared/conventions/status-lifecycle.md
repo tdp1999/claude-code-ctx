@@ -57,7 +57,7 @@ item named in the progress log. That way it keeps showing up in active counts,
 which is exactly what you want from something unfinished.
 
 When the task file has a **T5 · Test Results** section, `done` also needs a test
-result recorded by the Owner, and no `[Claude-proposed]` left in T1 or T2 (see
+result recorded by the Owner, and no `[Claude-proposed]` left in T1, T2, or a size L T3 (see
 `ownership.md` → Gates). Checked ACs mean the code meets the criteria as Claude read
 them; the Owner's result means someone who owns the logic has checked it.
 

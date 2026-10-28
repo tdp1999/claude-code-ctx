@@ -41,7 +41,7 @@ things in it:
 
 ## Phases
 - epic: 1, 2, 3, 4 (rows about rules and examples)
-- breakdown: 2 (row about slicing), 4
+- breakdown: 2 (row about slicing)
 - task: 5, 6, 7 (only when the task releases itself)
 
 ## Columns
@@ -69,6 +69,20 @@ no map.
 4. **Follow pointers lazily.** A pointer marker in a row (a lookup table section, a
    profile section) is opened only when Claude is about to do that row. Never preload
    the lookup table or the whole profile.
+
+### Procedures
+
+A procedure pointer (for example `⚙ review`) names a section the map points to. Claude
+follows it with these rules:
+
+1. Open the procedure section every time, right before the row. Do not run it from
+   memory.
+2. Do every step of the procedure. Do not swap a step for a cheaper one, for example
+   one reviewer in place of two.
+3. A step that cannot run (a tool is missing, a quota ran out) is named in the report
+   as skipped, with the reason. The procedure says what to do instead.
+4. A reviewer gets only the context packet the procedure describes. Do not give a hint
+   about where to look, and do not show one reviewer's findings to another.
 
 The slice is context, not a script. The skill still runs its own steps; the slice tells
 it which of the Owner's steps fall inside them, who does each one, and what the gate

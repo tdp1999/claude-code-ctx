@@ -59,10 +59,16 @@ the task file says. Use it on critical code. See Step 9.
 
    Note: Only search in `tasks/`, not `tasks-done/`. Done tasks are archived and shouldn't be reopened.
 
+   **Small epic:** if the argument names an epic (or a slice of one) that has a
+   **Tasks** section, work on that slice line in the epic. The slice's **Approach**,
+   **Progress**, and **Test results** lines play the parts of T3, T4, and T5 below, and
+   its checkbox is the `done` mark.
+
 2. **Read context:**
    - Task file
-   - The parent epic, if the task names one: only the rules (E6) and answers (E4) its ACs
-     cite. These are the oracle for every expected value in this task.
+   - The parent epic, if the task names one: the rows of its AC table that T2 cites, the
+     rules (E6), flows and screens (E5), and answers (E0) those rows point to. These are
+     the oracle for every expected value in this task.
    - `.context/patterns-architecture.md` (if exists)
    - `.context/domain.md` (if exists) — read domain rules referenced by task acceptance criteria
    - Check task status and dependencies
@@ -121,6 +127,11 @@ the task file says. Use it on critical code. See Step 9.
    - Then **scan and verify the actual code** the task references (files, functions, APIs, current behavior). Tasks are often written well before they are picked up, so their assumptions can be stale — files moved or renamed, APIs changed, part of the work already done, or the described state no longer matching reality.
    - Present **your recommended approach** after that verification, and **explicitly flag any mismatch** between what the task assumes and the current state of the code. For each mismatch note: what the task assumed, what you actually found, and how it changes the plan.
    - **If there is a significant technical mismatch** (stale assumptions, work already partially done, a materially better approach), pause and confirm the direction with the user before proceeding. If everything lines up, say so and continue.
+   - **Size L task with an empty T3 · Approach (always stops):** write the approach into
+     T3: the approach and one other option, the risks, the test cases per AC with level,
+     test file, and expected source, and the files to touch. Show it and wait for the
+     Owner to confirm or change it, then label it `[Owner]`. This is the task's own
+     decision; no code before it.
 
    **5c. Logic check (always stops):**
    - List anything in the task that the Owner has not decided yet: an AC with
@@ -128,7 +139,7 @@ the task file says. Use it on critical code. See Step 9.
    - Any **logic mismatch** stops the work, however small: the code already behaves
      differently from a cited rule, two cited rules contradict each other, an example's
      expected value cannot be produced, or the work reveals a case no rule covers.
-   - On a logic mismatch: add a question to the epic's **E4 · Questions** (or the task's
+   - On a logic mismatch: add a question to the epic's **E0 · Questions** (or the task's
      **Questions** for a size M task), say what the rule says and what you found, and
      wait for the Owner. Do not choose an answer, do not code around it, and do not
      edit the rule or the expected value yourself.
@@ -138,8 +149,9 @@ the task file says. Use it on critical code. See Step 9.
    - Update status to `in-progress` if pending
    - Add progress log entry: `- [date] Started`
    - Work through acceptance criteria in order
-   - Write the tests from **T3 · Test Design** with the expected values from their
-     cited source, never from what the code returns
+   - Write the tests from **T3** (**Approach** for size L, **Test Design** for size M and
+     older tasks) with the expected values from their cited source, never from what the
+     code returns
 
 7. **During work:**
    - Follow patterns from patterns-architecture.md
@@ -147,6 +159,9 @@ the task file says. Use it on critical code. See Step 9.
    - Update progress log with significant milestones
    - If blocked, update status and note blocker
    - **AC tracking:** After completing work for an acceptance criterion, immediately edit the task file to change `- [ ]` to `- [x]` for that item. Do NOT defer this — update the checkbox as soon as the criterion is satisfied.
+   - **Logic found while building goes to the epic**, never to the task: a new case, a
+     changed rule, or a new screen state becomes a question in the epic's E0 (5c). Work
+     that is only technical goes to T3's **Discovered work**.
    - **A test that looks wrong is a logic mismatch**, not a test to fix. Stop and ask
      as in 5c; the Owner corrects the rule or example first.
    - **T4 · Progress Log is the memory.** For a long task, log decisions, dead ends, and
@@ -164,7 +179,7 @@ the task file says. Use it on critical code. See Step 9.
    Owner records the result of those checks, or gives a verdict per line that Claude
    writes down labeled `[Owner]`. An empty T5, or one with only Claude's lines, means
    the status stays `in-progress`; say what the Owner still needs to check.
-   Also blocked: any `[Claude-proposed]` left in T1 or T2.
+   Also blocked: any `[Claude-proposed]` left in T1, T2, or a size L task's T3.
 
    Older task files with no T5 section are gated on the ACs alone.
 

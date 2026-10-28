@@ -49,8 +49,8 @@ needs the user's answer.
 **If epic name or path provided:**
 - Look for matching epic file in `.context/plans/`
 - Read the epic file
-- **E1–E7 epic:** extract the rules and examples (E6), the answers (E4), scope (E3),
-  and the design (E5). E6 is what gets decomposed; E4 and E6 are the only sources for
+- **E0–E7 epic:** extract the rules and examples (E6), the answers (E0), scope (E3),
+  the design (E4), and the flows and screens (E5). E6 is what gets decomposed; E0 and E6 are the only sources for
   expected values.
 - **Older epic** (`## High-Level Requirements`, no E6): extract Summary, Requirements,
   Technical Considerations, Risks, as before. The no-new-rules rule in Step 3 still
@@ -188,9 +188,22 @@ Break down the input into tasks following these principles:
 - Dependencies between tasks
 - Logical groupings
 
-**Slicing is the Owner's call.** Propose the slices as a short list (title, rule IDs,
-why it is separate) and ask the Owner to confirm or reshape them before writing any
-file. Record each confirmed slice in **T1 · Slice** labeled `[Owner]`.
+**Slicing is the Owner's call, and it is the conversation of this skill.** The logic
+is already in the epic, so the breakdown decides only three things with the Owner:
+
+1. **The slices:** title, the flows, screens, and AC IDs each one covers, and why it is
+   separate. Every AC in the epic's AC table lands in exactly one slice; an AC in no
+   slice, or in two, is a finding to raise.
+2. **The order and dependencies** between slices.
+3. **Where the steps live:** one or two slices → the epic's **Tasks** section, no task
+   files (recommend this). Three or more → one task file per slice.
+
+Ask in one batch and wait for the answers before writing anything. Record each
+confirmed slice labeled `[Owner]`.
+
+**The epic has no AC table** (an older epic, or phase 4 not done): say so, and suggest
+finishing it with `/ctx:epic`. Continue only if the Owner says so; the tasks then
+carry their own AC wording, as older tasks did.
 
 **Breakdown never invents rules.** Everything a task asserts about behavior comes from
 the epic:
@@ -200,17 +213,21 @@ the epic:
 - **Every expected value cites its source**: an E6 example (`R3.2`), a rule ID, or an
   answer `[Q-n]`. Copy it unchanged.
 - **No source → `?`.** Write `expected: ? → Q-n` in the AC and add the question to the
-  epic's **E4 · Questions** with the Owner as the one to answer. Never fill the value
+  epic's **E0 · Questions** with the Owner as the one to answer. Never fill the value
   with a plausible guess.
 - **A behavior the epic does not cover** (you found a case while slicing) is a new
-  question in E4, not a new rule and not a new AC.
+  question in E0, not a new rule and not a new AC.
 
-## Step 4: Create Task Files
+## Step 4: Create Task Files (or the Tasks section)
 
-For each task, create a file in `.context/tasks/` using the **Size L task** shape from
-`../../shared/templates/task-template.md`: the `Size:` line (`Size: L · from
-epic-<name>`), `## Status: pending`, **T1 · Slice**, **T2 · Acceptance Criteria**,
-**T3 · Test Design**, Technical Notes, Files to Touch, Dependencies, Complexity,
+**One or two slices, Owner chose the Tasks section:** fill the epic's **Tasks**
+section from `../../shared/templates/epic-template.md`, one checkbox line per slice with
+the IDs it covers. Write no task files. Skip to Step 5.
+
+**Otherwise**, create one file per slice in `.context/tasks/` using the **Size L task**
+shape from `../../shared/templates/task-template.md`: the `Size:` line (`Size: L · from
+epic-<name>`), `## Status: pending`, **T1 · Slice**, **T2 · Acceptance Criteria**, an
+empty **T3 · Approach**, Technical Notes, Files to Touch, Dependencies, Complexity,
 Verification, **T4 · Progress Log**, an empty **T5 · Test Results**, and **T6 ·
 Release** only on the task that releases the feature.
 
@@ -218,11 +235,12 @@ What Claude fills, and what it leaves:
 
 | Part | Who | Notes |
 |---|---|---|
-| T1 Slice | Owner confirmed in Step 3 | Rule IDs from E6 |
-| T2 AC | Claude writes, from rules only | EARS wording is mechanics; each AC cites a rule ID and its expected source, or `?` |
-| T3 Test Design | Claude | Case · AC · level · technique · auto/manual · expected source. Expected source is always an E6 example, rule, or `[Q-n]`, never the code |
+| T1 Slice | Owner confirmed in Step 3 | Flow, screen, and rule IDs from E5 and E6 |
+| T2 AC | Claude | AC IDs and their rule IDs from the epic's AC table. No wording copied |
+| T3 Approach | empty | `/ctx:task` fills it with the Owner when the task starts, after reading the code |
+| Files to Touch | Claude, a first guess | Confirmed in T3 |
 | T4, T5 | empty | T5 is filled when the task is tested |
-| T6 | Claude drafts rollback and watch list from E5 | Only on the releasing task |
+| T6 | Claude drafts rollback and watch list from E4 | Only on the releasing task |
 
 <!-- If a specialized skill was matched in Step 2.7, add to Technical Notes.
      Record the skill NAME only — the name is how /ctx:task invokes it, and it stays
@@ -246,7 +264,11 @@ What Claude fills, and what it leaves:
 
 ### Spec Check
 
-Before writing the files, run the **draft pass** from
+**Epic with an AC table:** the spec check ran on the epic, so skip the draft pass.
+Check coverage only: every AC in the table is in exactly one slice, and every slice
+names at least one AC. Report gaps in Step 7.
+
+**Older epic without an AC table:** before writing the files, run the **draft pass** from
 `../../shared/conventions/spec-quality.md` over every task's **Acceptance Criteria**.
 Draft each criterion into an EARS pattern, then run both set-level checks from Part 2
 per task: a task whose goal is a measurable improvement needs at least one criterion
@@ -268,7 +290,7 @@ format from Part 4 — prefix each location with the task number (`012 AC 3`, `0
 **If from epic:**
 - Update epic status from "ready" (or "draft", when the Owner chose to proceed) to "broken-down"
 - Add note in epic: "Broken down into tasks 001-005 on [date]"
-- Add any new questions raised in Step 3 to the epic's **E4 · Questions**
+- Add any new questions raised in Step 3 to the epic's **E0 · Questions**
 
 **Status Lifecycle** (see `shared/conventions/status-lifecycle.md` for full reference):
 - `draft` → Being written
@@ -313,7 +335,7 @@ After creating tasks, provide:
 
 **Open for the Owner:**
 - Every `?` expected value, with its task, AC, and question number
-- New questions added to E4
+- New questions added to E0
 
 **Checklist (binding on only):** the end-of-phase report from `checklist-binding.md`.
 
@@ -353,9 +375,13 @@ Key points:
 - **XL tasks should become separate epics**: If a single task estimates >500 lines or 8+ files, it's too big. Split it or suggest a sub-epic.
 - **Skill Discovery matches ONCE per breakdown**: Do not repeat it per task. Match against the available-skills list once, then write the skill names into the task files.
 - **Record skill names, never skill paths**: a path goes stale when the skill moves or its plugin updates; the name is what `/ctx:task` invokes.
-- **No new rules in a breakdown**: a case the epic does not cover becomes a question in E4, never an AC. An AC without a rule ID is an invented rule.
-- **Expected values come from E4 or E6, never from the code or from what seems reasonable**: no source means `?`.
+- **No new rules in a breakdown**: a case the epic does not cover becomes a question in E0, never an AC. An AC without a rule ID is an invented rule.
+- **Expected values come from E0 or E6, never from the code or from what seems reasonable**: no source means `?`.
 - **The Owner confirms the slices before files are written**: slicing is logic.
+- **Never copy AC wording into a task**: a copy drifts the day the epic changes. Cite the
+  AC ID; the wording stays in the epic.
+- **Never fill T3 at breakdown**: the approach is decided with the Owner when the task
+  starts and the code is read, not before.
 - **Never tick the checklist**: the binding is read-only.
 - **Epic must have rules or requirements**: An epic in "draft" has not passed the ownership gate; break it down only when the Owner says so.
 

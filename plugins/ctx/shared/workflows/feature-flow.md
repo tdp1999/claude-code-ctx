@@ -55,18 +55,19 @@ structures it and asks.**
 1. **Size**: Claude names the risk signs it sees; you pick S, M, or L. Only L becomes
    an epic (M → `/ctx:create-task`, S → no file).
 2. **Problem, done, scope (E1–E3)**: you fill them in; Claude turns every gap it sees
-   into a question in **E4 · Questions** instead of answering it.
-3. **Design (E5)**: Claude lays out options, blast radius, and risks; you choose and
+   into a question in **E0 · Questions** instead of answering it.
+3. **Design (E4)**: Claude lays out options, blast radius, and risks; you choose and
    give one sentence of why.
 4. **Flows and screens (E5)**: before any rule, you write the flows (main steps and
    branches), the screen list with the states each screen needs, and the data
-   dictionary; Claude scans for missing branches and screens.
-5. **Rules and examples (E6)**: you write rules per flow and screen, with expected
+   dictionary; Claude scans for missing branches and screens. No rule IDs here.
+5. **Rules and examples (E6)**: you write rules per flow and screen (each rule names
+   the flows and screens it covers), with expected
    results; Claude adds boundary examples and leaves `?` wherever no rule or answer
    fixes the value.
 6. **Gate**: the epic moves to `ready` only when nothing is left `[Claude-proposed]`,
    no expected value is `?`, no blocking question is open, and every E3 **In** row,
-   every screen, and every denied cell of the permission matrix names a rule.
+   every screen, and every denied cell of the permission matrix is covered by a rule.
 
 If `.context/ctx-config.md` names a checklist folder, each skill also reads its slice
 of your phase checklist (`../conventions/checklist-binding.md`) and reports which rows
@@ -74,7 +75,7 @@ were Claude's and which are yours to do and tick.
 
 ### Output
 
-Creates `.context/plans/epic-feature-name.md` with E1–E7 (see
+Creates `.context/plans/epic-feature-name.md` with E0–E7 (see
 `../templates/epic-template.md`).
 
 ---
@@ -90,11 +91,13 @@ Creates `.context/plans/epic-feature-name.md` with E1–E7 (see
 ### What Happens
 
 The breakdown skill will:
-1. Read your epic's rules (E6), answers (E4), scope, and design
-2. Propose slices with their rule IDs, and wait for you to confirm them
+1. Read your epic's rules (E6), answers (E0), scope, and design
+2. Propose slices with the flows, screens, and AC IDs each covers, and wait for you
+   to confirm them; every AC lands in exactly one slice
 3. Identify implicit tasks (not stated but necessary)
-4. Create task files (T1–T6) where every AC cites a rule ID and an expected source;
-   a value with no source is `?` plus a new question in E4. Breakdown never adds rules.
+4. One or two slices: fill the epic's **Tasks** section, no task files. Three or more:
+   one task file per slice that cites AC IDs and copies no AC wording. A value with no
+   source is `?` plus a new question in E0. Breakdown never adds rules.
 
 ### Output
 

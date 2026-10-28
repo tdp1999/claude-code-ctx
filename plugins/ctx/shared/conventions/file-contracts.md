@@ -94,8 +94,8 @@ When modifying a file's format, check the **Read by** column to understand which
 | | |
 |---|---|
 | **Location** | `.context/plans/epic-<name>.md` |
-| **Written by** | `/ctx:epic` (and `/ctx:breakdown`, which adds questions to E4 and the broken-down note) |
-| **Read by** | `/ctx:breakdown`, `/ctx:task` (E4 and E6 only, for cited rules and answers) |
+| **Written by** | `/ctx:epic`; `/ctx:breakdown` (adds questions to E0, fills **Tasks** for one or two slices, writes the broken-down note); `/ctx:task` (updates a slice line in **Tasks**) |
+| **Read by** | `/ctx:breakdown`; `/ctx:task` (E0, E5, the E6 rules, Inherited behavior, the AC table, and **Tasks**); `/ctx:sync` (**Tasks**, to update the epic status) |
 
 **Archive location:** `.context/plans-done/` (moved by `/ctx:sync` when all tasks are done)
 
@@ -103,18 +103,27 @@ When modifying a file's format, check the **Read by** column to understand which
 - `# Epic: [Name]` — title
 - `Size: L · <reason>` — first line under the title (see `ownership.md` → Size)
 - `## Status` — one of: `draft`, `ready`, `broken-down`, `completed`
+- `## Legend` — the ID prefixes this epic uses (see `ids-and-references.md`)
+- `## E0 · Questions` — table: #, Question, Who answers, Answer, Date, Blocking
 - `## E1 · Problem`, `## E2 · Done and measure`, `## E3 · Scope`
-- `## E4 · Questions` — table: #, Question, Who answers, Answer, Date, Blocking
-- `## E5 · Design` — chosen option with the Owner's reason; `### Flows and screens`
-  with flow IDs (`F1`…), screen IDs (`S1`…), and the data dictionary
-- `## E6 · Rules and examples` — rules with IDs (`R1`…), examples with IDs (`R1.1`…),
-  each example's expected value citing its source or `?` (this is what breakdown decomposes)
+- `## E4 · Design` — chosen option with the Owner's reason
+- `## E5 · Flows and screens` — flow IDs (`F1`…), screen IDs (`S1`…), and the data
+  dictionary; no rule IDs
+- `## E6 · Rules and examples` — rules with IDs (`R1`…) and a covers line naming
+  their flows and screens, examples with IDs (`R1.1`…),
+  each example's expected value citing its source or `?` (this is what breakdown decomposes);
+  `### Inherited behavior` (`P1`…) and `### Acceptance criteria and test levels`
+  (`AC-1`…), which breakdown, task, and sync cite
+- `## Tasks` — one checkbox line per slice, for an epic with one or two slices; a bigger
+  epic has task files instead and no Tasks section
 
 **Optional:**
+- `### Test design` under E6 (`DT-n`, `ST-n`) — when a rule needs a decision table or a
+  state transition table
 - `## E7 · Outcome` — filled after release
 - `## Specialized Skills`, `## Estimated Complexity`, `## Created`, `## Changelog`
 
-**Labels:** items in E1, E2, E3, the E5 choice, and E6 carry `[Owner]`, `[Q-n]`, or
+**Labels:** items in E1, E2, E3, the E4 choice, E5, and E6 carry `[Owner]`, `[Q-n]`, or
 `[Claude-proposed]` (see `ownership.md`). `draft → ready` is gated on them.
 
 **Older format (still valid):** `## Summary`, `## Scope` with `### In Scope` /
@@ -138,14 +147,17 @@ Criteria`). Readers match on the name after the code, so files without codes sta
 - `# Task: [Title]` — clear, actionable title starting with a verb
 - `Size: <S|M|L> · <reason>` — first line under the title (older files may lack it)
 - `## Status` — one of: `pending`, `in-progress`, `blocked`, `done`
-- `## Acceptance Criteria` (T2) — checklist with `- [ ]` items (minimum 1). For sizes M
-  and L each item cites a rule ID and its expected source, or `?`
+- `## Acceptance Criteria` (T2) — checklist with `- [ ]` items (minimum 1). Size M: each
+  item cites a rule ID and its expected source, or `?`. Size L: each item is an AC ID
+  from the epic's AC table with its rule ID, no wording (older size L tasks may carry
+  wording)
 - `## Complexity` — one of: `S`, `M`, `L`, `XL`
 - `## Verification` — one of: `none`, `test`, `full` (see below)
 
 **Size L (from an epic) adds:**
-- `## T1 · Slice` — what the slice delivers and the epic rule IDs it covers
-- `## T3 · Test Design`, `## T4 · Progress Log`, `## T5 · Test Results`
+- `## T1 · Slice` — what the slice delivers and the flow, screen, and rule IDs it covers
+- `## T3 · Approach` (empty until the task starts; older tasks have `## T3 · Test
+  Design`), `## T4 · Progress Log`, `## T5 · Test Results`
 - `## T6 · Release` — only on the task that releases the feature
 
 **Size M (standalone) adds:**
@@ -153,7 +165,7 @@ Criteria`). Readers match on the name after the code, so files without codes sta
   Owner's reason), `## Rules and examples`
 - `## T3 · Test Design`, `## T4 · Progress Log`, `## T5 · Test Results`, `## T6 · Release`
 
-**`done` gate:** every AC `[x]`; no `[Claude-proposed]` in T1 or T2; and, when the file
+**`done` gate:** every AC `[x]`; no `[Claude-proposed]` in T1, T2, or a size L T3; and, when the file
 has a T5 section, a result recorded by the Owner. `/ctx:task` and `/ctx:sync` both
 enforce it.
 

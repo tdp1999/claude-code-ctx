@@ -28,10 +28,11 @@ See `../../shared/conventions/file-contracts.md` for required output sections.
 See `../../shared/conventions/spec-quality.md` for the requirement-wording scan.
 See `../../shared/conventions/ownership.md` for labels, Owner-first writing, and gates.
 See `../../shared/conventions/checklist-binding.md` for the optional checklist slice.
+See `../../shared/conventions/ids-and-references.md` for ID prefixes, short names, and how to write a reference.
 
 Skill-specific errors:
 - **Missing `vision.md`**: Warn user that epic will lack project context. Suggest running `/ctx:start` first, but allow proceeding if user confirms.
-- **Missing `patterns-architecture.md`**: Warn that the design section (E5) will be generic. Suggest running `/ctx:start` first.
+- **Missing `patterns-architecture.md`**: Warn that the design section (E4) will be generic. Suggest running `/ctx:start` first.
 - **Checklist binding points to a missing folder or file**: Say which path is missing, then continue without the binding.
 - **`.context/plans/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic file already exists with same name**: Ask user — update existing or create with different name?
@@ -57,6 +58,16 @@ Use when creating a new epic from an idea.
 The epic is the Owner's document. Claude structures it, finds the gaps, and writes the
 mechanics; the Owner writes the logic. Read `../../shared/conventions/ownership.md`
 before starting: it defines logic vs mechanics, the labels, and the gates used below.
+
+**One step at a time.** Steps 3 to 6 each fill one numbered section. Follow these rules:
+
+1. Create the file in step 3. Write each section to the file at the end of its step.
+2. Stop after each step. Show what the step wrote and ask the Owner to approve it.
+3. Start the next step only when the Owner has approved the current section. Approved
+   means no `[Claude-proposed]` label left in it and no open blocking question about it.
+4. Do not draft a later section early, not even as a placeholder. A section drafted
+   before the one it depends on goes stale and must be reviewed twice.
+5. With the checklist binding on, the step's phase gate line is the approval question.
 
 ### Process
 
@@ -91,9 +102,9 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
 
    Write what the Owner says, labeled `[Owner]`. Then **review by asking**: every gap
    you see (a missing edge case, a measure with no baseline, an affected group nobody
-   named) becomes a row in **E4 · Questions**, not a sentence in E1–E3.
+   named) becomes a row in **E0 · Questions**, not a sentence in E1–E3.
 
-4. **Design (E5): options from Claude, the choice from the Owner:**
+4. **Design (E4): options from Claude, the choice from the Owner:**
    - Lay out 2–3 options with pros, cons, blast radius in and out of code, migration,
      and rabbit holes (including edge cases the option itself creates). This part is
      mechanics; write it yourself, using Explore when the code needs a sweep.
@@ -115,28 +126,43 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
      and labels; never guess a meaning.
    - Add a permission matrix, state diagram, or call sequence only when the feature has
      several roles, an entity lifecycle, or several systems. Every denied cell of the
-     matrix needs a rule and an example in E6.
-   - Branches that need a decision become questions in E4.
+     matrix later needs a rule and an example in E6.
+   - Cite flow and screen IDs only. No rule IDs in E5: rules point back at it.
+   - Branches that need a decision become questions in E0.
 
 6. **Rules and examples (E6): the Owner writes, Claude completes the mechanics:**
-   - Ask for the rules flow by flow and screen by screen. Each rule names the flow or
-     screen it belongs to.
+   - Ask for the rules flow by flow and screen by screen. Each rule has a covers line
+     under its title naming the flows and screens it applies to.
    - Ask the Owner for the rules and, per rule, concrete examples with expected
      results, including what the user sees and does next.
    - Claude adds the mechanical examples (boundary values for ranges the Owner defined)
      with the expected value left as `?` unless a rule or answer already fixes it.
    - Every expected value cites `[Owner]`, a rule, or `[Q-n]`. Anything else is `?` plus
-     a question in E4.
+     a question in E0.
    - If the Owner asks Claude to draft rules, draft them and label each
      `[Claude-proposed]`.
-   - Fill the **Covered by** column of E3 and the **Rules** column of the screen
-     table. Check each denied cell of the permission matrix too. An empty cell becomes a
-     new rule or a question in E4.
+   - **Cite a pattern; never restate it.** Behavior that comes from an existing project
+     pattern or convention (auth guards, error handling, unsaved-changes guard, shared
+     validation) gets one row in the **Inherited behavior** table: the pattern, its
+     source document, where it applies, and the smoke test that catches a missing hookup.
+     Rules and examples hold only what is specific to this feature.
+   - **Promote project-wide decisions.** When the Owner says a decision applies to the
+     whole project, record it in the project's convention log (for example
+     `.context/style-review.md`), add it to the matching standards file, then replace
+     its examples in the epic with an Inherited behavior row. Retired example IDs are
+     never reused.
+   - Fill the **Covered by** column of E3. Check that every screen and every denied
+     cell of the permission matrix appears in some rule's covers line. A gap becomes a
+     new rule or a question in E0.
+   - Once the rules are agreed, write the **Acceptance criteria and test levels** table
+     in E6: one row per AC in EARS wording, with its rule, test level, and the examples
+     it covers. This is the only place ACs are written; tasks cite the IDs. Every rule
+     has at least one AC.
 
-7. **Generate the epic file:**
-   - Use `../../shared/templates/epic-template.md`. Filename `epic-<kebab-case-name>.md`
-     in `.context/plans/`. Status `draft`.
-   - Before saving, run the **draft pass** of the spec-quality scan over **E2** and the
+7. **Finish the epic file:**
+   - The file exists since step 3 (`../../shared/templates/epic-template.md`, filename
+     `epic-<kebab-case-name>.md` in `.context/plans/`, status `draft`).
+   - Before the last save, run the **draft pass** of the spec-quality scan over **E2** and the
      rules in **E6**. Draft each rule into an EARS pattern, then run both set-level
      checks: if the goal is a measurable improvement, E2 must state the **target
      number**, and at least one rule must cover a failure path. Findings are warnings —
@@ -200,8 +226,8 @@ Use when updating an existing epic file.
 3. **Update the file:**
    - Modify relevant sections. The ownership rules apply to edits too: logic changes
      come from the Owner, Claude's drafts are `[Claude-proposed]`, and gaps go to
-     **E4 · Questions**.
-   - When the Owner answers a question in E4, fill the answer and date, then replace
+     **E0 · Questions**.
+   - When the Owner answers a question in E0, fill the answer and date, then replace
      the matching `?` values with the answer and cite `[Q-n]`.
    - Changing a rule in E6 after breakdown: list the tasks whose ACs cite that rule ID,
      so the Owner can decide whether to update them.
@@ -222,7 +248,7 @@ Use when updating an existing epic file.
    - Run the ownership gate again and report what still blocks `ready`.
 
 **Older epics** (with `## High-Level Requirements` and no E-sections): update them in
-their own format. Offer once to convert to the E1–E7 layout; convert only on a yes.
+their own format. Offer once to convert to the E0–E7 layout; convert only on a yes.
 
 ---
 
@@ -246,7 +272,7 @@ Claude shows the empty E1–E3 skeleton and asks one batch:
   in, out, or open?
 The Owner answers; Claude writes them labeled [Owner].
 Claude's review adds Q-1 "Is the invoice sent after each visit or after the last
-one?" to E4 instead of writing an answer.
+one?" to E0 instead of writing an answer.
 
 Claude lays out two options with blast radius; the Owner picks B
 "because dispatch already thinks in visits". Recorded with that sentence.
@@ -269,8 +295,8 @@ User: "Add social login to scope"
 
 Assistant updates epic:
 - Moves "social login" from Out to In (the Owner's own decision, labeled [Owner])
-- Adds Q-4 "Which providers?" to E4 instead of choosing them
-- Adds new risk about OAuth callback security to E5
+- Adds Q-4 "Which providers?" to E0 instead of choosing them
+- Adds new risk about OAuth callback security to E4
 - Adds changelog entry
 
 Suggests: "This adds significant complexity - consider keeping as separate epic?"
@@ -281,7 +307,7 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 ## Tips
 
 - This is where the Owner **thinks through** the feature before coding. Challenge it by
-  asking: a sharp question in E4 helps more than a well-written rule the Owner never
+  asking: a sharp question in E0 helps more than a well-written rule the Owner never
   wrote
 - Foresee problems they might not see (security, scalability, edge cases), and turn
   each one into a question or a risk, not a decision
@@ -293,11 +319,17 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 
 ## Gotchas
 
+- **Never draft ahead**: one approved section before the next one starts (Create Mode →
+  One step at a time). E6 written before E5 is approved goes stale.
+- **A `⚙` procedure is not optional**: with the checklist binding on, a row marked
+  `⚙ review` means two independent reviewers (Claude in a fresh context and Codex),
+  as `checklist-binding.md` → Procedures says. One Claude reviewer is not enough.
+
 - **Domain Impact Protocol requires user confirmation**: When detecting new entities/flows/rules, you MUST show proposed changes and wait for explicit approval before writing to domain.md. Never auto-update.
 - **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
 - **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:start` or `/ctx:onboard` if the folder structure doesn't exist.
 - **Never write `[Owner]` on your own draft**: a blanket "looks good" converts nothing. List what is still `[Claude-proposed]` and ask about those items.
-- **Gaps become questions, not answers**: when reviewing the Owner's logic, add a row to E4. Writing the answer into E6 yourself is how a feature ends up with no owner.
+- **Gaps become questions, not answers**: when reviewing the Owner's logic, add a row to E0. Writing the answer into E6 yourself is how a feature ends up with no owner.
 - **A choice without the Owner's reason is not recorded**: ask for the one sentence.
 - **Never tick the checklist**: with the binding on, the checklist is read-only. Report which rows were Claude's and which are the Owner's; the Owner ticks.
 - **XL epics should be split**: If you estimate >10 tasks, propose splitting into 2-3 smaller epics before the user commits to one large one.

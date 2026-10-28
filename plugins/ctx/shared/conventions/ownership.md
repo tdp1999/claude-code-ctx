@@ -78,9 +78,10 @@ and the skill lists exactly what blocks it.
 
 | Gate | Blocks when |
 |---|---|
-| Epic `draft → ready` | A logic section (Problem, Done, Scope, the chosen option and its reason, Flows and screens, Rules) still holds `[Claude-proposed]`; an expected value is `?`; a question marked **blocking** has no answer; or an E3 **In** row, a screen in E5 **Flows and screens**, or a denied cell of the permission matrix names no rule |
+| Epic `draft → ready` | A logic section (Problem, Done, Scope, the chosen option and its reason, Flows and screens, Rules) still holds `[Claude-proposed]`; an expected value is `?`; a question marked **blocking** has no answer; or an E3 **In** row names no rule, or a screen in E5 **Flows and screens** or a denied cell of the permission matrix is in no rule's covers line |
 | Breakdown writes a task | The criterion or expected value it needs cannot cite a rule ID or `[Q-n]` (the task is still written, with `?` and a new question, but the epic is reported as not fully ready) |
-| Task `→ done` | Any AC is unchecked; **Slice** or **Acceptance Criteria** still holds `[Claude-proposed]`; or **Test Results** has no result recorded by the Owner |
+| Size L task, first code | **T3 · Approach** is empty or still `[Claude-proposed]` (the Owner confirms the approach when the task starts) |
+| Task `→ done` | Any AC is unchecked; **Slice**, **Acceptance Criteria**, or a size L **Approach** still holds `[Claude-proposed]`; or **Test Results** has no result recorded by the Owner |
 | Size M task `pending → in-progress` | **Problem**, the **Approach** choice and its **Flows** and **Screens**, or **Rules and examples** still holds `[Claude-proposed]` or a `?`; or a screen names no rule (the same check as an epic's `draft → ready`) |
 
 Gates never delete or rewrite content. They report and wait.

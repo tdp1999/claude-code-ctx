@@ -28,10 +28,10 @@ Which would you like to break down?"
 User: /ctx:breakdown auth
 
 Assistant finds .context/plans/epic-auth.md
-Reads: E6 rules and examples, E4 answers, E3 scope, E5 design
+Reads: E6 rules and examples, E0 answers, E3 scope, E4 design, E5 flows and screens
 Proposes five slices with their rule IDs; the Owner merges two and confirms
 Writes each AC with a rule ID and expected source; R4.2 has no answer yet,
-so 004 AC-3 gets `expected: ? → Q-6` and Q-6 is added to the epic's E4
+so 004 AC-3 gets `expected: ? → Q-6` and Q-6 is added to the epic's E0
 Creates tasks:
 - 001-setup-user-model.md
 - 002-implement-registration.md

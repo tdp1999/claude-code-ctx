@@ -123,6 +123,9 @@ Skill-specific errors:
      - Find all tasks that belong to it (check both tasks/ and tasks-done/)
      - If ALL tasks are done → update status to "completed" and move the file to `.context/plans-done/` (create folder if needed, preserve original filename)
      - Keep as "broken-down" if any tasks are pending/in-progress
+     - **Epic with a Tasks section and no task files:** all slice lines checked `[x]`, each
+       with a test result from the Owner → "completed" and archive as above; otherwise
+       keep "broken-down"
 
 8. **Domain freshness check:**
    If `.context/domain.md` exists:

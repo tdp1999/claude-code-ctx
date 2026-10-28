@@ -18,9 +18,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The size M task's **Approach** carries the same lines.
 
 ### Changed
+- **Epic rules cite patterns instead of restating them.** E6 gains an Inherited behavior table (one row per existing pattern, with a smoke test); project-wide decisions are promoted to the standards files, then cited.
+- **Epics use one fixed ID registry.** The registry is `shared/conventions/ids-and-references.md`: inherited patterns are `P`, every ID in prose carries a short name, and flows, rules and test tables are headings. The template gains a Legend, a Technique column in the AC table, and a Test design section (cost table, decision tables, state transition tables); the epic file contract lists Legend, Tasks, Inherited behavior, the AC table and Test design.
 
+- **Epic steps run one at a time.** `/ctx:epic` creates the file in step 3, writes each
+  section at the end of its step, and stops for the Owner's approval. It never drafts a
+  later section before the earlier one is approved, so E6 can no longer be written
+  before E5 and go stale.
+- **Procedure pointers are mandatory.** With the checklist binding on, a `⚙` row
+  (for example `⚙ review`) is run from the procedure section every time, with every
+  step. One Claude reviewer no longer stands in for the two independent reviewers the
+  procedure asks for. Skipped steps are reported with the reason.
+- **Thin size L tasks.** Acceptance criteria are written once, in the epic's new
+  **Acceptance criteria and test levels** table. A size L task cites AC IDs and copies
+  no wording. Its `T3 · Test Design` becomes `T3 · Approach`, filled with the Owner when
+  `/ctx:task` starts and the code has been read. Logic found while building goes to the
+  epic's E0, never to the task.
+- **Breakdown asks, then writes.** `/ctx:breakdown` settles three things with the
+  Owner: the slices (every AC in exactly one), their order, and where the steps live.
+  An epic with one or two slices keeps them in a new **Tasks** section and gets no task
+  files; `/ctx:task` and `/ctx:sync` handle that section.
 - **Coverage gate.** E3 **In** is a table with a **Covered by** column. An epic cannot
-  move `draft → ready` while an In row or a screen names no rule.
+  move `draft → ready` while an In row names no rule, or a screen or a denied cell of
+  the permission matrix is in no rule's covers line.
+- **One numbered section, one step.** Questions move to **E0** (used in every step).
+  Design is **E4**; Flows and screens leave it and become **E5**. E5 cites flow and
+  screen IDs only, and the screen table loses its Rules column: each rule in E6 gets a
+  covers line naming its flows and screens instead. A reader in the flow step no longer
+  has to open the rules first.
 
 ## [3.3.0] - 2026-10-12
 

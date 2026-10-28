@@ -3,8 +3,10 @@
 This template is used for creating task files in `.context/tasks/`. There are two
 shapes, chosen by the size line (see `../conventions/ownership.md` → Size):
 
-- **Size L** — a task cut from an epic. The problem, questions, and rules live in the
-  epic; the task points to them.
+- **Size L** — a task cut from an epic. The problem, questions, rules, and acceptance
+  criteria live in the epic; the task points to them by ID and copies no wording. What
+  the task owns is the **how**: the approach, files, and tests for its slice, agreed
+  with the Owner when the task starts.
 - **Size M** — a standalone task with no epic. It carries a compact problem, questions,
   and rules of its own.
 
@@ -23,28 +25,37 @@ Size: L · from epic-[name]
 
 ## T1 · Slice
 [What this slice delivers, in one sentence] [Owner]
-- **Rules:** R1, R3 (epic-[name] E6)
+- **Covers:** F1, F2 · S1, S2 · AC-1, AC-3 (epic-[name] E5, E6)
 - **Why this slice is separate:** [what it can ship or be tested without]
 
 ## T2 · Acceptance Criteria
-- [ ] AC-1 · WHEN [trigger] THE SYSTEM SHALL [observable result] · R1 · expected from R1.1
-- [ ] AC-2 · IF [failure] THEN THE SYSTEM SHALL [result the user sees, and what they do next] · R3 · [Q-2]
-- [ ] AC-3 · ... · R3 · expected: ? → Q-n
+<!-- IDs from the epic's AC table only. The wording, rule, and expected source stay in
+     the epic; tick each line when its AC passes. -->
+- [ ] AC-1 · R1
+- [ ] AC-4 · R3
 
-## T3 · Test Design
-| Case | AC | Level | Technique | Auto / manual | Expected source |
-|---|---|---|---|---|---|
-| [case] | AC-1 | unit / integration / e2e | example / EP+BVA / state / decision table | auto | R1.1 |
+## T3 · Approach
+<!-- Empty at breakdown. Filled by /ctx:task when the task starts, after Claude reads
+     the code; the Owner confirms it before any code is written. -->
+- **Approach:** [how this slice is built in this codebase; other option and why not] [Owner]
+- **Risks:** [what could break, what is unclear in the code]
+
+| Test case | AC | Level | Test file | Expected source |
+|---|---|---|---|---|
+| [case] | AC-1 | unit / integration / e2e | [path] | R1.1 |
 
 **NFR in play:** [only the ones this slice risks, or "none"]
 
+**Discovered work:** [tasks found while building; logic goes to the epic's E0, not here]
+
 ## Technical Notes
-Implementation hints, patterns to follow. Reference `.context/patterns-architecture.md`.
+Patterns to follow. Reference `.context/patterns-architecture.md`.
 
 <!-- **Specialized Skill:** [skill-name] — [what it covers for this task] -->
 <!-- **Key sections to read:** [§Section1, §Section2] -->
 
 ## Files to Touch
+<!-- A first guess at breakdown; confirmed in T3 when the task starts. -->
 - path/to/file
 
 ## Dependencies
@@ -159,13 +170,17 @@ Size: M · [one-line reason]
 
 **Part codes.** Headings may carry a part code before the name (`## T2 · Acceptance
 Criteria`). Readers match on the name after the code, so older task files without codes
-stay valid.
+stay valid. Older size L tasks with copied AC wording and a `T3 · Test Design` stay valid
+too; new ones use AC IDs and `T3 · Approach`.
+
+**Small epics have no task files.** An epic with one or two slices keeps its steps in
+its own **Tasks** section (see `epic-template.md`); `/ctx:task` works from that section.
 
 **Status values:** `pending` · `in-progress` · `blocked` · `done`. The `## Status:` line
 holds one bare token.
 
-**`done` gate:** every AC checked, no `[Claude-proposed]` left in T1 or T2, and T5 holds a
-result recorded by the Owner. Older task files without a T5 section are gated on the ACs
+**`done` gate:** every AC checked, no `[Claude-proposed]` left in T1, T2, or a size L
+task's T3, and T5 holds a result recorded by the Owner. Older task files without a T5 section are gated on the ACs
 alone, as before.
 
 **Complexity:** S < 50 lines · M 50–200 · L 200–500 · XL 500+ (see
