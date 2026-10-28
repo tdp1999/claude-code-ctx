@@ -41,7 +41,7 @@ things in it:
 
 ## Phases
 - epic: 1, 2, 3, 4 (rows about rules and examples)
-- breakdown: 2 (row about slicing)
+- breakdown: none (the checklist has no row for slicing; skip the end-of-phase report)
 - task: 5, 6, 7 (only when the task releases itself)
 
 ## Columns
@@ -66,6 +66,7 @@ no map.
 2. **Open one file.** `checklist-size-<size>.md`, lowercase.
 3. **Cut the phases this skill owns** (from the map). Read only those `## N.` sections.
    A parenthesis in the map narrows a phase to some of its rows.
+   `none` means the skill has no rows: skip the slice and the end-of-phase report.
 4. **Follow pointers lazily.** A pointer marker in a row (a lookup table section, a
    profile section) is opened only when Claude is about to do that row. Never preload
    the lookup table or the whole profile.
