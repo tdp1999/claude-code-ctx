@@ -180,7 +180,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 3.3.0
+Current version: 3.4.0
 
 ## Changelog
 
