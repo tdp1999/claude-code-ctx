@@ -174,7 +174,7 @@ logic parts come from the Owner, the mechanics from Claude:
 | Problem, Done when | Owner. Ask for them; write them labeled `[Owner]` |
 | Questions | Claude adds every gap it sees as a question for the Owner, instead of an answer |
 | Approach | Claude lays out the options, blast radius, and rabbit holes; the Owner chooses and gives one sentence of why |
-| Rules and examples, expected values | Owner. Claude adds boundary examples with `?` unless a rule fixes the value. A draft written at the Owner's request is `[Claude-proposed]` |
+| Rules and examples, expected values | Owner. Claude adds boundary examples with `?` unless a rule fixes the value. A draft written at the Owner's request gets the status line `[Claude-proposed]` |
 | T2 AC | Claude, in EARS, each citing a rule and its expected source, or `?` |
 | T3 Test Design, Technical Notes, Files, Complexity, Verification | Claude |
 | T4, T5 | empty |
@@ -262,7 +262,7 @@ Show the task content to the user for review:
 [Spec check block from Step 3.5 — one line if clean]
 
 ### Open for the Owner
-- [Every `[Claude-proposed]` item, `?` value, and open question — or "none"]
+- [Every status line still at `[Claude-proposed]` with the items it names, every `?` value, and every open question — or "none"]
 
 ---
 
@@ -379,7 +379,7 @@ Key points:
 
 - **Plan only, do not implement**: This skill creates the task file. It does NOT start working on the task. Suggest `/ctx:task NNN` after creation.
 - **Never `ls` tasks-done/ to find the highest number**: it is nested by epic, so a flat listing returns folder names and every archived task goes unseen — the exact way duplicate task IDs get minted. Use the `find … | sort -n` scan, and check the chosen number is free before writing.
-- **Logic is the Owner's**: problem, done, rules, and expected values come from the Owner. Gaps become questions in the task's Questions table, not answers. Never write `[Owner]` on your own draft.
+- **Logic is the Owner's**: problem, done, rules, and expected values come from the Owner. Gaps become questions in the task's Questions table, not answers. Never write `[Owner]` on your own draft. When the Owner approves a section, set its status line to `[Owner]`.
 - **Size S needs no file**: say so before drafting one.
 - **User must approve before file creation**: Always show the draft task and get explicit confirmation. Do not create the file silently.
 - **Standalone tasks are marked differently in progress.md**: Use "(standalone)" label so they're distinguishable from epic-sourced tasks.

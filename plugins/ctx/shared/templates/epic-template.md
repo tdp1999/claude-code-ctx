@@ -4,8 +4,11 @@ This template is used for creating epic files in `.context/plans/`. An epic is t
 memory of one size-L feature: the problem, the agreed answers, the design, and the
 rules every task and test traces back to.
 
-Labels (`[Owner]`, `[Q-n]`, `[Claude-proposed]`) and the size line follow
-`../conventions/ownership.md`. Logic sections are marked *(logic)*.
+Status lines, provenance labels, and the size line follow `../conventions/ownership.md`.
+Logic sections are marked *(logic)*. Each logic heading, at any level, starts with a
+`Status:` line that records the Owner's approval. It can name the items that still
+need review. A label at the end of an item (`[Owner]`, `[Q-n]`, a rule ID) only names
+its source. Write "Status" in the epic's prose language.
 
 **One numbered section, one step.** E1–E3 hold the problem, E4 the design, E5 the
 flows and screens, E6 the rules and acceptance criteria, E7 the outcome. Each is
@@ -50,6 +53,8 @@ as `[Q-n]`. New questions go at the bottom; the Date column shows when each was 
 
 ## E1 · Problem *(logic)*
 
+Status: [Claude-proposed]
+
 **Problem:** [One sentence: who cannot do what, today] [Owner]
 
 **Evidence:** [ticket, numbers, a quote, a screenshot path] [Owner]
@@ -62,6 +67,8 @@ as `[Q-n]`. New questions go at the bottom; the Date column shows when each was 
 
 ## E2 · Done and measure *(logic)*
 
+Status: [Claude-proposed]
+
 | Measure | Baseline (today) | Target | How it is read |
 |---|---|---|---|
 | [metric] | [number, date measured] | [number] | [query, dashboard, manual count] |
@@ -69,6 +76,8 @@ as `[Q-n]`. New questions go at the bottom; the Date column shows when each was 
 [One sentence: what a user can do when this is done] [Owner]
 
 ## E3 · Scope *(logic)*
+
+Status: [Claude-proposed]
 
 ### In
 | Capability | Covered by |
@@ -86,6 +95,8 @@ as `[Q-n]`. New questions go at the bottom; the Date column shows when each was 
 **Affected indirectly:** [people or systems that never touch the feature but feel it] [Owner]
 
 ## E4 · Design
+
+Status: [Claude-proposed]. Review first: the chosen option and its reason
 
 **Chosen option:** [name] [Owner]
 **Why (Owner's words):** [one sentence] [Owner]
@@ -107,6 +118,8 @@ as `[Q-n]`. New questions go at the bottom; the Date column shows when each was 
 - **Rabbit holes:** [where it could swallow time, incl. edge cases the option itself creates, and how they are capped]
 
 ## E5 · Flows and screens
+
+Status: [Claude-proposed]
 
 Written before E6, so every rule can point back at a flow or a screen. This section
 cites flow and screen IDs only, never rule IDs. Every ticket type
@@ -156,6 +169,8 @@ audited actions when edits must be traceable.
 
 ## E6 · Rules and examples *(logic)*
 
+Status: [Claude-proposed]
+
 Each rule has an ID and a covers line (the flows and screens it applies to). Each
 example has concrete values and an expected result that says what the user sees and
 what they do next. Tasks reference these IDs; they never add rules of their own.
@@ -165,6 +180,8 @@ the full rule is the bold sentence under it.
 ### Rules
 
 #### R1 · [short name]
+Status: [Owner], except R1.2 [Claude-proposed]
+
 **[rule in one sentence] [Owner]**
 *'F1 [short name]' · 'S1 [short name]'*
 
@@ -226,7 +243,9 @@ how many cases are enough for each cost level.
 <!-- Only for an epic with one or two slices. A bigger epic gets task files from
      /ctx:breakdown and deletes this section. -->
 - [ ] **Slice 1 · [what it delivers]** · covers F1 · S1 · AC-1, AC-2 [Owner]
-  - **Approach:** [filled when the slice starts; the Owner confirms before code]
+  - **Approach:** [filled when the slice starts; the Owner confirms before code. A long
+    approach gets its own `###` heading with a status line and a short list of the
+    points the Owner must review]
   - **Progress:** [dated notes]
   - **Test results:** [layer · result · by; the Owner records the result]
 
@@ -258,12 +277,12 @@ Filled after release.
 **File naming:** `epic-<kebab-case-name>.md`
 
 **Status lifecycle:** `draft` → `ready` → `broken-down` → `completed`
-- `draft` → `ready` is gated (see `ownership.md` → Gates): no `[Claude-proposed]` left in
-  E1, E2, E3, the chosen option, or E6; no `?` expected value; no unanswered blocking
+- `draft` → `ready` is gated (see `ownership.md` → Gates): no status line in E1, E2, E3,
+  E5, E6, or the E4 choice and its reason holds `[Claude-proposed]`; no `?` expected value; no unanswered blocking
   question; every E3 **In** row names at least one rule, and every screen and every
   denied cell of the permission matrix is covered by at least one rule (its covers
-  line in E6). Flows and screens are logic: their `[Claude-proposed]`
-  labels block the gate too.
+  line in E6). Flows and screens are logic: a `[Claude-proposed]` status line there
+  blocks the gate too.
 
 **Tasks section or task files:** `/ctx:breakdown` asks. One or two slices → the
 **Tasks** section, no task files. Three or more → one task file per slice, and the
@@ -273,12 +292,17 @@ section is deleted. Either way the logic stays in the epic.
 as before; the new gates apply only to the sections that exist. An E3 **In** written
 as bullets is checked per bullet: each bullet must name a rule.
 
-**When updating:** add a changelog entry at the bottom:
+**When updating:** add a changelog entry at the top of the Changelog section. Each
+entry starts with a bold line, not a heading, so the outline stays short:
 
 ```markdown
 ## Changelog
 
-### [YYYY-MM-DD] [Change]
+**[YYYY-MM-DD] [Change]**
 - Updated: [what]
 - Reason: [why]
 ```
+
+**Approval:** when the Owner approves a section, change its status line to
+`Status: [Owner]`. When the Owner approves only some items, list the rest after
+"except".

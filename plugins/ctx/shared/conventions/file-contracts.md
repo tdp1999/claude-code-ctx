@@ -123,8 +123,13 @@ When modifying a file's format, check the **Read by** column to understand which
 - `## E7 · Outcome` — filled after release
 - `## Specialized Skills`, `## Estimated Complexity`, `## Created`, `## Changelog`
 
-**Labels:** items in E1, E2, E3, the E4 choice, E5, and E6 carry `[Owner]`, `[Q-n]`, or
-`[Claude-proposed]` (see `ownership.md`). `draft → ready` is gated on them.
+**Status lines:** each heading in E1, E2, E3, E4, E5, and E6 starts with a `Status:`
+line (`[Owner]`, `[Claude-proposed]`, or `[Owner], except …`). Items may end with a
+provenance label (`[Owner]`, `[Q-n]`, a rule ID). See `ownership.md`. `draft → ready` is
+gated on the status lines.
+
+**Changelog entries** are bold lines (`**[YYYY-MM-DD] [Change]**`), never headings, so
+they stay out of the outline.
 
 **Older format (still valid):** `## Summary`, `## Scope` with `### In Scope` /
 `### Out of Scope`, `## High-Level Requirements` (numbered), `## Status`. Skills read it
@@ -164,6 +169,10 @@ Criteria`). Readers match on the name after the code, so files without codes sta
 - `## Problem` (with **Done when**), `## Questions`, `## Approach` (chosen option with the
   Owner's reason), `## Rules and examples`
 - `## T3 · Test Design`, `## T4 · Progress Log`, `## T5 · Test Results`, `## T6 · Release`
+
+**Status lines:** T1, T2, T3, and the size M logic sections (Problem, Approach, Rules and
+examples) start with a `Status:` line, as in the epic. A task file without status lines
+is read the old way, by its item labels (see `ownership.md`).
 
 **`done` gate:** every AC `[x]`; no `[Claude-proposed]` in T1, T2, or a size L T3; and, when the file
 has a T5 section, a result recorded by the Owner. `/ctx:task` and `/ctx:sync` both

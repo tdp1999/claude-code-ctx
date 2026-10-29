@@ -130,12 +130,13 @@ the task file says. Use it on critical code. See Step 9.
    - **Size L task with an empty T3 · Approach (always stops):** write the approach into
      T3: the approach and one other option, the risks, the test cases per AC with level,
      test file, and expected source, and the files to touch. Show it and wait for the
-     Owner to confirm or change it, then label it `[Owner]`. This is the task's own
+     Owner to confirm or change it, then set the T3 status line to `[Owner]`. A long
+     approach lists the points the Owner must review in its status line or right below it. This is the task's own
      decision; no code before it.
 
    **5c. Logic check (always stops):**
    - List anything in the task that the Owner has not decided yet: an AC with
-     `expected: ?`, an item still `[Claude-proposed]`, an open question it cites.
+     `expected: ?`, a status line still at `[Claude-proposed]` (or an older item label), an open question it cites.
    - Any **logic mismatch** stops the work, however small: the code already behaves
      differently from a cited rule, two cited rules contradict each other, an example's
      expected value cannot be produced, or the work reveals a case no rule covers.

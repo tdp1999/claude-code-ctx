@@ -10,7 +10,9 @@ shapes, chosen by the size line (see `../conventions/ownership.md` → Size):
 - **Size M** — a standalone task with no epic. It carries a compact problem, questions,
   and rules of its own.
 
-Size S needs no file. Labels follow `../conventions/ownership.md`.
+Size S needs no file. Status lines and provenance labels follow
+`../conventions/ownership.md`. Each logic heading starts with a `Status:` line, and a
+label at the end of an item only names its source.
 
 ---
 
@@ -24,20 +26,26 @@ Size: L · from epic-[name]
 ## Status: pending
 
 ## T1 · Slice
+Status: [Claude-proposed]
+
 [What this slice delivers, in one sentence] [Owner]
 - **Covers:** F1, F2 · S1, S2 · AC-1, AC-3 (epic-[name] E5, E6)
 - **Why this slice is separate:** [what it can ship or be tested without]
 
 ## T2 · Acceptance Criteria
+Status: [Claude-proposed]
+
 <!-- IDs from the epic's AC table only. The wording, rule, and expected source stay in
      the epic; tick each line when its AC passes. -->
 - [ ] AC-1 · R1
 - [ ] AC-4 · R3
 
 ## T3 · Approach
+Status: [Claude-proposed]. Review first: [the points the Owner must decide]
+
 <!-- Empty at breakdown. Filled by /ctx:task when the task starts, after Claude reads
      the code; the Owner confirms it before any code is written. -->
-- **Approach:** [how this slice is built in this codebase; other option and why not] [Owner]
+- **Approach:** [how this slice is built in this codebase; other option and why not]
 - **Risks:** [what could break, what is unclear in the code]
 
 | Test case | AC | Level | Test file | Expected source |
@@ -107,6 +115,8 @@ Size: M · [one-line reason]
 ## Status: pending
 
 ## Problem
+Status: [Claude-proposed]
+
 [Who cannot do what, today, and the evidence] [Owner]
 **Done when:** [one sentence, with a number if it is an improvement] [Owner]
 
@@ -116,6 +126,8 @@ Size: M · [one-line reason]
 | Q-1 | | | | yes / no |
 
 ## Approach
+Status: [Claude-proposed]
+
 **Chosen:** [option] [Owner]
 **Why (Owner's words):** [one sentence] [Owner]
 - **Other option considered:** [option, and why not]
@@ -130,6 +142,8 @@ Size: M · [one-line reason]
   partial, error, offline, no permission, success), or "no UI"]
 
 ## Rules and examples
+Status: [Claude-proposed]
+
 - **R1** · [rule] [Owner]
   - R1.1 · given [data] when [action] → [expected, incl. what the user sees next] · [Owner] / [Q-n]
 
@@ -179,8 +193,8 @@ its own **Tasks** section (see `epic-template.md`); `/ctx:task` works from that 
 **Status values:** `pending` · `in-progress` · `blocked` · `done`. The `## Status:` line
 holds one bare token.
 
-**`done` gate:** every AC checked, no `[Claude-proposed]` left in T1, T2, or a size L
-task's T3, and T5 holds a result recorded by the Owner. Older task files without a T5 section are gated on the ACs
+**`done` gate:** every AC checked, no `[Claude-proposed]` left in the status lines (or,
+in older files, the items) of T1, T2, or a size L task's T3, and T5 holds a result recorded by the Owner. Older task files without a T5 section are gated on the ACs
 alone, as before.
 
 **Complexity:** S < 50 lines · M 50–200 · L 200–500 · XL 500+ (see

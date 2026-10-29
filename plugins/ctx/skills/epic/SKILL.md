@@ -57,14 +57,16 @@ Use when creating a new epic from an idea.
 
 The epic is the Owner's document. Claude structures it, finds the gaps, and writes the
 mechanics; the Owner writes the logic. Read `../../shared/conventions/ownership.md`
-before starting: it defines logic vs mechanics, the labels, and the gates used below.
+before starting: it defines logic vs mechanics, the status lines, the provenance labels,
+and the gates used below.
 
 **One step at a time.** Steps 3 to 6 each fill one numbered section. Follow these rules:
 
 1. Create the file in step 3. Write each section to the file at the end of its step.
 2. Stop after each step. Show what the step wrote and ask the Owner to approve it.
 3. Start the next step only when the Owner has approved the current section. Approved
-   means no `[Claude-proposed]` label left in it and no open blocking question about it.
+   means its status line is plain `[Owner]`, with no "except" list, and no open
+   blocking question is about it.
 4. Do not draft a later section early, not even as a placeholder. A section drafted
    before the one it depends on goes stale and must be reviewed twice.
 5. With the checklist binding on, the step's phase gate line is the approval question.
@@ -100,7 +102,7 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
    - In, out, and the situational edge cases (each one: in, out, or open)
    - Anything the input pass surfaced ("faster than what, measured how?")
 
-   Write what the Owner says, labeled `[Owner]`. Then **review by asking**: every gap
+   Write what the Owner says, with the provenance label `[Owner]` on each item. Then **review by asking**: every gap
    you see (a missing edge case, a measure with no baseline, an affected group nobody
    named) becomes a row in **E0 · Questions**, not a sentence in E1–E3.
 
@@ -116,7 +118,7 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
 5. **Flows and screens (E5): before any rule:**
    - Draft each flow as numbered main steps, then the branches at each step (bad
      input, server error, session expired, no permission, cancel, concurrent edit).
-     Label the draft `[Claude-proposed]`; the Owner confirms the steps.
+     Set the section's status line to `[Claude-proposed]`; the Owner confirms the steps.
    - Fit the flows to the ticket type: a new feature gets new flows; an upgrade or
      refactor gets the current flows that must not change; a bug fix gets the broken
      flow with the reproduction steps as one branch.
@@ -139,8 +141,8 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
      with the expected value left as `?` unless a rule or answer already fixes it.
    - Every expected value cites `[Owner]`, a rule, or `[Q-n]`. Anything else is `?` plus
      a question in E0.
-   - If the Owner asks Claude to draft rules, draft them and label each
-     `[Claude-proposed]`.
+   - If the Owner asks Claude to draft rules, draft them and set each rule's status
+     line to `[Claude-proposed]`.
    - **Cite a pattern; never restate it.** Behavior that comes from an existing project
      pattern or convention (auth guards, error handling, unsaved-changes guard, shared
      validation) gets one row in the **Inherited behavior** table: the pattern, its
@@ -200,7 +202,7 @@ before starting: it defines logic vs mechanics, the labels, and the gates used b
    - Key points of the epic and the main risks
    - Domain changes made (if any)
    - The spec check block from step 7 (one line if clean)
-   - **Ownership gate** (`ownership.md` → Gates): list every `[Claude-proposed]` item,
+   - **Ownership gate** (`ownership.md` → Gates): list every status line that is not plain `[Owner]`, with the items it names,
      every `?` expected value, and every open blocking question. If the list is empty,
      ask the Owner whether to move the epic to `ready`. If not, the epic stays `draft`.
    - With the checklist binding on: the end-of-phase report from
@@ -225,18 +227,19 @@ Use when updating an existing epic file.
 
 3. **Update the file:**
    - Modify relevant sections. The ownership rules apply to edits too: logic changes
-     come from the Owner, Claude's drafts are `[Claude-proposed]`, and gaps go to
+     come from the Owner, Claude's drafts get a `[Claude-proposed]` status line, and gaps go to
      **E0 · Questions**.
    - When the Owner answers a question in E0, fill the answer and date, then replace
      the matching `?` values with the answer and cite `[Q-n]`.
    - Changing a rule in E6 after breakdown: list the tasks whose ACs cite that rule ID,
      so the Owner can decide whether to update them.
-   - Add changelog entry at bottom:
+   - Add a changelog entry at the top of `## Changelog`. The entry starts with a bold
+     line, not a heading, so it stays out of the outline:
 
 ```markdown
 ## Changelog
 
-### [YYYY-MM-DD] [Change Description]
+**[YYYY-MM-DD] [Change Description]**
 - Updated: [what changed]
 - Reason: [why]
 ```
@@ -280,8 +283,8 @@ Claude lays out two options with blast radius; the Owner picks B
 The Owner writes R1–R3 with examples. Claude adds boundary examples for "up to 5
 visits" with expected = ? → Q-2.
 
-Summary: the epic stays draft. Blocking: Q-1, Q-2, and two [Claude-proposed] edge
-cases in E3.
+Summary: the epic stays draft. Blocking: Q-1, Q-2, and the status line of E3
+("Status: [Owner], except two edge cases [Claude-proposed]").
 ```
 
 ### Update Mode Example
@@ -328,7 +331,7 @@ Suggests: "This adds significant complexity - consider keeping as separate epic?
 - **Domain Impact Protocol requires user confirmation**: When detecting new entities/flows/rules, you MUST show proposed changes and wait for explicit approval before writing to domain.md. Never auto-update.
 - **Epic naming collisions**: Check if `epic-<name>.md` already exists before creating. If it does, ask user: update existing or create with different name?
 - **Missing .context/plans/ folder**: Cannot write epic without it. Suggest `/ctx:start` or `/ctx:onboard` if the folder structure doesn't exist.
-- **Never write `[Owner]` on your own draft**: a blanket "looks good" converts nothing. List what is still `[Claude-proposed]` and ask about those items.
+- **Never write `[Owner]` on your own draft**: a blanket "looks good" converts nothing. List the status lines still at `[Claude-proposed]` and the items they name, and ask about those. When the Owner approves a section, change its status line to `[Owner]`.
 - **Gaps become questions, not answers**: when reviewing the Owner's logic, add a row to E0. Writing the answer into E6 yourself is how a feature ends up with no owner.
 - **A choice without the Owner's reason is not recorded**: ask for the one sentence.
 - **Never tick the checklist**: with the binding on, the checklist is read-only. Report which rows were Claude's and which are the Owner's; the Owner ticks.

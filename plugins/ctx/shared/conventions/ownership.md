@@ -27,28 +27,61 @@ When an item is unclear, treat it as logic.
 
 ---
 
-## Provenance labels
+## Status lines and provenance labels
 
-Every item in a logic section carries one label at the end of its line.
+Two kinds of marks record ownership. A **status line** under a heading records approval.
+A **provenance label** at the end of an item records where the item came from.
+
+### Status line
+
+Every logic section starts with one status line, directly under its heading. The
+heading can be at any level (`##` to `#####`).
+
+```
+Status: [Owner]
+Status: [Claude-proposed]
+Status: [Owner], except 'R3 Duplicate name' and R4.2 [Claude-proposed]
+```
+
+| Value | Meaning |
+|---|---|
+| `[Owner]` | The Owner approved everything under this heading |
+| `[Claude-proposed]` | Claude drafted it and the Owner has not approved it |
+| `[Owner], except … [Claude-proposed]` | The Owner approved the section, but the named items still wait for review |
+
+Rules for the status line:
+
+1. The status line covers everything down to the next heading of the same or a higher level.
+2. A deeper heading with its own status line overrides its parent for its own part.
+3. A section that is still `[Claude-proposed]` may name the items to review first: `Status: [Claude-proposed]. Review first: R2, R5`.
+4. The word "Status" follows the file's prose language. A Vietnamese epic writes `Trạng thái:`.
+5. When the Owner approves a section, Claude changes its status line to `[Owner]`.
+6. Mechanics sections carry no status line.
+
+### Provenance labels
+
+An item may end with one label that names its source.
 
 | Label | Meaning | Who sets it |
 |---|---|---|
-| `[Owner]` | The Owner wrote it, or accepted this exact item | The Owner's words; Claude writes the label only for what the Owner said or accepted item by item |
+| `[Owner]` | The Owner wrote this item in their own words | Claude, only for what the Owner said or wrote |
 | `[Q-n]` | The value comes from answer *n* in the epic's **Questions** section | Claude, when copying an answer that is already recorded |
-| `[Claude-proposed]` | Claude drafted it and the Owner has not accepted it | Claude, always, for anything it drafts in a logic section |
+| Rule ID (`R3`) | The value is copied, unchanged, from a rule the Owner owns | Claude, when citing |
 
-Rules for the labels:
+An item that Claude drafted carries no provenance label. The status line of its section
+says whether the Owner approved it.
 
-- **Claude never writes `[Owner]` on its own draft.** A proposal becomes `[Owner]` only
-  when the Owner accepts that item. A blanket "ok, looks good" over a list converts
-  nothing; list the items still at `[Claude-proposed]` and ask about them one by one or
-  in a small batch.
-- **Rule IDs and question numbers are citations.** An expected value or a criterion may
-  carry a rule ID (`R3`) or `[Q-n]` instead of `[Owner]` when it is copied, unchanged,
-  from a rule or answer the Owner already owns.
+### Rules for both
+
+- **Claude never writes `[Owner]` on its own draft.** A draft section becomes `[Owner]`
+  only when the Owner approves that section, or the named items in it. A blanket "ok,
+  looks good" over the whole file converts nothing. List the sections and items that
+  are still `[Claude-proposed]` and ask about them in a small batch.
 - **A value nobody can cite is `?`.** Write `?` and add a question to **Questions**.
   Never fill it with a plausible guess.
-- Mechanics sections carry no labels.
+- **Older files have no status lines.** A section without a status line is read the
+  old way. It counts as approved when no item in it ends with `[Claude-proposed]`.
+  Claude adds a status line when it next edits the section.
 
 ---
 
@@ -56,8 +89,8 @@ Rules for the labels:
 
 1. **Owner writes first.** For problem, done, scope, rules, examples, and expected
    values, ask the Owner to write them. Offer a skeleton (headings, empty table rows),
-   not content. Draft content only when the Owner asks for a draft, and label every
-   drafted item `[Claude-proposed]`.
+   not content. Draft content only when the Owner asks for a draft, and set the status
+   line of every drafted section to `[Claude-proposed]`.
 2. **Review by asking, not answering.** When Claude reviews the Owner's logic and finds
    a gap (a missing edge case, an inconsistent rule, an expected value that contradicts
    another), it adds a question to **Questions** with the Owner as the one to answer.
@@ -75,6 +108,10 @@ Rules for the labels:
 
 A gate is checked before a status change. When it fails, the status stays where it is
 and the skill lists exactly what blocks it.
+
+"Holds `[Claude-proposed]`" means one of these: a status line in the section says
+`[Claude-proposed]` (alone or after "except"), or an item in a section with no status
+line still ends with `[Claude-proposed]`.
 
 | Gate | Blocks when |
 |---|---|

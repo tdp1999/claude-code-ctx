@@ -162,7 +162,7 @@ Use when patterns-architecture.md already exists.
 ```markdown
 ### Architecture Changelog
 
-#### [YYYY-MM-DD] Change Title
+**[YYYY-MM-DD] Change Title**
 - Changed: [what changed]
 - From: [old approach]
 - To: [new approach]

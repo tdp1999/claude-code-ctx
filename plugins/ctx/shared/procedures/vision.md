@@ -117,7 +117,7 @@ Use when vision.md already exists (mid-project change).
 ```markdown
 ## Changelog
 
-### [YYYY-MM-DD] Change Title
+**[YYYY-MM-DD] Change Title**
 - Changed: [what changed]
 - From: [old value]
 - To: [new value]

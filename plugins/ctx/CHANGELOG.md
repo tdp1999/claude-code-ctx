@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The size M task's **Approach** carries the same lines.
 
 ### Changed
+- **Approval moves to a status line per section.** Each logic heading, at any level, starts with `Status: [Owner]`, `Status: [Claude-proposed]`, or `Status: [Owner], except …` naming the items still under review. Labels at the end of an item (`[Owner]`, `[Q-n]`, a rule ID) now only name the item's source. The gates read the status lines; an older item-level `[Claude-proposed]` still blocks. The word "Status" follows the file's prose language.
+- **Changelog entries are bold lines, not headings.** Epic, vision, and architecture changelogs write `**[YYYY-MM-DD] [Change]**`, so entries stay out of the outline. New epic entries go at the top of the Changelog section.
+- **`[Owner]` at the end of an item now means only "the Owner wrote this".** Approval of a draft is recorded in the status line, not by relabeling the item. Files written before this change have no status lines and are read the old way: a section counts as approved when no item in it ends with `[Claude-proposed]`.
 - **Epic rules cite patterns instead of restating them.** E6 gains an Inherited behavior table (one row per existing pattern, with a smoke test); project-wide decisions are promoted to the standards files, then cited.
 - **Epics use one fixed ID registry.** The registry is `shared/conventions/ids-and-references.md`: inherited patterns are `P`, every ID in prose carries a short name, and flows, rules and test tables are headings. The template gains a Legend, a Technique column in the AC table, and a Test design section (cost table, decision tables, state transition tables); the epic file contract lists Legend, Tasks, Inherited behavior, the AC table and Test design.
 

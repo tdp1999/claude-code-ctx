@@ -82,7 +82,7 @@ See `../../shared/conventions/ownership.md` for labels, citations, and gates.
 
 Skill-specific errors:
 - **Epic has neither `E6 · Rules and examples` nor `## High-Level Requirements`**: Cannot break down — inform user, suggest updating epic with `/ctx:epic <path>`
-- **Epic status is `draft`**: The ownership gate has not passed. List what blocks it (`[Claude-proposed]` items, `?` values, open blocking questions) and suggest `/ctx:epic <path>`. Break down anyway only if the Owner says so, and say that the tasks will carry `?` where the epic does
+- **Epic status is `draft`**: The ownership gate has not passed. List what blocks it (status lines still at `[Claude-proposed]`, `?` values, open blocking questions) and suggest `/ctx:epic <path>`. Break down anyway only if the Owner says so, and say that the tasks will carry `?` where the epic does
 - **`.context/tasks/` doesn't exist**: Suggest running `/ctx:start` (new project) or `/ctx:onboard` (existing project) first
 - **Epic status is `broken-down`**: Warn user this epic was already decomposed. Ask if they want to add more tasks (continue numbering) or re-breakdown (will not delete existing tasks)
 
@@ -199,7 +199,8 @@ is already in the epic, so the breakdown decides only three things with the Owne
    files (recommend this). Three or more → one task file per slice.
 
 Ask in one batch and wait for the answers before writing anything. Record each
-confirmed slice labeled `[Owner]`.
+confirmed slice with the provenance label `[Owner]`. When the Owner confirms the slices,
+set the T1 and T2 status lines of each task (or of the epic's Tasks section) to `[Owner]`.
 
 **The epic has no AC table** (an older epic, or phase 4 not done): say so, and suggest
 finishing it with `/ctx:epic`. Continue only if the Owner says so; the tasks then
