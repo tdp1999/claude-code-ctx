@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-10-30
+
+### Added
+
+- **The checklist ships with the plugin.** `checklist/` holds the Owner's lanes S, M, L, the lookup table, Claude's playbook and the project profile template. Each item is a heading with an SN, a verb-first title, a one-line description, the content as a list, and refs. Claude's instructions live in `playbook.md`, keyed by lane and SN, so the lanes are written for the Owner only.
+- **`checklist/manifest.json`** lists the lanes (slug, title, path) and the lookup path, so a reader that cannot list a folder (a raw URL) finds every file. Each lane and the lookup table start with `<!-- format: 2 -->`. `checklist/check.mjs` flags a `Claude:` line without a playbook entry.
+- **`checklist` skill.** Replaces the `ctx-map.md` file of the old checklist folder: which lane to open, how to read an item, when to read the playbook, and the profile protocol.
+
+### Changed
+
+- **The checklist binding is on by default.** `.context/ctx-config.md` no longer names a checklist folder. The line `checklist: off` turns the binding off. The project profile moves to `.context/checklist-profile.md`.
+
 ## [3.4.0] - 2026-10-29
 
 ### Added
