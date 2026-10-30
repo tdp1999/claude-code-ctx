@@ -180,9 +180,9 @@ logic parts come from the Owner, the mechanics from Claude:
 | T4, T5 | empty |
 | T6 Release | Claude drafts rollback and the production smoke test |
 
-**Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
-slice for `epic` and `breakdown` against the size M checklist (see
-`../../shared/conventions/checklist-binding.md`): a size M task holds both.
+**Checklist binding:** follow the `checklist` skill and read the slice for `epic` and
+`breakdown` against lane M (see `../../shared/conventions/checklist-binding.md`): a size M
+task holds both.
 
 For **size S** (only when the Owner asked for a file), keep the short shape:
 

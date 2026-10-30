@@ -72,10 +72,9 @@ the task file says. Use it on critical code. See Step 9.
    - `.context/patterns-architecture.md` (if exists)
    - `.context/domain.md` (if exists) — read domain rules referenced by task acceptance criteria
    - Check task status and dependencies
-   - **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
-     slice for `task` using the task's `Size:` line (see
-     `../../shared/conventions/checklist-binding.md`). Size L tasks without T6 skip the
-     release phase.
+   - **Checklist binding:** follow the `checklist` skill and read the slice for `task`,
+     using the task's `Size:` line (see `../../shared/conventions/checklist-binding.md`).
+     Size L tasks without T6 skip the release phase.
 
 3. **Load specialized skill (if referenced):**
 

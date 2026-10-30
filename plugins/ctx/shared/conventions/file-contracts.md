@@ -204,10 +204,9 @@ enforce it.
 | **Read by** | `/ctx:epic`, `/ctx:breakdown`, `/ctx:create-task`, `/ctx:task` |
 
 **Format:** `key: value` lines.
-- `checklist: <folder>` — turns on the checklist binding (see `checklist-binding.md`)
-- `checklist-profile: <path inside the folder>` — optional project profile
+- `checklist: off` — turns off the checklist binding (see `checklist-binding.md`)
 
-Absent file or absent key → the binding is off and skills behave as without it.
+Absent file or absent key → the binding is on.
 
 ---
 

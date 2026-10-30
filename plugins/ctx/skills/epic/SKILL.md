@@ -78,10 +78,10 @@ and the gates used below.
      `.context/domain.md` (if it exists)
    - If user provided idea in `$ARGUMENTS`, use it
    - If empty, ask: "What feature would you like to plan?"
-   - **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, follow
-     `../../shared/conventions/checklist-binding.md` and read the slice for `epic`
+   - **Checklist binding:** follow the `checklist` skill and read the slice for `epic`
      (once the size is known, step 2). Use it as the list of what each step below must
-     cover and who does it. Without the line, skip this silently.
+     cover and who does it. If the binding is off
+     (`../../shared/conventions/checklist-binding.md`), skip this silently.
 
 2. **Size the work (Owner decides):**
    - Name the risk signs you see (`ownership.md` → Size) and ask the Owner for the size

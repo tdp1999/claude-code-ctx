@@ -55,9 +55,8 @@ needs the user's answer.
 - **Older epic** (`## High-Level Requirements`, no E6): extract Summary, Requirements,
   Technical Considerations, Risks, as before. The no-new-rules rule in Step 3 still
   applies, with requirement numbers in place of rule IDs.
-- **Checklist binding:** if `.context/ctx-config.md` has a `checklist:` line, read the
-  slice for `breakdown` (see `../../shared/conventions/checklist-binding.md`), using the
-  epic's `Size:` line.
+- **Checklist binding:** follow the `checklist` skill and read the slice for `breakdown`,
+  using the epic's `Size:` line (see `../../shared/conventions/checklist-binding.md`).
 
 **If other file path provided:**
 - Read the file

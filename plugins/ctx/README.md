@@ -57,13 +57,14 @@ yourself. Re-run `/ctx:start` any time to update one of them.
 | `task`     | `/ctx:task [number] [--careful]` | Load a task and work on it                      |
 | `sync`     | `/ctx:sync`                      | Reconcile progress.md, archive finished work    |
 
-### Knowledge (1 skill)
+### Knowledge (2 skills)
 
 | Skill          | Usage                       | Description                  |
 | -------------- | --------------------------- | ---------------------------- |
 | `log-decision` | `/ctx:log-decision "Topic"` | Record an architecture decision as an ADR |
+| `checklist`    | `/ctx:checklist`            | The Owner's phase checklist: lanes S, M, L, lookup table, Claude's playbook |
 
-Ten skills total.
+Eleven skills total.
 
 ## Common Workflows
 
@@ -166,6 +167,7 @@ The plugin is then available in all sessions automatically.
 - **Procedures**: `shared/procedures/` — the four setup steps run by start / onboard
 - **Templates**: `shared/templates/` — file formats
 - **Conventions**: `shared/conventions/` — file contracts, naming, status lifecycle, complexity, ownership (labels and gates), checklist binding
+- **Checklist**: `checklist/` — lanes S, M, L, the lookup table, Claude's playbook and the profile template. The portfolio `/checklist` page reads these files through their raw GitHub URL
 - **Subagents**: `shared/subagents.md` — when to delegate and to which agent
 - **Examples**: `references/examples/` — a complete epic breakdown walkthrough
 - **Diagrams**: `references/diagrams/` — workflow map and skill relationships
@@ -180,7 +182,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 3.4.0
+Current version: 3.5.0
 
 ## Changelog
 

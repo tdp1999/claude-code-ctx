@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CTX is a Claude Code plugin that provides a task-driven development workflow through 10 skills in the `/ctx:` namespace. It manages project context via a `.context/` folder with vision, architecture, epics, tasks, and progress tracking. Distributed through the TDP Plugins Marketplace.
+CTX is a Claude Code plugin that provides a task-driven development workflow through 11 skills in the `/ctx:` namespace. It manages project context via a `.context/` folder with vision, architecture, epics, tasks, and progress tracking. Distributed through the TDP Plugins Marketplace.
 
 ## Repository Structure
 
@@ -13,6 +13,7 @@ CTX is a Claude Code plugin that provides a task-driven development workflow thr
 - `plugins/ctx/skills/` — Skill implementations (each skill is a folder with `SKILL.md`)
 - `plugins/ctx/shared/procedures/` — The four setup steps (`context-bank`, `vision`, `architecture`, `techstack`). **Procedures, not skills**: no frontmatter, no slash command. Only `start` and `onboard` read them. Adding a setup step means adding a procedure here, not a skill.
 - `plugins/ctx/shared/` — Templates, conventions, and workflows shared across skills
+- `plugins/ctx/checklist/` — The Owner's checklist: lanes, lookup table, playbook, profile template. Read by the `checklist` skill, and fetched by raw URL by the portfolio `/checklist` page, so keep paths stable
 - `plugins/ctx/references/` — Examples and diagrams
 
 No build system, test suite, or linting — this is a documentation-driven plugin package.
