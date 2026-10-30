@@ -1,0 +1,9 @@
+{
+  "format": 2,
+  "lanes": [
+    { "slug": "size-s", "title": "Size S", "path": "lanes/size-s.md" },
+    { "slug": "size-m", "title": "Size M", "path": "lanes/size-m.md" },
+    { "slug": "size-l", "title": "Size L", "path": "lanes/size-l.md" }
+  ],
+  "lookup": "lookup.md"
+}
