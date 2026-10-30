@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.1] - 2026-10-30
+
+### Added
+
+- **First-time setup in the `checklist` skill.** When a project has no `.context/checklist-profile.md`, or the Owner asks to set up the checklist, Claude creates the profile from the template, fills sections 6, 7, 8 and 10 from the code for the Owner to confirm, asks only for sections 1, 2 and 9, and tells the Owner the profile path and the run's project name. A profile from an older setup is copied, not asked again.
+
+### Changed
+
+- The old "Profile init" rules are now "Profile upkeep": audit and rewrite only.
+
 ## [3.5.0] - 2026-10-30
 
 ### Added

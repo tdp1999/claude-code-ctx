@@ -182,7 +182,7 @@ MIT License - See LICENSE file for details
 
 ## Version
 
-Current version: 3.5.0
+Current version: 3.5.1
 
 ## Changelog
 
