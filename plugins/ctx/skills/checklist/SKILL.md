@@ -1,7 +1,7 @@
 ---
 name: checklist
 description: >-
-  The Owner's phase checklist (lanes S, M, L, a lookup table and Claude's playbook). Use it whenever an epic or task has a "Size: S|M|L" line, when another ctx skill (epic, breakdown, task, create-task) reaches a phase step, when the Owner mentions a checklist item by SN (for example "5.1c"), "lane", "checklist", "tra K", "📁 §6", or when Claude creates a project profile. Tells Claude which lane to open, how to read an item, when to read the playbook, and how to use the project profile.
+  The Owner's phase checklist (lanes S, M, L, a lookup table and Claude's playbook). Use it whenever an epic or task has a "Size: S|M|L" line, when another ctx skill (epic, breakdown, task, create-task) reaches a phase step, when the Owner mentions a checklist item by SN (for example "5.1c"), "lane", "checklist", "tra K", "📁 §6", when the Owner asks to set up the checklist for a project ("set up checklist", "checklist setup", "tạo profile"), or when a project has no `.context/checklist-profile.md` yet. Tells Claude which lane to open, how to read an item, when to read the playbook, and how to set up and use the project profile.
 ---
 
 # Checklist
@@ -33,6 +33,26 @@ These rules apply only when the Owner asks Claude to edit the checklist files.
 
 The binding is on by default.
 If `.context/ctx-config.md` has the line `checklist: off`, the binding is off. Then say nothing about the checklist.
+
+## First-time setup
+
+Run this setup once per project. Run it when the Owner asks to set up the checklist, or at the first checklist ticket when the project has no profile.
+
+1. Check `.context/ctx-config.md`. If it has `checklist: off`, stop and say nothing.
+2. Check that `.context/checklist-profile.md` exists. If it exists, the setup is done. Skip to the ticket.
+3. Tell the Owner in one line that the project has no profile and that you create it now.
+4. Copy `../../checklist/templates/profile.md` to `.context/checklist-profile.md`. Put the project name in the title.
+5. Fill sections 6, 7, 8 and 10 from the code and the docs: dependencies, technical approach, environments and documents. Write only what you found. Mark each line with its source file.
+6. Show those lines to the Owner. The Owner confirms, fixes or deletes each line.
+7. Ask the Owner for sections 1, 2 and 9 only: the users, how they work today, and the people involved. Ask at most three questions in one message.
+8. Leave sections 3, 4 and 5 empty. They grow ticket by ticket under the Profile protocol.
+9. Tell the Owner three facts:
+   1. The profile path is `.context/checklist-profile.md`, and the profile is committed with the project.
+   2. On the portfolio site, the run's project name is the repo folder name, for example `portfolio`.
+   3. The checklist lanes come from this plugin. The Owner edits them here, then presses "Update checklist" on `/checklist/templates`.
+10. Do not commit. The Owner commits the profile with the next change.
+
+If a profile exists elsewhere from an older setup, for example in a notes repo, copy its content into the new file instead of asking again. Keep the template's section numbers.
 
 ## Lane format
 
@@ -109,11 +129,8 @@ After the Owner answers, record the answer in one place:
 2. Put a fact that is true for one feature only in the epic (E1), not in the profile.
 3. If an answer corrects the profile, replace the wrong line.
 
-## Profile init
+## Profile upkeep
 
-1. If `.context/checklist-profile.md` does not exist at the first checklist ticket of a project, create it from `../../checklist/templates/profile.md`.
-2. Fill sections 6, 7, 8 and 10 from the code and the docs. The Owner confirms each line.
-3. Ask the Owner for sections 1, 2 and 9 only. The other sections stay empty and grow by ticket.
-4. If a profile has many wrong lines, audit it. Walk each section, and the Owner marks each line keep, fix or delete.
-5. Rewrite the whole profile only when the project itself changed: a new product, new users or a new stack.
-6. Git history keeps the old version. Do not keep a copy.
+1. If a profile has many wrong lines, audit it. Walk each section, and the Owner marks each line keep, fix or delete.
+2. Rewrite the whole profile only when the project itself changed: a new product, new users or a new stack.
+3. Git history keeps the old version. Do not keep a copy.
