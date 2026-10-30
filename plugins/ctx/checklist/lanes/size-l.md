@@ -366,6 +366,7 @@ Claude ở một session mới khác viết code chỉ dựa vào spec và test 
 
 - Đầu ra: các test của 5.1b xanh, và commit theo layer trên nhánh riêng của slice, không lên master.
 - Session này không được sửa test.
+- Nếu Claude thêm một test sau khi đã có code, Claude làm test đó đỏ một lần bằng cách tạm phá dòng code mà test kiểm tra, rồi ghi lại cách làm.
 - Nếu thấy một test sai, Claude dừng lại và báo Owner. Owner sửa ví dụ ở phase 4 trước, rồi mới sửa test.
 - Vòng review R2 xét ba góc: code đúng với AC chưa, có thay đổi nào ngoài phạm vi task không, và code có theo luật của repo không.
 - Nếu slice chạm quyền, dữ liệu cá nhân hoặc redirect, R2 thêm góc bảo mật. Nếu spec có yêu cầu về performance, R2 thêm góc performance 📁 §5
@@ -386,27 +387,13 @@ Ref: 📁 §7
 
 **Đầu ra:** kết quả kiểm 4 lớp, debrief exploratory, các bug kèm lý do "tại sao lọt", và ghi chú bàn giao. Ghi vào T5 của task.
 
-### 6.1 Kiểm mỗi test đã từng đỏ
-Ai làm: Claude soạn; Owner chốt · Ai kiểm: Owner xem output
-
-Mỗi test mới đã từng đỏ ít nhất một lần.
-
-### 6.2 Chạy mutation testing
-Ai làm: Máy · Ai kiểm: Owner đọc mutation score
-
-Nếu logic chạm tiền hoặc quyền, kiểm tra chính bộ test bằng mutation testing.
-
-- Làm sau khi code đã có và test đã xanh.
-
-Ref: 📁 §7
-
-### 6.3 Review phần sửa và đọc diff
+### 6.1 Review phần sửa và đọc diff
 
 Phần sửa sau R2 được review trước, rồi Owner mới đọc diff.
 
-#### 6.3a Review phần sửa sau R2
+#### 6.1a Review phần sửa sau R2
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: Review của `/cap`; Owner chốt
-Claude: ⚙ 6.3a
+Claude: ⚙ 6.1a
 
 Mọi thay đổi đổi logic sau vòng R2 đi qua bước review của `/cap`.
 
@@ -415,9 +402,9 @@ Mọi thay đổi đổi logic sau vòng R2 đi qua bước review của `/cap`.
 
 Ref: tra L
 
-#### 6.3b Đọc diff nguội
+#### 6.1b Đọc diff nguội
 Ai làm: Owner · Ai kiểm: —
-Claude: ⚙ 6.3b
+Claude: ⚙ 6.1b
 
 Owner đọc diff khi đầu óc đã nguội và giải thích được từng dòng.
 
@@ -431,34 +418,34 @@ Owner đọc diff khi đầu óc đã nguội và giải thích được từng 
 
 Ref: tra D, tra L
 
-### 6.4 Chạy thử migration
+### 6.2 Chạy thử migration
 Ai làm: Owner · Ai kiểm: Máy (so dữ liệu trước và sau)
 
 Owner chạy thử migration trên một bản sao dữ liệu giống thật.
 
 Ref: 📁 §6
 
-### 6.5 Tự kiểm 4 lớp trên app thật
+### 6.3 Tự kiểm 4 lớp trên app thật
 
 Owner kiểm theo thứ tự, và nếu lớp trước hỏng thì chưa sang lớp sau.
 
-#### 6.5a Chạy đường hạnh phúc (lớp 1)
+#### 6.3a Chạy đường hạnh phúc (lớp 1)
 Ai làm: Owner · Ai kiểm: —
 
 Owner chạy đúng kịch bản chính bằng tay, như người dùng thật, theo các ví dụ của phase 4 và flow của phase 3.
 
 - Lớp này không phải là "unit test pass".
 
-#### 6.5b Chạy edge case (lớp 2)
+#### 6.3b Chạy edge case (lớp 2)
 Ai làm: Owner · Ai kiểm: —
 
 Owner chạy các edge case đã thành ví dụ ở phase 4.
 
 - Xem từng trạng thái của màn hình khi có thứ bị lỗi (tra J, phần J4).
 
-#### 6.5c Kiểm hồi quy quanh chỗ sửa (lớp 3)
+#### 6.3c Kiểm hồi quy quanh chỗ sửa (lớp 3)
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: —
-Claude: ⚙ 6.5c
+Claude: ⚙ 6.3c
 
 Owner mở thử ít nhất một chỗ dùng chung hàm, component hoặc endpoint vừa sửa.
 
@@ -466,7 +453,7 @@ Owner mở thử ít nhất một chỗ dùng chung hàm, component hoặc endpo
 
 Ref: 📁 §6
 
-#### 6.5d Thử với dữ liệu thật (lớp 4)
+#### 6.3d Thử với dữ liệu thật (lớp 4)
 Ai làm: Owner · Ai kiểm: —
 
 Owner thử với dữ liệu cũ, dữ liệu bẩn, thiếu field hoặc sai format.
@@ -475,28 +462,28 @@ Owner thử với dữ liệu cũ, dữ liệu bẩn, thiếu field hoặc sai f
 
 Ref: 📁 §3, §6
 
-### 6.6 Khám phá exploratory 30 phút
+### 6.4 Khám phá exploratory 30 phút
 Ai làm: Owner · Ai kiểm: —
 
 Owner khám phá theo một charter "Khám phá ‹vùng› với ‹cách hoặc dữ liệu› để tìm ‹loại vấn đề›".
 
 - Owner ghi lại bug, câu hỏi và ý tưởng.
 
-### 6.7 Kiểm NFR
+### 6.5 Kiểm NFR
 Ai làm: Owner · Ai kiểm: —
 
 Owner kiểm các NFR đã chọn ở phase 4.
 
 Ref: 📁 §5
 
-### 6.8 Viết ghi chú bàn giao
+### 6.6 Viết ghi chú bàn giao
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: Tester (nếu có)
 
 Ghi chú bàn giao nói đổi những gì, test ở đâu, và rủi ro nằm ở đâu.
 
 Ref: 📁 §9
 
-### 6.9 Hỏi trước khi merge
+### 6.7 Hỏi trước khi merge
 Ai làm: Owner · Ai kiểm: Manager (hoặc người được chỉ định ở 📁 §9)
 
 Nếu ticket chạm tiền, hóa đơn hoặc integration, Owner luôn hỏi trước khi merge và gửi kèm ghi chú bàn giao.

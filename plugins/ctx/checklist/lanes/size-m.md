@@ -326,6 +326,7 @@ Claude ở một session mới khác viết code chỉ dựa vào spec (task) v�
 
 - Đầu ra: các test của 5.1a xanh, và commit theo layer trên nhánh riêng, không lên master.
 - Session này không được sửa test.
+- Nếu Claude thêm một test sau khi đã có code, Claude làm test đó đỏ một lần bằng cách tạm phá dòng code mà test kiểm tra, rồi ghi lại cách làm.
 - Nếu thấy một test sai, Claude dừng lại và báo Owner. Owner sửa ví dụ ở phase 4 trước, rồi mới sửa test.
 - Vòng review R2 xét ba góc: code đúng với AC chưa, có thay đổi nào ngoài phạm vi task không, và code có theo luật của repo không.
 - Nếu slice chạm quyền, dữ liệu cá nhân hoặc redirect, R2 thêm góc bảo mật. Nếu spec có yêu cầu về performance, R2 thêm góc performance.
@@ -346,18 +347,13 @@ Ref: 📁 §7
 
 **Đầu ra:** kết quả kiểm 4 lớp, các bug kèm lý do "tại sao lọt", và ghi chú bàn giao. Ghi vào T5 của task.
 
-### 6.1 Kiểm mỗi test đã từng đỏ
-Ai làm: Claude soạn; Owner chốt · Ai kiểm: Owner xem output
-
-Mỗi test mới đã từng đỏ ít nhất một lần.
-
-### 6.2 Review phần sửa và đọc diff
+### 6.1 Review phần sửa và đọc diff
 
 Phần sửa sau R2 được review trước, rồi Owner mới đọc diff.
 
-#### 6.2a Review phần sửa sau R2
+#### 6.1a Review phần sửa sau R2
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: Review của `/cap`; Owner chốt
-Claude: ⚙ 6.2a
+Claude: ⚙ 6.1a
 
 Mọi thay đổi đổi logic sau vòng R2 đi qua bước review của `/cap`.
 
@@ -366,9 +362,9 @@ Mọi thay đổi đổi logic sau vòng R2 đi qua bước review của `/cap`.
 
 Ref: tra L
 
-#### 6.2b Đọc diff nguội
+#### 6.1b Đọc diff nguội
 Ai làm: Owner · Ai kiểm: —
-Claude: ⚙ 6.2b
+Claude: ⚙ 6.1b
 
 Owner đọc diff khi đầu óc đã nguội và giải thích được từng dòng.
 
@@ -382,27 +378,27 @@ Owner đọc diff khi đầu óc đã nguội và giải thích được từng 
 
 Ref: tra D, tra L
 
-### 6.3 Tự kiểm 4 lớp trên app thật
+### 6.2 Tự kiểm 4 lớp trên app thật
 
 Owner kiểm theo thứ tự, và nếu lớp trước hỏng thì chưa sang lớp sau.
 
-#### 6.3a Chạy đường hạnh phúc (lớp 1)
+#### 6.2a Chạy đường hạnh phúc (lớp 1)
 Ai làm: Owner · Ai kiểm: —
 
 Owner chạy đúng kịch bản chính bằng tay, như người dùng thật, theo các ví dụ của phase 4 và flow của phase 3.
 
 - Lớp này không phải là "unit test pass".
 
-#### 6.3b Chạy edge case (lớp 2)
+#### 6.2b Chạy edge case (lớp 2)
 Ai làm: Owner · Ai kiểm: —
 
 Owner chạy các edge case đã thành ví dụ ở phase 4.
 
 - Xem từng trạng thái của màn hình khi có thứ bị lỗi (tra J, phần J4).
 
-#### 6.3c Kiểm hồi quy quanh chỗ sửa (lớp 3)
+#### 6.2c Kiểm hồi quy quanh chỗ sửa (lớp 3)
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: —
-Claude: ⚙ 6.3c
+Claude: ⚙ 6.2c
 
 Owner mở thử ít nhất một chỗ dùng chung hàm, component hoặc endpoint vừa sửa.
 
@@ -410,7 +406,7 @@ Owner mở thử ít nhất một chỗ dùng chung hàm, component hoặc endpo
 
 Ref: 📁 §6
 
-#### 6.3d Thử với dữ liệu thật (lớp 4)
+#### 6.2d Thử với dữ liệu thật (lớp 4)
 Ai làm: Owner · Ai kiểm: —
 
 Owner thử với dữ liệu cũ, dữ liệu bẩn, thiếu field hoặc sai format.
@@ -419,21 +415,21 @@ Owner thử với dữ liệu cũ, dữ liệu bẩn, thiếu field hoặc sai f
 
 Ref: 📁 §3, §6
 
-### 6.4 Khám phá exploratory 30 phút
+### 6.3 Khám phá exploratory 30 phút
 Ai làm: Owner · Ai kiểm: —
 
 Owner khám phá theo một charter "Khám phá ‹vùng› với ‹cách hoặc dữ liệu› để tìm ‹loại vấn đề›".
 
 - Owner ghi lại bug, câu hỏi và ý tưởng.
 
-### 6.5 Kiểm NFR
+### 6.4 Kiểm NFR
 Ai làm: Owner · Ai kiểm: —
 
 Owner kiểm các NFR đã chọn ở phase 4.
 
 Ref: 📁 §5
 
-### 6.6 Viết ghi chú bàn giao
+### 6.5 Viết ghi chú bàn giao
 Ai làm: Claude soạn; Owner chốt · Ai kiểm: Tester (nếu có)
 
 Ghi chú bàn giao nói đổi những gì, test ở đâu, và rủi ro nằm ở đâu.

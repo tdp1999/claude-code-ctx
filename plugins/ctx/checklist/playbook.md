@@ -57,7 +57,7 @@ Use this procedure for the commit of a slice and for the fixes after the Owner's
 6. Split the commits by layer: shared, API, console, landing, e2e. Each commit holds the code of its layer and the tests of that code, so each commit is green on its own.
 7. The Owner approves the commit list and the messages. Then `/cap` commits and pushes the branch.
 8. While the Owner reviews each commit, say which files need a careful read and which only need a skim. Do not write a review map file.
-9. If the Owner asks for fixes, make the fixes and collect them. Run `/cap --fixup` once at the end of each review pass.
+9. If the Owner asks for fixes, make the fixes and collect them. If a fix adds a test, make that test fail once. Break the code line it checks, run the test, then restore the line. Record how in the verdicts file. Run `/cap --fixup` once at the end of each review pass.
 10. `/cap --fixup` squashes each fix into the original commit of its layer. Keep the original message.
 11. If a fix does not change logic, run `/cap --fixup --skip-review`. If a fix changes logic, keep the review step of `/cap`. A CI fix follows the same rule.
 12. After an autosquash, push with `--force-with-lease`. Use it only on the slice branch, never on master.
@@ -104,18 +104,19 @@ Run the regression-scan procedure.
 1. Work in a fresh session, separate from the 5.1a session.
 2. Read only the spec (the task) and the tests. Do not edit a test.
 3. If a test looks wrong, stop and tell the Owner.
-4. Run R2 of the review-round procedure, before the commit.
-5. Commit through the commit-branch procedure.
+4. If you add a test after the code exists, make it fail once. Break the code line it checks, run it, then restore the line. Record how in the verdicts file.
+5. Run R2 of the review-round procedure, before the commit.
+6. Commit through the commit-branch procedure.
 
-### 6.2a
+### 6.1a
 
 Follow steps 10 and 11 of the commit-branch procedure. If no change alters logic, skip the item and say so.
 
-### 6.2b
+### 6.1b
 
 Follow steps 8 to 12 of the commit-branch procedure.
 
-### 6.3c
+### 6.2c
 
 Run the regression-scan procedure. Start from the blast radius of phase 2.
 
@@ -155,17 +156,18 @@ Run the regression-scan procedure. Start from the blast radius of phase 2.
 1. Work in a fresh session, separate from the 5.1b session.
 2. Read only the spec (epic and task) and the tests. Do not edit a test.
 3. If a test looks wrong, stop and tell the Owner.
-4. Run R2 of the review-round procedure, before the commit. Read profile section 5 for the risk flags.
-5. Commit through the commit-branch procedure.
+4. If you add a test after the code exists, make it fail once. Break the code line it checks, run it, then restore the line. Record how in the verdicts file.
+5. Run R2 of the review-round procedure, before the commit. Read profile section 5 for the risk flags.
+6. Commit through the commit-branch procedure.
 
-### 6.3a
+### 6.1a
 
 Follow steps 10 and 11 of the commit-branch procedure. If no change alters logic, skip the item and say so.
 
-### 6.3b
+### 6.1b
 
 Follow steps 8 to 12 of the commit-branch procedure.
 
-### 6.5c
+### 6.3c
 
 Run the regression-scan procedure. Start from the blast radius of phase 2.
